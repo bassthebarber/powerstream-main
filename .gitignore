@@ -1,40 +1,52 @@
 # Dependencies
-node_modules/
+node_modules
 
-# Environment files
+# Environment variables
 .env
 .env.local
 .env.*.local
-*.env
 
 # Logs
 logs/
 *.log
-npm-debug.log*
+backend/logs/
+backend/utils/logs/
+backend/control-tower/logs/
+frontend/logs/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # Build outputs
 dist/
 build/
-.next/
+*.tgz
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# Backup archives (don't commit large backups)
+*.tar.gz
+*.zip
+backend.tgz
+backend.zip
+studio-app.zip
+frontend/backend.zip
+frontend/root_dist.zip
+frontend/studio_dist.zip
+frontend/studio-app/studio_build.zip
+frontend/studio-app/studio_dist.zip
+frontend/PowerStreamFullBackup.tar.gz
+PowerStreamFullBackup.tar.gz
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Archives (don't commit large archives)
-*.tar.gz
-*.tgz
-*.zip
-
-# Temporary files
-tmp/
-temp/
-
-# OneDrive placeholder files (not synced locally)
+# Temporary/corrupted pages folder at root
 pages/
+
+# Misc backup folders
+frontend/station-backup-*
+frontend/ui-backup-*
+frontend/src_backup_all/src_backup/
