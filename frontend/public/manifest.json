@@ -1,0 +1,22 @@
+{
+  "name": "PowerStream",
+  "short_name": "PowerStream",
+  "description": "Your Feed • Gram • Reel in one place",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c0f",
+  "theme_color": "#f9a23b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logos/powerstream-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logos/powerstream-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

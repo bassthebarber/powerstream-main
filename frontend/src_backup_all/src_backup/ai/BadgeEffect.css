@@ -1,0 +1,31 @@
+/* frontend/src/components/ai/BadgeEffect.css */
+.badge-effect {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 9999;
+  font-weight: bold;
+  background: #000;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  box-shadow: 0 0 12px #0ff;
+  animation: flicker 2s infinite;
+  color: #0ff;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pulse-glow {
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { text-shadow: 0 0 2px #0ff; }
+  50% { text-shadow: 0 0 15px #0ff; }
+  100% { text-shadow: 0 0 2px #0ff; }
+}
+

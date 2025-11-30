@@ -1,0 +1,10 @@
+/* src/components/feed/PostCard.module.css */
+.card{border:1px solid #222;border-radius:14px;background:#0b0b0b;margin:12px 0;padding:12px;color:#f6f6f6}
+.header{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid #333}
+.name{font-weight:600}
+.time{opacity:.7;font-size:12px}
+.text{margin:8px 0 4px}
+.mediaWrap{margin-top:8px}
+.media{width:100%;max-height:420px;object-fit:cover;border-radius:12px;border:1px solid #222;background:#000}
+

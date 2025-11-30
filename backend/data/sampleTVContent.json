@@ -1,0 +1,21 @@
+// backend/data/sampleTVContent.json
+[
+  {
+    "_id": "abc123",
+    "title": "Texas Got Talent Ep 1",
+    "description": "Live performances from Houston.",
+    "thumbnailURL": "https://powerstreamtv.com/thumbs/tgt1.jpg",
+    "streamURL": "https://powerstreamtv.com/streams/tgt1.mp4",
+    "category": "Music",
+    "createdAt": "2025-09-25T12:00:00Z"
+  },
+  {
+    "_id": "def456",
+    "title": "PowerNews: September Recap",
+    "description": "Top headlines from the network.",
+    "thumbnailURL": "https://powerstreamtv.com/thumbs/newsrecap.jpg",
+    "streamURL": "https://powerstreamtv.com/streams/newsrecap.mp4",
+    "category": "News",
+    "createdAt": "2025-09-29T09:00:00Z"
+  }
+]

@@ -1,0 +1,9 @@
+/* frontend/src/sovereign/Sovereign.css */
+
+.sovereign-panel {
+  background-color: black;
+  color: gold;
+  padding: 1rem;
+  border: 1px solid gold;
+}
+

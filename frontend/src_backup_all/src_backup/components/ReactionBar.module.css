@@ -1,0 +1,17 @@
+.reactionBar {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #222;
+  color: gold;
+  justify-content: space-around;
+  font-size: 1.1rem;
+}
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+

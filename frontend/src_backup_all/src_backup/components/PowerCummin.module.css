@@ -1,0 +1,36 @@
+/* src/components/PowerCummin.module.css */
+.cummin-box {
+  margin-top: 10px;
+}
+
+.cummin-box input {
+  width: 80%;
+  padding: 6px;
+  border: 1px solid #333;
+  background: #111;
+  color: white;
+  border-radius: 5px;
+}
+
+.cummin-box button {
+  padding: 6px 10px;
+  margin-left: 5px;
+  background: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cummin-list {
+  margin-top: 10px;
+}
+
+.cummin-item {
+  margin-bottom: 5px;
+  padding: 5px;
+  background: #1a1a1a;
+  border-left: 3px solid gold;
+  border-radius: 5px;
+}
+

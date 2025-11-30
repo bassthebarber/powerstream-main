@@ -1,0 +1,61 @@
+// /backend/AI/InfinityCore/InfinityEventHandler.js
+const EventBus = require('../../system-core/EventBus');
+const InfinityCore = require('./InfinityCore');
+const DefenseMatrix = require('./DefenseMatrix');
+const InfinitySensors = require('./InfinitySensors');
+const PentagonHook = require('./PentagonHook');
+const SovereignKeyHandler = require('./SovereignKeyHandler');
+const VoiceLink = require('./VoiceLink');
+
+class InfinityEventHandler {
+  constructor() {
+    this.isListening = false;
+  }
+
+  init() {
+    if (this.isListening) return;
+    this.isListening = true;
+
+    console.log("📡 [InfinityEventHandler] Listening for Infinity Core events...");
+
+    // Sensor triggers
+    EventBus.on('sensor:trigger', (data) => {
+      console.log(`🔍 [InfinityEventHandler] Sensor event detected: ${data.type}`);
+      InfinitySensors.handleEvent(data);
+    });
+
+    // Defense alerts
+    EventBus.on('defense:alert', (alert) => {
+      console.log(`🛡️ [InfinityEventHandler] Defense alert: ${alert.level}`);
+      DefenseMatrix.activate(alert);
+    });
+
+    // Override commands
+    EventBus.on('infinity:override', (payload) => {
+      console.log("⚡ [InfinityEventHandler] Override request received.");
+      InfinityCore.executeOverride(payload);
+    });
+
+    // Pentagon / National defense hooks
+    EventBus.on('pentagon:signal', (data) => {
+      console.log("🏛️ [InfinityEventHandler] Pentagon signal received.");
+      PentagonHook.processSignal(data);
+    });
+
+    // Sovereign control validation
+    EventBus.on('sovereign:check', (voiceData) => {
+      console.log("🔑 [InfinityEventHandler] Sovereign control verification request.");
+      SovereignKeyHandler.verify(voiceData);
+    });
+
+    // Voice command execution
+    EventBus.on('voice:command', (command) => {
+      console.log(`🎤 [InfinityEventHandler] Voice command received: ${command}`);
+      VoiceLink.processCommand(command);
+    });
+
+    console.log("✅ [InfinityEventHandler] Active and ready.");
+  }
+}
+
+module.exports = new InfinityEventHandler();

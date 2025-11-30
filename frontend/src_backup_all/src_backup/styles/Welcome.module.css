@@ -1,0 +1,6 @@
+.container { text-align:center; margin-top:60px; }
+.logo { width:300px; animation:spin 8s linear infinite; }
+.text { color:gold; font-size:2rem; margin-top:20px; font-family:'Segoe UI',sans-serif; }
+.audioBtn { margin-top:12px; padding:8px 12px; border:none; border-radius:10px; background:#ffd700; color:#000; font-weight:800; }
+@keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+

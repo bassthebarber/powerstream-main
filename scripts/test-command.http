@@ -1,0 +1,17 @@
+### Health
+POST http://localhost:5001/api/command
+Content-Type: application/json
+
+{"command":"system health"}
+
+### Prepare logs and snapshots
+POST http://localhost:5001/api/command
+Content-Type: application/json
+
+{"command":"prepare logs and snapshots"}
+
+### Save snapshot
+POST http://localhost:5001/api/command
+Content-Type: application/json
+
+{"command":"save snapshot as launch_ready note=preflight"}

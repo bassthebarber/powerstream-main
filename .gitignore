@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archives (don't commit large archives)
+*.tar.gz
+*.tgz
+*.zip
+
+# Temporary files
+tmp/
+temp/
+
+# OneDrive placeholder files (not synced locally)
+pages/

@@ -1,0 +1,25 @@
+/* frontend/src/cybering/cyber.css */
+
+.cybering-auto-patch,
+.cyber-defense-grid,
+.cyber-wall,
+.threat-scanner,
+.use-cybering-ai,
+.use-cyber-shield {
+  font-family: 'Courier New', monospace;
+  background: #0d0d0d;
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px #00ffcc;
+  animation: cyberPulse 2s infinite;
+}
+
+@keyframes cyberPulse {
+  0% { box-shadow: 0 0 5px #00ffcc; }
+  50% { box-shadow: 0 0 15px #00ffcc; }
+  100% { box-shadow: 0 0 5px #00ffcc; }
+}
+

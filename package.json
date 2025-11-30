@@ -1,0 +1,18 @@
+{
+  "name": "powerstream-main",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "format": "prettier -w .",
+    "fix:imports": "eslint --ext .js,.jsx src --fix",
+    "fix:paths": "node scripts/fixPaths.js",
+    "powerfix": "node scripts/powerfix.mjs",
+    "db:push": "supabase db push",
+    "db:diff": "supabase db diff",
+    "db:reset": "supabase db reset",
+    "doctor": "node -e \"console.log('🩺 Running PowerStream Doctor Check...')\""
+  }
+}

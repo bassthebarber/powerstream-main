@@ -1,0 +1,70 @@
+.form {
+  margin-bottom: 20px;
+  background: #111;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: white;
+}
+
+.input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+.button {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:disabled {
+  background: #666;
+}
+
+.dashboard {
+  background: #000;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: #111;
+  padding: 20px;
+  border-radius: 6px;
+  text-align: center;
+  color: white;
+}
+
+.modal a {
+  color: #4CAF50;
+  display: block;
+  margin: 10px 0;
+}
+

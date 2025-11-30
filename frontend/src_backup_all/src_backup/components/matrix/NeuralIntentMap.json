@@ -1,0 +1,19 @@
+{
+  "build tv station": "stationBuilder.init()",
+  "deploy ai": "copilot.activateAutopilot()",
+  "start override": "triggerOverrideProtocol()",
+  "scan threats": "DefenseGrid.scanAll()",
+  "launch powerfeed": "Router.push('/feed')",
+  "launch powerline": "Router.push('/line')",
+  "launch powergram": "Router.push('/gram')",
+  "launch powerreel": "Router.push('/reel')",
+  "launch tv": "Router.push('/network')",
+  "reboot system": "SystemRecovery.rebootNow()",
+  "alert president": "triggerPresidentialAlert()",
+  "shutdown system": "FailsafeSwitch.shutdown()",
+  "reset layout": "AutoLayout.resetGrid()",
+  "report breach": "DefenseHUD.logBreachAttempt()",
+  "run diagnostics": "PrimeDiagnostics.run()",
+  "update interface": "CopilotUI.refreshAll()"
+}
+

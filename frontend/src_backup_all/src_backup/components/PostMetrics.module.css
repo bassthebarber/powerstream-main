@@ -1,0 +1,22 @@
+/* src/components/PostMetrics.module.css */
+.post-metrics {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  background: #1a1a1a;
+  color: gold;
+  font-weight: bold;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.post-metrics span {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.post-metrics span:hover {
+  transform: scale(1.1);
+  color: white;
+}
+

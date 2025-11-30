@@ -1,0 +1,48 @@
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  padding: 0 1rem;
+}
+
+.home-card {
+  background: #000; /* black background */
+  border: 2px solid #ffd700; /* gold border */
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  color: #ffd700; /* gold text */
+  text-decoration: none; /* remove underline from <a> */
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.home-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+
+.home-card-logo {
+  max-width: 90px;
+  max-height: 90px;
+  margin: 0 auto 0.8rem;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+}
+
+.home-card h3 {
+  font-size: 1.1rem;
+  margin: 0.3rem 0;
+  color: #ffd700;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.home-card p {
+  font-size: 0.9rem;
+  color: #ccc; /* softer silver text for blurbs */
+  margin: 0;
+}
+

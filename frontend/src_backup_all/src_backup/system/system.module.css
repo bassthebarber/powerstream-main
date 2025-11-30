@@ -1,0 +1,40 @@
+.panel {
+  background: #111;
+  color: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.buttonPrimary {
+  background: #4caf50;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.buttonDanger {
+  background: #ff4d4d;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.online {
+  color: #0f0;
+}
+
+.offline {
+  color: #f00;
+}
+

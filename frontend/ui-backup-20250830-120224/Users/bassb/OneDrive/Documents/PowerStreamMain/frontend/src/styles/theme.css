@@ -1,0 +1,30 @@
+﻿:root{
+  --bg:#0b0b0b;--panel:#101010;--gold:#f3b24d;--line:#c08b35;--text:#f6f1e8;--muted:#cbb79a3a;
+  --radius:14px;--pad:14px;--gap:14px;--ring:0 0 0 1.5px var(--gold) inset,0 0 0 2px #000;
+}
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{margin:0 0 8px}
+.page{max-width:1100px;margin:0 auto;padding:22px}
+.nav{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:linear-gradient(180deg,#0b0b0bf2,#0b0b0bea);backdrop-filter:saturate(120%) blur(6px);z-index:50;}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700}
+.logo{width:28px;height:28px;object-fit:contain}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius);
+  border:1.5px solid var(--gold);background:transparent;color:var(--text);box-shadow:var(--ring)}
+.btn:active{transform:translateY(1px)}
+.card{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:var(--pad)}
+.footer{opacity:.7;text-align:center;padding:24px 16px;border-top:1px solid var(--line);margin-top:32px}
+.story-rail{display:flex;gap:12px;overflow:auto;padding:10px 0 2px;margin-bottom:14px}
+.story{width:120px;height:180px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(#1a1a1a,#0e0e0e);display:grid;place-items:center}
+.input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0c0c0c;color:var(--text)}
+.post{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;background:#0e0e0e}
+.spin{animation:spin 6s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.watermark{position:fixed;right:12px;bottom:12px;opacity:.6;width:44px;height:44px;object-fit:contain;pointer-events:none}
+.section-title{display:flex;align-items:center;gap:10px;margin-top:26px;margin-bottom:10px}
+.pillrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}

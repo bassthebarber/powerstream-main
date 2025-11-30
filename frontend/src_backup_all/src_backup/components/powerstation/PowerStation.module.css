@@ -1,0 +1,19 @@
+.power-feed-scene {
+  background-color: #000;
+  color: gold;
+  padding: 20px;
+}
+
+.control-panel button {
+  background-color: gold;
+  color: black;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.render-view, .ai-engine, .tv-scene {
+  padding: 20px;
+  border: 2px solid gold;
+  margin-bottom: 10px;
+}
+
