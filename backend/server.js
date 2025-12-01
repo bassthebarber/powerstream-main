@@ -1,11 +1,14 @@
 // backend/server.js
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import http from "http";
 import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import "colors";
+
+// Load .env.local (same as Recording Studio)
+dotenv.config({ path: ".env.local" });
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT || 5001);
@@ -97,6 +100,11 @@ const mountOptional = async (mountPath, modulePath) => {
   }
 };
 
+// Retry configuration
+const MAX_RETRIES = 10;
+const RETRY_INTERVAL = 5000; // 5 seconds
+let retryCount = 0;
+
 const connectDB = async () => {
   const uri = buildMongoUri();
   if (!uri) {
@@ -105,14 +113,43 @@ const connectDB = async () => {
   }
   try {
     console.log("🟡 MongoDB: connecting…");
-    await mongoose.connect(uri, { maxPoolSize: 10 });
+    await mongoose.connect(uri, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
     console.log("🟢 MongoDB: connected");
+    retryCount = 0; // Reset on success
   } catch (e) {
-    console.error("❌ MongoDB connection error:", e?.message || e);
+    retryCount++;
+    console.error(`❌ MongoDB connection error (attempt ${retryCount}/${MAX_RETRIES}):`, e?.message || e);
     if (e?.reason?.codeName) console.error("   codeName:", e.reason.codeName);
     if (e?.code) console.error("   code:", e.code);
+
+    if (retryCount < MAX_RETRIES) {
+      console.log(`🔄 Retrying in ${RETRY_INTERVAL / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+      return connectDB(); // Recursive retry
+    } else {
+      console.error("❌ Max retries reached. Server will run without DB.");
+    }
   }
 };
+
+// Handle disconnection - auto reconnect
+mongoose.connection.on("disconnected", () => {
+  console.log("🔄 MongoDB disconnected. Attempting reconnection...");
+  retryCount = 0;
+  connectDB();
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("❌ MongoDB connection error:", err.message);
+});
+
+mongoose.connection.on("reconnected", () => {
+  console.log("🟢 MongoDB reconnected");
+});
 
 const initRedisIfAvailable = async () => {
   if (process.env.USE_REDIS !== "true") {
@@ -142,6 +179,29 @@ const attachStudioSocket = async (server) => {
     if (setupStudioSocket) setupStudioSocket(server);
   } catch (e) {
     console.warn("⚠️ Studio socket init skipped:", e?.message);
+  }
+};
+
+const attachTGTSocket = async (server) => {
+  try {
+    // Get existing socket.io instance (should be created by attachStudioSocket or elsewhere)
+    let io = app.get("io");
+    if (!io) {
+      // If no io exists, create one (fallback)
+      const { Server } = await import("socket.io");
+      io = new Server(server, {
+        cors: { origin: "*", methods: ["GET", "POST"] },
+      });
+      app.set("io", io);
+      console.log("✅ Created Socket.IO instance for TGT");
+    }
+    const tgtMod = await import("./sockets/tgtSocket.js");
+    if (tgtMod.initTGTSocket) {
+      tgtMod.initTGTSocket(io);
+      console.log("✅ TGT Socket namespace initialized");
+    }
+  } catch (e) {
+    console.warn("⚠️ TGT socket init skipped:", e?.message);
   }
 };
 
@@ -193,6 +253,38 @@ const mountRoutesCompat = async () => {
   await mountOptional("/api/jobs", "./routes/jobRoutes.js");
   await mountOptional("/api/stations", "./routes/stationRoutes.js");
   await mountOptional("/api/copilot", "./routes/copilotRoutes.js");
+  await mountOptional("/api/aicoach", "./routes/aiCoachRoutes.js");
+  await mountOptional("/api/aistudio", "./routes/aiStudioProRoutes.js");
+  
+  // PowerStream Master App Routes
+  await mountOptional("/api/powerfeed", "./routes/powerFeedRoutes.js");
+  await mountOptional("/api/powergram", "./routes/powerGramRoutes.js");
+  await mountOptional("/api/powerreel", "./routes/powerReelRoutes.js");
+  await mountOptional("/api/powerline", "./routes/powerLineRoutes.js");
+  await mountOptional("/api/tv-stations", "./routes/tvStationRoutes.js");
+  await mountOptional("/api/ps-tv", "./routes/powerStreamTVRoutes.js");
+  await mountOptional("/api/chat", "./routes/chatRoutes.js");
+  await mountOptional("/api/tgt", "./routes/tgtRoutes.js");
+  await mountOptional("/api/seed", "./routes/seedRoutes.js");
+  
+  // Auto-seed data on startup (optional - can be disabled)
+  if (process.env.AUTO_SEED_DATA === "true") {
+    try {
+      const { seedSPSStations } = await import("./seeders/spsStationSeeder.js");
+      const { seedTGTContestants } = await import("./seeders/tgtContestantSeeder.js");
+      const { seedFilms } = await import("./seeders/filmSeeder.js");
+      const { seedWorldwideStations } = await import("./seeders/worldwideStationSeeder.js");
+      
+      await seedSPSStations();
+      await seedTGTContestants();
+      await seedFilms();
+      await seedWorldwideStations();
+      
+      console.log("✅ Auto-seeded all data (SPS stations, TGT contestants, films, worldwide stations)");
+    } catch (err) {
+      console.warn("⚠️ Auto-seed failed:", err.message);
+    }
+  }
 };
 
 // 404 + error handlers must be registered after routes
@@ -219,6 +311,7 @@ const startServer = async () => {
 
   const server = http.createServer(app);
   await attachStudioSocket(server);
+  await attachTGTSocket(server);
 
   server.listen(PORT, HOST, () => {
     console.log(`🚀 PowerStream API listening at http://${HOST}:${PORT}`);

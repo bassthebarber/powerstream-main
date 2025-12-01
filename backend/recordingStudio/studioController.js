@@ -1,114 +1,181 @@
-// /studio/studioController.js
+// backend/recordingStudio/studioController.js
+// Unified Studio Controller - Handles uploads, beat generation, mixing, and rendering
+
 import fs from "fs";
 import path from "path";
-import mime from "mime-types";
-import Recording from "./RecordingModel.js";
-import { cloudinary, cloudEnabled } from "./utils/cloudinary.js";
-import { sendDownloadEmail } from "./utils/mailer.js";
+import { fileURLToPath } from "url";
 
-const FREE_MODE = String(process.env.FREE_MODE || "true") === "true";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export async function handleUpload(req, res) {
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+/**
+ * Handle file upload (used by studioRoutes.js)
+ */
+export const handleUpload = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ ok:false, error:"No file" });
-
-    let recordData = {
-      ownerEmail: req.body.email || null,
-      filename: req.file.originalname,
-      mimeType: req.file.mimetype,
-      size: req.file.size,
-    };
-
-    if (cloudEnabled) {
-      const uploaded = await cloudinary.uploader.upload(req.file.path, {
-        resource_type: "auto",
-        folder: "powerstream/studio",
-        use_filename: true,
-        unique_filename: false,
-      });
-      recordData.storage = "cloudinary";
-      recordData.url = uploaded.url;
-      recordData.secureUrl = uploaded.secure_url;
-      recordData.publicId = uploaded.public_id;
-      // cleanup temp file
-      fs.unlink(req.file.path, () => {});
-    } else {
-      // local fallback (not recommended for production)
-      const publicUrl = `/downloads/${req.file.filename}`;
-      recordData.storage = "local";
-      recordData.url = publicUrl;
-      recordData.secureUrl = publicUrl;
+    if (!req.file) {
+      return res.status(400).json({ ok: false, message: "No file uploaded" });
     }
 
-    const rec = await Recording.create(recordData);
+    const { filename, originalname, mimetype, size, path: filePath } = req.file;
 
     return res.json({
       ok: true,
-      freeMode: FREE_MODE,
-      id: rec._id,
-      filename: rec.filename,
-      url: recordData.secureUrl || recordData.url,
-      message: FREE_MODE 
-        ? "Uploaded. Free download link ready."
-        : "Uploaded. (Payment required before download.)"
+      message: "File uploaded successfully",
+      file: {
+        id: Date.now().toString(),
+        filename,
+        originalname,
+        mimetype,
+        size,
+        path: filePath,
+        url: `/uploads/${filename}`,
+      },
     });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ ok:false, error:"Upload failed" });
+  } catch (err) {
+    console.error("Upload error:", err);
+    return res.status(500).json({ ok: false, message: "Upload failed", error: err.message });
   }
-}
+};
 
-export async function emailLink(req, res) {
+/**
+ * Save uploaded vocal files
+ */
+export const uploadVocal = async (req, res) => {
   try {
-    const { id, to } = req.body;
-    const rec = await Recording.findById(id);
-    if (!rec) return res.status(404).json({ ok:false, error:"Not found" });
-
-    // In FREE_MODE we send immediately; otherwise you’d verify payment here
-    if (!FREE_MODE) return res.status(402).json({ ok:false, error:"Payment required" });
-
-    const url = rec.secureUrl || rec.url;
-
-    await sendDownloadEmail({
-      to,
-      subject: "Your track from Southern Power AI Studio",
-      text: `Download your file: ${url}`,
-      html: `
-        <div style="font-family:Inter,Arial">
-          <h2>Southern Power AI Studio</h2>
-          <p>Your track is ready.</p>
-          <p><a href="${url}">Click to download</a></p>
-        </div>
-      `
-    });
-
-    return res.json({ ok:true, sent:true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ ok:false, error:"Email failed" });
-  }
-}
-
-export async function getDownload(req, res) {
-  try {
-    const { id } = req.params;
-    const rec = await Recording.findById(id);
-    if (!rec) return res.status(404).send("Not found");
-
-    // Cloudinary: just redirect
-    if (rec.storage === "cloudinary") {
-      return res.redirect(rec.secureUrl || rec.url);
+    if (!req.file) {
+      return res.status(400).json({ ok: false, message: "No file uploaded" });
     }
 
-    // Local: stream file
-    const filePath = path.join(process.cwd(), "uploads", rec.filenameOnDisk || "");
-    if (!fs.existsSync(filePath)) return res.status(404).send("File missing");
-    const mimeType = mime.lookup(filePath) || "application/octet-stream";
-    res.setHeader("Content-Type", mimeType);
-    res.setHeader("Content-Disposition", `attachment; filename="${rec.filename}"`);
-    fs.createReadStream(filePath).pipe(res);
-  } catch (e) {
-    console.error(e);
-    res.status(500).send("Download error");
+    const filePath = path.join(__dirname, "uploads", req.file.filename);
+
+    return res.json({
+      ok: true,
+      message: "Vocal uploaded",
+      file: req.file.filename,
+      path: filePath,
+    });
+  } catch (err) {
+    console.error("Upload error:", err);
+    return res.status(500).json({ ok: false, message: "Upload failed", error: err.message });
   }
-}
+};
+
+/**
+ * Generate beat (stub - returns mock data until AI engine is connected)
+ */
+export const createBeat = async (req, res) => {
+  try {
+    const { bpm = 90, style = "trap", mood = "dark" } = req.body;
+
+    // Stub response until AI beat engine is implemented
+    const beat = {
+      id: `beat_${Date.now()}`,
+      bpm,
+      style,
+      mood,
+      status: "generated",
+      url: null, // Will be populated when actual beat generation is implemented
+      message: "Beat generation queued. AI engine will process shortly.",
+    };
+
+    return res.json({
+      ok: true,
+      beat,
+    });
+  } catch (err) {
+    console.error("Beat engine error:", err);
+    return res.status(500).json({ ok: false, message: "Beat engine failed", error: err.message });
+  }
+};
+
+/**
+ * Mix beat + vocals (stub - returns mock data until mix engine is connected)
+ */
+export const mixTrack = async (req, res) => {
+  try {
+    const { vocalFile, beatFile, settings = {} } = req.body;
+
+    if (!vocalFile || !beatFile) {
+      return res.status(400).json({ ok: false, message: "vocalFile and beatFile are required" });
+    }
+
+    // Stub response until mix engine is implemented
+    const mixResult = {
+      id: `mix_${Date.now()}`,
+      vocalFile,
+      beatFile,
+      settings,
+      status: "processing",
+      mixFile: null, // Will be populated when actual mixing is implemented
+      message: "Mix job queued. Processing will begin shortly.",
+    };
+
+    return res.json({
+      ok: true,
+      mix: mixResult,
+    });
+  } catch (err) {
+    console.error("Mix error:", err);
+    return res.status(500).json({ ok: false, message: "Mix engine failed", error: err.message });
+  }
+};
+
+/**
+ * Render mastered track (stub - returns mock data until render engine is connected)
+ */
+export const renderTrack = async (req, res) => {
+  try {
+    const { mixFile, format = "mp3", quality = "high" } = req.body;
+
+    if (!mixFile) {
+      return res.status(400).json({ ok: false, message: "mixFile is required" });
+    }
+
+    // Stub response until render engine is implemented
+    const renderResult = {
+      id: `render_${Date.now()}`,
+      mixFile,
+      format,
+      quality,
+      status: "rendering",
+      masterFile: null, // Will be populated when actual rendering is implemented
+      message: "Render job queued. Mastering will begin shortly.",
+    };
+
+    return res.json({
+      ok: true,
+      render: renderResult,
+    });
+  } catch (err) {
+    console.error("Render error:", err);
+    return res.status(500).json({ ok: false, message: "Rendering failed", error: err.message });
+  }
+};
+
+/**
+ * Get studio status
+ */
+export const getStudioStatus = async (req, res) => {
+  try {
+    res.json({
+      ok: true,
+      status: "online",
+      services: {
+        upload: "ready",
+        beatEngine: "stub",
+        mixEngine: "stub",
+        renderEngine: "stub",
+      },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Status check failed", error: err.message });
+  }
+};

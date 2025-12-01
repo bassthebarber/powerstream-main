@@ -1,28 +1,22 @@
-const { MongoClient } = require("mongodb");
+// testMongo.js
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const uri =
-  "mongodb+srv://poweruser:Power1234@cluster1.qffsjjz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1";
+dotenv.config({ path: ".env.local" });
 
-// Create a new MongoClient
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const uri = process.env.MONGO_URI;
 
-async function run() {
+async function main() {
   try {
-    // Connect the client to the server
-    await client.connect();
-
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "✅ Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+    console.log("Connecting to Mongo with:", uri?.replace(/:([^:@]+)@/, ":****@") || "NO URI SET");
+    await mongoose.connect(uri);
+    console.log("✅ Connected!");
+    await mongoose.disconnect();
+    console.log("Disconnected cleanly.");
+  } catch (err) {
+    console.error("❌ Failed:", err.message);
+    if (err.code) console.error("   Code:", err.code);
   }
 }
 
-run().catch(console.dir);
+main();

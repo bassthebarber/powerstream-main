@@ -22,6 +22,13 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
+    // ✅ Label / Tier affiliation
+    label: {
+      type: String,
+      enum: ["STANDARD", "NO_LIMIT_EAST_HOUSTON", "LABEL_ADMIN"],
+      default: "STANDARD",
+    },
+
     // ✅ Account control flags
     isVerified: { type: Boolean, default: false },
     status: {

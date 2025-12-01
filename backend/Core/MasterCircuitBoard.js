@@ -76,6 +76,10 @@ export async function registerServices(app) {
   // ✅ fixed typo previously (copotilot → copilot)
   await mount(app, "/api/copilot",        "../routes/copilotRoutes.js");
 
+  // --- AI Coach (Performance Feedback) ---
+  await mount(app, "/api/aicoach",        "../routes/aiCoachRoutes.js");
+  await mount(app, "/api/aistudio",   "../routes/aiStudioProRoutes.js");
+
   console.log("✅ Master Circuit Board: done.");
   return true;
 }

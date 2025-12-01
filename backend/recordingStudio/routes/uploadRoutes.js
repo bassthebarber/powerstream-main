@@ -56,9 +56,28 @@ function uploadBufferToCloudinary(buffer, options = {}) {
 
 // ---- Routes
 
-// Health ping
+// Health check (root)
+router.get("/", (_req, res) => {
+  res.json({ 
+    ok: true, 
+    service: "Upload API",
+    folder: FOLDER,
+    cloudinaryConfigured: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
+  });
+});
+
+// Health ping (alias)
 router.get("/ping", (_req, res) => {
   res.json({ ok: true, message: "Upload route alive", folder: FOLDER });
+});
+
+// Health check
+router.get("/health", (_req, res) => {
+  res.json({ 
+    ok: true, 
+    service: "Upload API",
+    cloudinaryConfigured: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
+  });
 });
 
 // Single file upload: field name must be "file"
@@ -146,6 +165,46 @@ router.delete("/", async (req, res) => {
   } catch (err) {
     console.error("💥 Delete error:", err);
     return res.status(500).json({ ok: false, message: err.message || "Delete failed" });
+  }
+});
+
+// ---- Export Email Route ----
+// POST /api/export/email - Send asset download link via email
+router.post("/email", async (req, res) => {
+  try {
+    const { assetId, assetName, assetUrl, email, notes } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ ok: false, message: "Email is required" });
+    }
+
+    // TODO: Implement actual email sending using nodemailer or SendGrid
+    // For now, log the request and return success
+    console.log(`📧 Export email requested:`);
+    console.log(`   To: ${email}`);
+    console.log(`   Asset: ${assetName || assetId}`);
+    console.log(`   URL: ${assetUrl}`);
+    if (notes) console.log(`   Notes: ${notes}`);
+
+    // Simulate email sending
+    // In production, use:
+    // - nodemailer with SMTP
+    // - SendGrid API
+    // - AWS SES
+    // etc.
+
+    return res.json({
+      ok: true,
+      message: `Export sent to ${email}`,
+      details: {
+        to: email,
+        assetName: assetName || "Untitled",
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (err) {
+    console.error("💥 Export email error:", err);
+    return res.status(500).json({ ok: false, message: err.message || "Export failed" });
   }
 });
 

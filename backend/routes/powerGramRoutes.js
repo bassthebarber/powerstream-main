@@ -1,14 +1,17 @@
-import express from "express";
-import { getPosts, uploadPost } from "../controllers/powerGramController.js";
-import { verifyToken } from "../middleware/authMiddleware.js";
-import multer from "multer";
+// backend/routes/powerGramRoutes.js
+import { Router } from "express";
+import {
+  getGrams,
+  createGram,
+  likeGram,
+  commentOnGram,
+} from "../controllers/powerGramController.js";
 
 const router = Router();
-const upload = multer({ dest: "uploads/" });
 
-router.get("/", getPosts);
-
-// ✅ THIS LINE WAS BROKEN — now it's fixed 👇
-router.post("/upload", verifyToken, upload.single("image"), uploadPost);
+router.get("/", getGrams);
+router.post("/", createGram);
+router.post("/:id/like", likeGram);
+router.post("/:id/comment", commentOnGram);
 
 export default router;

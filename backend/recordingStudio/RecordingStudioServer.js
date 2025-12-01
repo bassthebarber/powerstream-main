@@ -30,25 +30,95 @@ try {
 
 // --- MongoDB Connection Logic
 mongoose.set("strictQuery", true);
-const STUDIO_MONGO_URI = process.env.STUDIO_MONGO_URI || process.env.MONGO_URI;
+
+// Build Mongo URI with proper URL encoding for credentials
+const buildMongoUri = () => {
+  // Priority: MONGO_URI > STUDIO_MONGO_URI > build from split creds
+  if (process.env.MONGO_URI) return process.env.MONGO_URI;
+  if (process.env.STUDIO_MONGO_URI) return process.env.STUDIO_MONGO_URI;
+
+  const username = process.env.MONGO_USER;
+  const password = process.env.MONGO_PASS;
+  const host = process.env.MONGO_HOST || "cluster0.ldmtan.mongodb.net";
+  const db = process.env.STUDIO_MONGO_DB || process.env.MONGO_DB || "powerstream";
+  const appName = process.env.MONGO_APP || "Cluster0";
+  const authSource = (process.env.MONGO_AUTH_SOURCE || "").trim();
+
+  if (!username || !password) return null;
+
+  // URL-encode username and password to handle special characters
+  const encUser = encodeURIComponent(username);
+  const encPass = encodeURIComponent(password);
+
+  const base = `mongodb+srv://${encUser}:${encPass}@${host}/${db}?retryWrites=true&w=majority&appName=${encodeURIComponent(appName)}`;
+  return authSource ? `${base}&authSource=${encodeURIComponent(authSource)}` : base;
+};
+
+const STUDIO_MONGO_URI = buildMongoUri();
 
 if (!STUDIO_MONGO_URI) {
-  console.error("❌ STUDIO_MONGO_URI missing from environment!");
+  console.error("❌ No MongoDB URI available! Set STUDIO_MONGO_URI, MONGO_URI, or MONGO_USER/MONGO_PASS in .env.local");
   process.exit(1);
 }
 
+// Debug: show masked URI structure to help diagnose auth issues
+const maskUri = (uri) => {
+  try {
+    const url = new URL(uri);
+    if (url.password) url.password = "****";
+    return url.toString();
+  } catch {
+    return uri.replace(/:([^:@]+)@/, ":****@");
+  }
+};
+console.log("🔗 Using MongoDB URI:", maskUri(STUDIO_MONGO_URI));
+
+// Retry configuration
+const MAX_RETRIES = 10;
+const RETRY_INTERVAL = 5000; // 5 seconds
+let retryCount = 0;
+
 async function connectMongo() {
   try {
+    console.log("🟡 MongoDB: connecting to Recording Studio database…");
     await mongoose.connect(STUDIO_MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
     });
     console.log("🧠 MongoDB connected for Recording Studio");
+    retryCount = 0; // Reset on successful connection
   } catch (err) {
-    console.error("❌ MongoDB Connection Error:", err.message);
-    process.exit(1);
+    retryCount++;
+    console.error(`❌ MongoDB Connection Error (attempt ${retryCount}/${MAX_RETRIES}):`, err.message);
+    if (err?.reason?.codeName) console.error("   codeName:", err.reason.codeName);
+    if (err?.code) console.error("   code:", err.code);
+
+    if (retryCount < MAX_RETRIES) {
+      console.log(`🔄 Retrying in ${RETRY_INTERVAL / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+      return connectMongo(); // Recursive retry
+    } else {
+      console.error("❌ Max retries reached. Exiting...");
+      process.exit(1);
+    }
   }
 }
+
+// Handle disconnection - auto reconnect
+mongoose.connection.on("disconnected", () => {
+  console.log("🔄 MongoDB disconnected. Attempting reconnection...");
+  retryCount = 0; // Reset for reconnection attempts
+  connectMongo();
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("❌ MongoDB connection error:", err.message);
+});
+
+mongoose.connection.on("reconnected", () => {
+  console.log("🟢 MongoDB reconnected (Recording Studio)");
+});
 
 // --- Import Routes
 import studioRoutes from "./routes/studioRoutes.js";
@@ -59,10 +129,21 @@ import beatRoutes from "./routes/beatRoutes.js";
 import collabRoutes from "./routes/collabRoutes.js";
 import sampleRoutes from "./routes/sampleRoutes.js";
 import mixingRoutes from "./routes/mixingRoutes.js";
+import mixRoutes from "./routes/mixRoutes.js"; // Real FFmpeg Mix & Master routes
 import royaltyRoutes from "./routes/royaltyRoutes.js";
 import winnerRoutes from "./routes/winnerRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
-import authRoutes from "../routes/authRoutes.js"; // shared auth
+import recordingsRoutes from "./routes/recordings.js";
+import authRoutes from "./routes/authRoutes.js"; // studio auth
+import deviceRoutes from "./routes/deviceRoutes.js";
+import libraryRoutes from "./routes/libraryRoutes.js"; // Library routes for unified access
+import beatLabRoutes from "./routes/beatLabRoutes.js"; // Beat Lab with AI generation
+import aiBeatRoutes from "./routes/aiBeatRoutes.js"; // AI Beat Engine routes
+import aiMasterRoutes from "./routes/aiMasterRoutes.js"; // AI Master Engine routes
+import beatStoreRoutes from "./routes/beatStoreRoutes.js"; // Beat Store routes
+import voiceRoutes from "./routes/voiceRoutes.js"; // AI Voice Clone routes
+import tvExportRoutes from "./routes/tvExportRoutes.js"; // TV Streaming Export routes
+import adminProducerRoutes from "./routes/adminProducerRoutes.js"; // Admin Producer Dashboard routes
 
 // --- Create App
 const app = express();
@@ -104,13 +185,35 @@ app.use("/api/intake", intakeRoutes);
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/beats", beatRoutes);
+app.use("/api/beat-drafts", beatRoutes); // Alias for library
 app.use("/api/collabs", collabRoutes);
 app.use("/api/samples", sampleRoutes);
 app.use("/api/mixing", mixingRoutes);
+app.use("/api/mix", mixRoutes); // New Mix & Master API
+app.use("/api/mixes", mixRoutes); // Alias for library
+app.use("/api/royalty", royaltyRoutes); // New path
 app.use("/api/royalties", royaltyRoutes);
 app.use("/api/winners", winnerRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/recordings", recordingsRoutes);
+app.use("/api/devices", deviceRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/export", uploadRoutes); // Reuse upload for exports
+app.use("/api/library", libraryRoutes); // Unified library access
+app.use("/api/beatlab", beatLabRoutes); // AI Beat Generation
+app.use("/api/aistudio/beat", beatLabRoutes); // Alias for frontend compatibility
+app.use("/api/studio/ai", aiBeatRoutes); // AI Beat Engine (new)
+app.use("/api/ai/beat", aiBeatRoutes); // Alias for AI beat generation
+app.use("/api/studio/ai/master", aiMasterRoutes); // AI Master Engine
+app.use("/api/master", aiMasterRoutes); // Alias for mastering
+app.use("/api/studio/beats", beatStoreRoutes); // Beat Store
+app.use("/api/beatstore", beatStoreRoutes); // Alias for Beat Store
+app.use("/api/studio/voice", voiceRoutes); // AI Voice Clone
+app.use("/api/voice", voiceRoutes); // Alias for Voice Clone
+app.use("/api/studio/tv", tvExportRoutes); // TV Streaming Export
+app.use("/api/tv", tvExportRoutes); // Alias for TV Export
+app.use("/api/studio/admin/producers", adminProducerRoutes); // Admin Producer Dashboard
+app.use("/api/admin/producers", adminProducerRoutes); // Alias for Admin Producers
 
 // --- 404 Handler
 app.use((req, res) => {
