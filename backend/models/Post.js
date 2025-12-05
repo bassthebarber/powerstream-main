@@ -1,3 +1,7 @@
+// backend/models/Post.js
+// DEPRECATED: Model moved to /src/domain/models/Post.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/Post.model.js
 import mongoose from "mongoose";
 
 const PostSchema = new mongoose.Schema(

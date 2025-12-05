@@ -1,4 +1,5 @@
 import express from "express";
+import { Router } from "express";
 import { handleAICommand } from "../controllers/aiController.js";
 
 const router = Router();

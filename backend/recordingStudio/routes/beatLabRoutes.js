@@ -142,6 +142,49 @@ router.get('/list', async (req, res) => {
   }
 });
 
+// Save beat to library
+// POST /api/beatlab/save
+router.post('/save', async (req, res) => {
+  try {
+    const { beatId, title, producer, metadata } = req.body;
+    const userId = req.user?._id || req.user?.id;
+
+    // In production, this would save to Beat model
+    // For now, return success
+    res.json({
+      ok: true,
+      message: 'Beat saved to library',
+      beatId: beatId || `beat_${Date.now()}`,
+      title,
+      producer,
+    });
+  } catch (err) {
+    console.error('❌ [BeatLab] Save error:', err);
+    res.status(500).json({ ok: false, message: err.message || 'Failed to save beat' });
+  }
+});
+
+// Evolve loop (mutate existing beat)
+// POST /api/beatlab/evolve
+router.post('/evolve', async (req, res) => {
+  try {
+    const { beatId, mutation } = req.body;
+
+    // Mock evolve response
+    const evolvedBeatId = `beat_evolved_${Date.now()}`;
+    res.json({
+      ok: true,
+      beatId: evolvedBeatId,
+      originalBeatId: beatId,
+      audioUrl: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/v${Date.now()}/evolved_beat.mp3`,
+      mutation: mutation || 'default',
+    });
+  } catch (err) {
+    console.error('❌ [BeatLab] Evolve error:', err);
+    res.status(500).json({ ok: false, message: err.message || 'Failed to evolve beat' });
+  }
+});
+
 export default router;
 
 

@@ -1,13 +1,28 @@
 // backend/routes/reelRoutes.js
-import { Router } from 'express';
-// import controllers if/when you have them, e.g.:
-// import { listReels, createReel } from '../controllers/reelController.js';
+import { Router } from "express";
+import {
+  getReels,
+  createReel,
+  likeReel,
+  getReelComments,
+  commentOnReel,
+} from "../controllers/reelController.js";
+import { authRequired } from "../middleware/requireAuth.js";
 
 const router = Router();
 
-router.get('/health', (req, res) => res.json({ ok: true, service: 'reels' }));
+// Health check
+router.get("/health", (req, res) => res.json({ ok: true, service: "reels" }));
 
-// router.get('/', listReels);
-// router.post('/', createReel);
+// Basic reels API (reuses powerReelController under the hood)
+router.get("/", getReels);
+router.post("/", authRequired, createReel);
+
+// Likes
+router.post("/:id/like", authRequired, likeReel);
+
+// Comments
+router.get("/:id/comments", authRequired, getReelComments);
+router.post("/:id/comments", authRequired, commentOnReel);
 
 export default router;

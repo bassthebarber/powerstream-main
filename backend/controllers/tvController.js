@@ -1,13 +1,11 @@
-// backend/tvDistribution/controllers/tvController.js
-const getTVContentFeed = require("../tvDistribution/TVContentFeed");
-const buildRokuManifest = require("../tvDistribution/RokuManifestBuilder");
-const buildFireConfig = require("../tvDistribution/FireTVConfig");
-const buildAppleFeed = require("../tvDistribution/AppleTVFeedFormatter");
+// backend/controllers/tvController.js
+import getTVContentFeed from "../tvDistribution/TVContentFeed.js";
+import buildRokuManifest from "../tvDistribution/RokuManifestBuilder.js";
+import buildFireConfig from "../tvDistribution/FireTVConfig.js";
+import buildAppleFeed from "../tvDistribution/AppleTVFeedFormatter.js";
+import sampleContent from "../data/sampleTVContent.json" assert { type: "json" };
 
-// Simulate content pull from DB
-const sampleContent = require("../data/sampleTVContent.json");
-
-module.exports = {
+export default {
   rokuFeed: (req, res) => {
     const feed = buildRokuManifest(sampleContent);
     res.json(feed);

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const CommentSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
+    authorName: { type: String, default: "Guest" },
     text: { type: String, required: true, trim: true },
   },
   { _id: false, timestamps: { createdAt: true, updatedAt: false } }
@@ -26,5 +27,6 @@ GramPostSchema.index({ createdAt: -1 });
 GramPostSchema.index({ userId: 1, createdAt: -1 });
 
 export default mongoose.models.GramPost || mongoose.model("GramPost", GramPostSchema);
+
 
 

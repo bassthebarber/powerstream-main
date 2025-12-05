@@ -5,8 +5,12 @@ import express from 'express';
 import Recording from '../models/Recording.js';
 import Beat from '../models/Beat.js';
 import Mixdown from '../models/Mixdown.js';
+import { requireAuth } from '../middleware/requireAuth.js';
 
 const router = express.Router();
+
+// All routes require authentication
+router.use(requireAuth);
 
 // ==========================================
 // RECORDINGS

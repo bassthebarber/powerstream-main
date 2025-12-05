@@ -1,10 +1,14 @@
-// frontend/src/components/ai/core/studio/StudioBridge.jsx
+// frontend/studio-app/src/components/ai/core/studio/StudioBridge.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import InfinityStudioHUD from "./InfinityStudioHUD";
 import SonicFusionPanel from "./SonicFusionPanel";
 import "./studio.css";
+import { STUDIO_API_BASE } from "../../../../config/api.js";
+
+// Use centralized API config
+const STUDIO_API = STUDIO_API_BASE;
 
 const StudioBridge = () => {
   const [status, setStatus] = useState("idle");
@@ -13,7 +17,7 @@ const StudioBridge = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5100"); // backend studio port
+    const newSocket = io(STUDIO_API);
     setSocket(newSocket);
 
     newSocket.on("studioProgress", (data) => {
@@ -31,7 +35,7 @@ const StudioBridge = () => {
     setStatus("uploading");
 
     try {
-      const response = await axios.post("http://localhost:5100/api/studio/upload", formData, {
+      const response = await axios.post(`${STUDIO_API}/api/studio/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setCurrentTrack(response.data.filename);
@@ -44,12 +48,12 @@ const StudioBridge = () => {
 
   const runMix = async () => {
     setStatus("processing");
-    await axios.post("http://localhost:5100/api/studio/mix", { track: currentTrack });
+    await axios.post(`${STUDIO_API}/api/studio/mix`, { track: currentTrack });
   };
 
   const runMaster = async () => {
     setStatus("processing");
-    await axios.post("http://localhost:5100/api/studio/master", { track: currentTrack });
+    await axios.post(`${STUDIO_API}/api/studio/master`, { track: currentTrack });
   };
 
   return (

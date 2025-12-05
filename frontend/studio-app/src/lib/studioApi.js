@@ -763,6 +763,647 @@ export async function sendExportEmail(email, fileUrl, notes = "") {
 }
 
 // ==========================================
+// LIVE ROOM (Real-time recording sessions)
+// POWERSTREAM AI STUDIO – LIVE ROOM & ENGINEER CONTRACT MODE
+// ==========================================
+
+/**
+ * Create a new live room session
+ */
+export async function createLiveRoom(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/create`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: options.name,
+        engineerId: options.engineerId,
+        beatId: options.beatId,
+        beatUrl: options.beatUrl,
+        beatName: options.beatName,
+        description: options.description,
+        settings: options.settings,
+      }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to create live room");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("createLiveRoom error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Join a live room by room code
+ */
+export async function joinLiveRoom(roomCode) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/join`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ roomCode }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to join live room");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("joinLiveRoom error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get live room session details
+ */
+export async function getLiveRoom(sessionId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/${sessionId}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get live room");
+    return await res.json();
+  } catch (err) {
+    console.error("getLiveRoom error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get user's live room sessions
+ */
+export async function getLiveSessions(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams();
+    if (options.status) params.append("status", options.status);
+    if (options.limit) params.append("limit", options.limit);
+    if (options.page) params.append("page", options.page);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room?${params}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get live sessions");
+    return await res.json();
+  } catch (err) {
+    console.error("getLiveSessions error:", err);
+    return { sessions: [], pagination: {} };
+  }
+}
+
+/**
+ * Start recording in a live room
+ */
+export async function startLiveRecording(sessionId, trackType = "vocal", trackName = "") {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/record/start`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sessionId, trackType, trackName }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to start recording");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("startLiveRecording error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Stop recording and save track
+ */
+export async function stopLiveRecording(sessionId, trackId, finalUrl, metadata = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/record/stop`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        sessionId,
+        trackId,
+        finalUrl,
+        trackType: metadata.trackType,
+        trackName: metadata.trackName,
+        duration: metadata.duration,
+        fileSize: metadata.fileSize,
+        format: metadata.format,
+        notes: metadata.notes,
+      }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to save recording");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("stopLiveRecording error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Start a live room session
+ */
+export async function startLiveSession(sessionId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/${sessionId}/start`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to start session");
+    return await res.json();
+  } catch (err) {
+    console.error("startLiveSession error:", err);
+    throw err;
+  }
+}
+
+/**
+ * End a live room session
+ */
+export async function endLiveSession(sessionId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/${sessionId}/end`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to end session");
+    return await res.json();
+  } catch (err) {
+    console.error("endLiveSession error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Update live room settings (beat, BPM, etc.)
+ */
+export async function updateLiveRoomSettings(sessionId, updates) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/live-room/${sessionId}/settings`, {
+      method: "PATCH",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(updates),
+    });
+
+    if (!res.ok) throw new Error("Failed to update settings");
+    return await res.json();
+  } catch (err) {
+    console.error("updateLiveRoomSettings error:", err);
+    throw err;
+  }
+}
+
+// ==========================================
+// STUDIO JOBS (Paid services: mix, master, beat)
+// ==========================================
+
+/**
+ * Get job pricing for all types
+ */
+export async function getJobPricing() {
+  try {
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/pricing`);
+    if (!res.ok) throw new Error("Failed to get pricing");
+    return await res.json();
+  } catch (err) {
+    console.error("getJobPricing error:", err);
+    return { prices: {}, jobTypes: [] };
+  }
+}
+
+/**
+ * Get pricing breakdown for a specific job type
+ */
+export async function getJobPricingBreakdown(jobType, customPrice = null) {
+  try {
+    const params = new URLSearchParams();
+    if (customPrice) params.append("customPrice", customPrice);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/pricing/${jobType}?${params}`);
+    if (!res.ok) throw new Error("Failed to get pricing breakdown");
+    return await res.json();
+  } catch (err) {
+    console.error("getJobPricingBreakdown error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Create a new studio job
+ */
+export async function createStudioJob(jobData) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/create`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(jobData),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to create job");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("createStudioJob error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get user's jobs (as artist)
+ */
+export async function getMyJobs(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams();
+    if (options.status) params.append("status", options.status);
+    if (options.type) params.append("type", options.type);
+    if (options.limit) params.append("limit", options.limit);
+    if (options.page) params.append("page", options.page);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/my-jobs?${params}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get jobs");
+    return await res.json();
+  } catch (err) {
+    console.error("getMyJobs error:", err);
+    return { jobs: [], pagination: {} };
+  }
+}
+
+/**
+ * Get engineer's assigned jobs
+ */
+export async function getEngineerJobs(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams();
+    if (options.status) params.append("status", options.status);
+    if (options.type) params.append("type", options.type);
+    if (options.limit) params.append("limit", options.limit);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/engineer-jobs?${params}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get engineer jobs");
+    return await res.json();
+  } catch (err) {
+    console.error("getEngineerJobs error:", err);
+    return { jobs: [], pagination: {} };
+  }
+}
+
+/**
+ * Get open jobs (for engineers to pick up)
+ */
+export async function getOpenJobs(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams();
+    if (options.type) params.append("type", options.type);
+    if (options.limit) params.append("limit", options.limit);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/open?${params}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get open jobs");
+    return await res.json();
+  } catch (err) {
+    console.error("getOpenJobs error:", err);
+    return { jobs: [], pagination: {} };
+  }
+}
+
+/**
+ * Get job details
+ */
+export async function getJob(jobId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Job not found");
+    return await res.json();
+  } catch (err) {
+    console.error("getJob error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Assign engineer to a job (self-assign or by artist/admin)
+ */
+export async function assignEngineerToJob(jobId, engineerId = null) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}/assign`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ engineerId }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to assign engineer");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("assignEngineerToJob error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Submit deliverable for a job (engineer only)
+ */
+export async function submitJobDeliverable(jobId, deliverable) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}/deliver`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(deliverable),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to submit deliverable");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("submitJobDeliverable error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Approve a job (artist only)
+ */
+export async function approveJob(jobId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}/approve`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to approve job");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("approveJob error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Complete a job and trigger payment
+ */
+export async function completeJob(jobId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}/complete`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to complete job");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("completeJob error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Update job status (admin only)
+ */
+export async function updateJobStatus(jobId, status, adminNotes = "") {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/jobs/${jobId}/status`, {
+      method: "PATCH",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status, adminNotes }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update status");
+    return await res.json();
+  } catch (err) {
+    console.error("updateJobStatus error:", err);
+    throw err;
+  }
+}
+
+// ==========================================
+// STUDIO CONTRACTS
+// ==========================================
+
+/**
+ * Generate a contract for a job
+ */
+export async function generateContract(jobId, options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts/generate`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ jobId, ...options }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to generate contract");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("generateContract error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get contract details
+ */
+export async function getContract(contractId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts/${contractId}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Contract not found");
+    return await res.json();
+  } catch (err) {
+    console.error("getContract error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get full contract text
+ */
+export async function getContractText(contractId) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts/${contractId}/text`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get contract text");
+    return await res.json();
+  } catch (err) {
+    console.error("getContractText error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Sign a contract
+ */
+export async function signContract(contractId, signatureData = "") {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts/${contractId}/sign`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ signatureData }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Failed to sign contract");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("signContract error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Get user's contracts
+ */
+export async function getMyContracts(options = {}) {
+  try {
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams();
+    if (options.status) params.append("status", options.status);
+    if (options.role) params.append("role", options.role);
+    if (options.limit) params.append("limit", options.limit);
+    if (options.page) params.append("page", options.page);
+
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts?${params}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get contracts");
+    return await res.json();
+  } catch (err) {
+    console.error("getMyContracts error:", err);
+    return { contracts: [], pagination: {} };
+  }
+}
+
+/**
+ * Get pending contracts that need signature
+ */
+export async function getPendingContracts() {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${STUDIO_API_BASE}/api/studio/contracts/pending/list`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to get pending contracts");
+    return await res.json();
+  } catch (err) {
+    console.error("getPendingContracts error:", err);
+    return { pendingAsArtist: [], pendingAsEngineer: [] };
+  }
+}
+
+// ==========================================
 // GENERIC REQUEST HELPER
 // ==========================================
 
@@ -771,9 +1412,13 @@ export async function sendExportEmail(email, fileUrl, notes = "") {
  */
 export async function studioRequest(url, method = "GET", body = null) {
   try {
+    const token = localStorage.getItem("token");
     const options = {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
     };
     
     if (body && method !== "GET") {
@@ -789,18 +1434,22 @@ export async function studioRequest(url, method = "GET", body = null) {
 }
 
 export default {
+  // Studio Stats & Health
   getStudioStats,
   checkStudioHealth,
+  // Library
   getLibraryRecordings,
   getLibraryBeats,
   getLibraryMixes,
   listFiles,
+  // Mix & Master
   processMix,
   getMixStatus,
   masterTrack,
   quickMaster,
   getMasteringPresets,
   compareMaster,
+  // Beat Generation
   generateBeat,
   generateQuickBeat,
   generatePresetBeat,
@@ -812,12 +1461,47 @@ export default {
   logBeatPlay,
   saveBeat,
   getBeatById,
+  // Recordings
   uploadTake,
   saveRecording,
+  // AI Coach
   analyzeTake,
   getCoachPersonas,
+  // Royalty
   getRoyaltySplits,
   createRoyaltySplit,
+  // Export
   sendExportEmail,
+  // Live Room (NEW)
+  createLiveRoom,
+  joinLiveRoom,
+  getLiveRoom,
+  getLiveSessions,
+  startLiveRecording,
+  stopLiveRecording,
+  startLiveSession,
+  endLiveSession,
+  updateLiveRoomSettings,
+  // Studio Jobs (NEW)
+  getJobPricing,
+  getJobPricingBreakdown,
+  createStudioJob,
+  getMyJobs,
+  getEngineerJobs,
+  getOpenJobs,
+  getJob,
+  assignEngineerToJob,
+  submitJobDeliverable,
+  approveJob,
+  completeJob,
+  updateJobStatus,
+  // Contracts (NEW)
+  generateContract,
+  getContract,
+  getContractText,
+  signContract,
+  getMyContracts,
+  getPendingContracts,
+  // Generic
   studioRequest,
 };

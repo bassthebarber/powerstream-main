@@ -1,0 +1,93 @@
+# PowerStream Backend Dockerfile
+# Multi-stage build for production optimization
+
+# ============================================================
+# BASE STAGE
+# ============================================================
+FROM node:20-alpine AS base
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    ffmpeg
+
+# ============================================================
+# DEPENDENCIES STAGE
+# ============================================================
+FROM base AS dependencies
+
+# Copy package files
+COPY backend/package*.json ./
+
+# Install all dependencies
+RUN npm ci
+
+# ============================================================
+# DEVELOPMENT STAGE
+# ============================================================
+FROM base AS development
+
+WORKDIR /app
+
+# Copy dependencies from dependencies stage
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy application code
+COPY backend/ .
+
+# Expose ports
+EXPOSE 5001 1935 8000
+
+# Default command for development
+CMD ["npm", "run", "dev"]
+
+# ============================================================
+# PRODUCTION BUILD STAGE
+# ============================================================
+FROM base AS production-build
+
+WORKDIR /app
+
+# Copy package files
+COPY backend/package*.json ./
+
+# Install production dependencies only
+RUN npm ci --only=production
+
+# Copy application code
+COPY backend/ .
+
+# ============================================================
+# PRODUCTION STAGE
+# ============================================================
+FROM node:20-alpine AS production
+
+# Install runtime dependencies only
+RUN apk add --no-cache ffmpeg
+
+WORKDIR /app
+
+# Copy from production build
+COPY --from=production-build /app ./
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 && \
+    chown -R nodejs:nodejs /app
+
+USER nodejs
+
+# Expose ports
+EXPOSE 5001 1935 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:5001/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
+
+# Production command
+CMD ["node", "server.js"]
+

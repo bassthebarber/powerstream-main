@@ -1,4 +1,7 @@
 // backend/models/CoinTransaction.js
+// DEPRECATED: Model moved to /src/domain/models/CoinTransaction.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/CoinTransaction.model.js
 import mongoose from 'mongoose';
 
 const CoinTxSchema = new mongoose.Schema(

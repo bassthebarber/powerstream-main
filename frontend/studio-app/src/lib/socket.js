@@ -1,4 +1,6 @@
 import { io } from "socket.io-client";
+import { STUDIO_API_BASE } from "../config/api.js";
 
-const socket = io("http://localhost:5000");
-export default socket; // ✅ default export
+// Use centralized API config for socket connection
+const socket = io(STUDIO_API_BASE);
+export default socket;

@@ -1,9 +1,11 @@
 import express from 'express';
 import ArtistUser from '../models/ArtistUserModel.js';
 import jwt from 'jsonwebtoken';
+import env from '../../src/config/env.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'southernpowersecret';
+// Use centralized JWT_SECRET from env.js - no hardcoded fallbacks
+const JWT_SECRET = env.JWT_SECRET;
 
 // Register
 router.post('/register', async (req, res) => {

@@ -1,3 +1,7 @@
+// backend/models/Withdrawal.js
+// DEPRECATED: Model moved to /src/domain/models/WithdrawalRequest.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/WithdrawalRequest.model.js
 import mongoose from 'mongoose';
 
 const withdrawalSchema = new mongoose.Schema({

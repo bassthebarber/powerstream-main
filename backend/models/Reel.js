@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const CommentSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
+    authorName: { type: String, default: "Guest" },
     text: { type: String, required: true, trim: true },
   },
   { _id: false, timestamps: { createdAt: true, updatedAt: false } }
@@ -29,5 +30,6 @@ ReelSchema.index({ createdAt: -1 });
 ReelSchema.index({ userId: 1, createdAt: -1 });
 
 export default mongoose.models.Reel || mongoose.model("Reel", ReelSchema);
+
 
 

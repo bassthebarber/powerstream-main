@@ -1,0 +1,116 @@
+/* =====================================================
+   POWERHARMONY AI RECORDING STUDIO - SHARED STYLES
+   Hybrid: Futuristic AI + Professional DAW
+   Black background, gold/amber accents
+   ===================================================== */
+
+/* === CSS VARIABLES === */
+:root {
+  --studio-bg: #000;
+  --studio-panel: #0a0a0c;
+  --studio-panel-hover: #101014;
+  --studio-card: #0f0f12;
+  --studio-border: rgba(230, 184, 0, 0.15);
+  --studio-border-bright: rgba(230, 184, 0, 0.4);
+  --studio-text: #f4f4f7;
+  --studio-muted: #888;
+  --studio-gold: #e6b800;
+  --studio-gold-soft: #ffda5c;
+  --studio-gold-dim: #9a7b00;
+  --studio-green: #00c864;
+  --studio-red: #ff4455;
+  --studio-blue: #4488ff;
+  --studio-glow: 0 0 20px rgba(230, 184, 0, 0.3);
+  --studio-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --studio-radius: 14px;
+  --studio-radius-sm: 10px;
+}
+
+/* === PAGE CONTAINER === */
+.studio-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0c 0%, #000 50%, #050508 100%);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* === METERS === */
+.studio-meter {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.studio-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--studio-gold-dim), var(--studio-gold), var(--studio-gold-soft));
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.studio-meter-fill--animated {
+  animation: meter-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes meter-shimmer {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}
+
+/* === TRACK CARDS === */
+.studio-track-card {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--studio-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 16px;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.studio-track-card:hover {
+  border-color: var(--studio-border);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.studio-track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.studio-track-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--studio-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.studio-track-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.studio-track-meter {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.studio-track-meter-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--studio-gold-dim), var(--studio-gold));
+  border-radius: 4px;
+  transition: width 0.1s ease;
+}
+
+
+

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "./StudioProControls.css";
+import { API_BASE } from "../config/api.js";
 
 const GENRES = [
   { value: "RNB", label: "R&B" },
@@ -36,7 +37,8 @@ export default function StudioProControls({ sessionId, lastTranscript, lastScore
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const apiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
+  // Use centralized API config
+  const apiBase = API_BASE;
 
   async function callEndpoint(path, body) {
     setLoading(true);
@@ -421,6 +423,8 @@ export default function StudioProControls({ sessionId, lastTranscript, lastScore
     </div>
   );
 }
+
+
 
 
 

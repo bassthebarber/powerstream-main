@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
+import { STUDIO_API_BASE } from "../../config/api.js";
 
-const socket = io(import.meta.env.VITE_STUDIO_SERVER_URL || "http://localhost:5100");
+// Use centralized API config for socket connection
+const socket = io(STUDIO_API_BASE);
 
 const YoodlesAIProcessor = ({ onAIResponse }) => {
   const [input, setInput] = useState("");

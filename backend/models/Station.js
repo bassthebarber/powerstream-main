@@ -1,3 +1,7 @@
+// backend/models/Station.js
+// DEPRECATED: Model moved to /src/domain/models/Station.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/Station.model.js
 import mongoose from "mongoose";
 
 const StationSchema = new mongoose.Schema(

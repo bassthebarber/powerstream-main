@@ -2,52 +2,41 @@
 // PowerStream Main Frontend - App Root Component
 
 import React from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import PowerFeed from "./pages/PowerFeed.jsx";
+import FeedMenu from "./pages/FeedMenu.jsx";
 import PowerGram from "./pages/PowerGram.jsx";
 import PowerReel from "./pages/PowerReel.jsx";
 import PowerLine from "./pages/PowerLine.jsx";
 import TVStations from "./pages/TVStations.jsx";
+import TVGuide from "./pages/TVGuide.jsx";
+import ShowDetail from "./pages/ShowDetail.jsx";
 import SouthernPower from "./pages/SouthernPower.jsx";
 import WorldTV from "./pages/WorldTV.jsx";
 import PowerStreamTV from "./pages/PowerStreamTV.jsx";
 import StationDetail from "./pages/StationDetail.jsx";
 import FilmDetail from "./pages/FilmDetail.jsx";
-
-// Welcome to PowerStream - Main Hub
-const Home = () => {
-  React.useEffect(() => {
-    // Play welcome audio on first user interaction
-    const audio = new Audio('/audio/welcome.mp3');
-    const playOnce = () => {
-      audio.play().catch(() => {});
-      window.removeEventListener('click', playOnce);
-      window.removeEventListener('touchstart', playOnce);
-    };
-    window.addEventListener('click', playOnce, { once: true });
-    window.addEventListener('touchstart', playOnce, { once: true });
-  }, []);
-
-  return (
-    <div className="ps-page">
-      <div className="ps-welcome-header">
-        <img src="/logos/powerstream-logo.png" alt="PowerStream" className="ps-logo-spin" />
-        <h1>Welcome to PowerStream</h1>
-        <p className="ps-subtitle">Stream Audio • Video • Live TV • Chat • Community</p>
-      </div>
-      <div className="ps-grid">
-        <Link to="/powerfeed" className="ps-tile">📱 PowerFeed</Link>
-        <Link to="/powergram" className="ps-tile">📸 PowerGram</Link>
-        <Link to="/powerreel" className="ps-tile">🎬 PowerReel</Link>
-        <Link to="/powerline" className="ps-tile">💬 PowerLine</Link>
-        <Link to="/tv-stations" className="ps-tile">📺 TV Stations</Link>
-        <Link to="/southern-power" className="ps-tile">🌐 Southern Power Syndicate</Link>
-        <Link to="/world-tv" className="ps-tile">🌍 Worldwide TV</Link>
-        <Link to="/powerstream-tv" className="ps-tile">🎥 PowerStream TV</Link>
-      </div>
-    </div>
-  );
-};
+import Home from "./pages/Home.jsx";
+import Studio from "./pages/Studio.jsx";
+import AIBrain from "./pages/AIBrain.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Layout from "./components/Layout.jsx";
+import GlobalNav from "./components/GlobalNav.jsx";
+import MultistreamDashboard from "./pages/MultistreamDashboard.jsx";
+// PowerHarmony imports
+import {
+  PowerHarmonyMaster,
+  PowerHarmonyWrite,
+  PowerHarmonyLive,
+  PowerHarmonyVocal,
+  PowerHarmonyMix,
+  PowerHarmonyMastering,
+  PowerHarmonyRecord,
+} from "./pages/powerharmony";
+import "./styles/powerharmony.css";
 
 const NotFound = () => (
   <div className="ps-page">
@@ -57,62 +46,271 @@ const NotFound = () => (
   </div>
 );
 
-// Navigation component
-const Nav = () => {
-  const { pathname } = useLocation();
-  
-  const navItems = [
-    { path: "/", label: "🏠 Home" },
-    { path: "/powerfeed", label: "📱 Feed" },
-    { path: "/powergram", label: "📸 Gram" },
-    { path: "/powerreel", label: "🎬 Reel" },
-    { path: "/powerline", label: "💬 Line" },
-    { path: "/tv-stations", label: "📺 TV" },
-    { path: "/southern-power", label: "🌐 SPS" },
-    { path: "/powerstream-tv", label: "🎥 PS TV" },
-    { path: "/ps-tv", label: "🎥 PS TV" },
-  ];
-
-  return (
-    <nav className="ps-nav">
-      <div className="ps-nav-brand">
-        <Link to="/" className="ps-nav-logo">PowerStream</Link>
-      </div>
-      <div className="ps-nav-links">
-        {navItems.map(({ path, label }) => (
-          <Link
-            key={path}
-            to={path}
-            className={`ps-nav-link ${pathname === path ? "ps-nav-link--active" : ""}`}
-          >
-            {label}
-          </Link>
-        ))}
-      </div>
-    </nav>
-  );
-};
-
 // Main App component with routes
 export default function App() {
   return (
     <div className="ps-app">
-      <Nav />
+      <GlobalNav />
       <main className="ps-main">
         <Routes>
+          {/* Public */}
           <Route path="/" element={<Home />} />
-          <Route path="/powerfeed" element={<PowerFeed />} />
-          <Route path="/powergram" element={<PowerGram />} />
-          <Route path="/powerreel" element={<PowerReel />} />
-          <Route path="/powerline" element={<PowerLine />} />
-          <Route path="/tv-stations" element={<TVStations />} />
-          <Route path="/tv-stations/:slug" element={<StationDetail />} />
-          <Route path="/southern-power" element={<SouthernPower />} />
-          <Route path="/world-tv" element={<WorldTV />} />
-          <Route path="/powerstream-tv" element={<PowerStreamTV />} />
-          <Route path="/ps-tv" element={<PowerStreamTV />} />
-          <Route path="/powerstream-tv/title/:id" element={<FilmDetail />} />
-          <Route path="/ps-tv/title/:id" element={<FilmDetail />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<RegisterPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          {/* Everything below requires login once */}
+          <Route
+            path="/powerfeed"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerFeed />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/feed/menu"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <FeedMenu />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powergram"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerGram />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerreel"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerReel />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerline"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerLine />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tv-stations"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <TVStations />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tv-stations/:slug"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <StationDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tv-guide"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <TVGuide />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shows/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ShowDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/southern-power"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SouthernPower />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/world-tv"
+            element={
+              <ProtectedRoute>
+                  <Layout>
+                    <WorldTV />
+                  </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerstream-tv"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerStreamTV />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ps-tv"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PowerStreamTV />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerstream-tv/title/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <FilmDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ps-tv/title/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <FilmDetail />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/studio"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Studio />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          {/* PowerHarmony Routes */}
+          <Route
+            path="/powerharmony/master"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyMaster />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/write"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyWrite />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/live"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyLive />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/vocal"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyVocal />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/mix"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyMix />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/mastering"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyMastering />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/record"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyRecord />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/powerharmony/writing"
+            element={
+              <ProtectedRoute>
+                <PowerHarmonyWrite />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-brain"
+            element={
+              <ProtectedRoute>
+                <AIBrain />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/multistream"
+            element={
+              <ProtectedRoute requireAdmin={false}>
+                <MultistreamDashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* Alias /feed to /powerfeed for convenience */}
+          <Route
+            path="/feed"
+            element={
+              <ProtectedRoute>
+                <PowerFeed />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -138,52 +336,6 @@ export default function App() {
         
         .ps-app {
           min-height: 100vh;
-        }
-        
-        .ps-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 16px 24px;
-          background: linear-gradient(180deg, #0b0b0c, #050506);
-          border-bottom: 1px solid #1e1e21;
-          position: sticky;
-          top: 0;
-          z-index: 100;
-        }
-        
-        .ps-nav-logo {
-          font-size: 1.4rem;
-          font-weight: 900;
-          background: linear-gradient(90deg, var(--gold), var(--gold-soft));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          text-decoration: none;
-        }
-        
-        .ps-nav-links {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        
-        .ps-nav-link {
-          color: var(--text);
-          text-decoration: none;
-          padding: 8px 12px;
-          border-radius: 8px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          transition: all 0.15s ease;
-        }
-        
-        .ps-nav-link:hover {
-          background: rgba(255,255,255,0.08);
-        }
-        
-        .ps-nav-link--active {
-          background: var(--gold);
-          color: #000;
         }
         
         .ps-main {

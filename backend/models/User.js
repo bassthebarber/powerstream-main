@@ -1,4 +1,7 @@
 // backend/models/User.js
+// DEPRECATED: Model moved to /src/domain/models/User.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/User.model.js
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -16,10 +19,16 @@ const UserSchema = new mongoose.Schema(
     avatarUrl: { type: String, default: "" },
 
     // ✅ Role-based Access Control (RBAC)
+    // Primary role (for backwards compatibility)
     role: {
       type: String,
-      enum: ["admin", "finance", "legal", "investor", "user"],
+      enum: ["user", "admin", "stationOwner", "finance", "legal", "investor"],
       default: "user",
+    },
+    // Multi-role support (preferred going forward)
+    roles: {
+      type: [String],
+      default: ["user"],
     },
 
     // ✅ Label / Tier affiliation
@@ -39,6 +48,9 @@ const UserSchema = new mongoose.Schema(
 
     // ✅ Admin flag (legacy compatibility)
     isAdmin: { type: Boolean, default: false },
+
+    // ✅ Coin balance for PowerCoins
+    coinBalance: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
 );
@@ -62,6 +74,16 @@ UserSchema.methods.toJSON = function () {
   delete obj.password;
   return obj;
 };
+
+// Ensure roles array always contains the primary role
+UserSchema.pre("save", function (next) {
+  if (!Array.isArray(this.roles) || this.roles.length === 0) {
+    this.roles = [this.role || "user"];
+  } else if (this.role && !this.roles.includes(this.role)) {
+    this.roles.unshift(this.role);
+  }
+  next();
+});
 
 // ❌ REMOVE this line completely:
 // UserSchema.index({ email: 1 });   ← this caused the duplicate index warning

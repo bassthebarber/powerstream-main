@@ -1,21 +1,35 @@
-// config/redis.js
+// backend/config/redis.js
+// TODO: Config normalized to env.js for consistency.
+// DEPRECATED: This file is being replaced by /src/config/redis.js
+// It remains for backward compatibility with existing imports.
 import { createClient } from 'redis';
+import env from '../src/config/env.js';
 
 let client = null;
 
 export const initRedis = async () => {
-  if (process.env.USE_REDIS !== 'true') {
+  if (!env.USE_REDIS) {
     console.log('ℹ️ initRedis: disabled by USE_REDIS=false');
     return null;
   }
   if (client) return client;
-  const host = process.env.REDIS_HOST || '127.0.0.1';
-  const port = Number(process.env.REDIS_PORT || 6379);
-  client = createClient({ socket: { host, port } });
+  
+  const host = env.REDIS_HOST;
+  const port = env.REDIS_PORT;
+  const password = env.REDIS_PASSWORD || undefined;
+  
+  client = createClient({ 
+    socket: { host, port },
+    password: password || undefined,
+  });
   client.on('error', (e) => console.error('❌ Redis Error:', e));
   await client.connect();
+  console.log('🟢 Redis: connected');
   return client;
 };
 
 export const getRedis = () => client;
-export default { initRedis, getRedis };
+
+export const isRedisConnected = () => client?.isOpen ?? false;
+
+export default { initRedis, getRedis, isRedisConnected };

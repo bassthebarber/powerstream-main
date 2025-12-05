@@ -1,4 +1,4 @@
-// stationGeoRegistry.js
+// backend/controllers/stationGeoRegistry.js
 
 const stationGeoRegistry = {
   registry: [],
@@ -23,4 +23,4 @@ const stationGeoRegistry = {
   }
 };
 
-module.exports = stationGeoRegistry;
+export default stationGeoRegistry;

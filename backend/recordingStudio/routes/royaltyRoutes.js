@@ -40,4 +40,39 @@ router.post('/calculate', calculateRoyalties);
 // Fetch royalty report per user or global
 router.get('/report/:userId', getRoyaltyReport);
 
+// Get royalty statements
+// GET /api/royalty/statements
+router.get('/statements', async (req, res) => {
+  try {
+    const { userId, projectId, limit = 50 } = req.query;
+
+    // Mock statements
+    const statements = [
+      {
+        id: 'stmt_1',
+        projectId: projectId || 'project_1',
+        projectName: 'My Track',
+        period: '2024-01',
+        totalPlays: 1250,
+        totalRevenue: 125.50,
+        splits: [
+          { name: 'Producer', percentage: 50, amount: 62.75 },
+          { name: 'Artist', percentage: 30, amount: 37.65 },
+          { name: 'Writer', percentage: 20, amount: 25.10 },
+        ],
+        createdAt: new Date('2024-01-31').toISOString(),
+      },
+    ];
+
+    res.json({
+      ok: true,
+      statements: statements.slice(0, Number(limit)),
+      total: statements.length,
+    });
+  } catch (error) {
+    console.error('Error fetching statements:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 export default router;

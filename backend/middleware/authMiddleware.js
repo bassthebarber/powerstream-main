@@ -1,5 +1,7 @@
-// Import required modules
+// backend/middleware/authMiddleware.js
+// TODO: Config normalized to env.js for consistency.
 import jwt from 'jsonwebtoken';
+import env from '../src/config/env.js';
 
 // Middleware to verify JWT token
 export const verifyToken = (req, res, next) => {
@@ -13,8 +15,8 @@ export const verifyToken = (req, res, next) => {
 
     const token = authHeader.split(' ')[1]; // Extract token from "Bearer <token>"
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Verify token using centralized config
+    const decoded = jwt.verify(token, env.JWT_SECRET);
 
     // Attach decoded user info to request object
     req.user = decoded;
@@ -24,3 +26,6 @@ export const verifyToken = (req, res, next) => {
     return res.status(403).json({ message: 'Invalid or expired token.' });
   }
 };
+
+// Alias exports for compatibility
+export default verifyToken;

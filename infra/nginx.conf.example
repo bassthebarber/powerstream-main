@@ -1,0 +1,222 @@
+# PowerStream Nginx Configuration
+# Production reverse proxy with SSL termination
+
+# Upstream definitions
+upstream backend {
+    server 127.0.0.1:5001;
+    keepalive 64;
+}
+
+upstream frontend {
+    server 127.0.0.1:3000;
+    keepalive 64;
+}
+
+upstream ml_service {
+    server 127.0.0.1:5200;
+    keepalive 32;
+}
+
+# Rate limiting zones
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=3r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
+# HTTP -> HTTPS redirect
+server {
+    listen 80;
+    listen [::]:80;
+    server_name powerstream.app www.powerstream.app;
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# Main HTTPS server
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name powerstream.app www.powerstream.app;
+    
+    # SSL Configuration
+    ssl_certificate /etc/letsencrypt/live/powerstream.app/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/powerstream.app/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
+    
+    # Modern SSL configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    
+    # HSTS
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    
+    # Connection limits
+    limit_conn conn_limit 100;
+    
+    # Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml application/json application/javascript application/xml;
+    
+    # Client body size (for uploads)
+    client_max_body_size 100M;
+    
+    # ============================================================
+    # API ROUTES
+    # ============================================================
+    
+    # Auth endpoints (stricter rate limiting)
+    location /api/auth {
+        limit_req zone=auth_limit burst=5 nodelay;
+        
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # API endpoints
+    location /api {
+        limit_req zone=api_limit burst=20 nodelay;
+        
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Connection "";
+        
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+    
+    # ============================================================
+    # WEBSOCKET ROUTES
+    # ============================================================
+    
+    location /socket.io {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # WebSocket timeouts
+        proxy_connect_timeout 7d;
+        proxy_send_timeout 7d;
+        proxy_read_timeout 7d;
+    }
+    
+    # ============================================================
+    # STREAMING ROUTES (HLS)
+    # ============================================================
+    
+    location /hls {
+        proxy_pass http://backend:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        
+        # HLS-specific headers
+        add_header Cache-Control "no-cache";
+        add_header Access-Control-Allow-Origin "*";
+    }
+    
+    # ============================================================
+    # ML SERVICE (Internal only - optional external access)
+    # ============================================================
+    
+    # Uncomment to expose ML service externally
+    # location /ml {
+    #     proxy_pass http://ml_service;
+    #     proxy_http_version 1.1;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Real-IP $remote_addr;
+    # }
+    
+    # ============================================================
+    # HEALTH CHECK
+    # ============================================================
+    
+    location /health {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        access_log off;
+    }
+    
+    # ============================================================
+    # FRONTEND (SPA)
+    # ============================================================
+    
+    location / {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Handle SPA routing - try file, then index.html
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # Static assets caching (when served from frontend build)
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        proxy_pass http://frontend;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+}
+
+# ============================================================
+# RTMP CONFIGURATION (for live streaming)
+# ============================================================
+# Note: RTMP requires nginx-rtmp-module
+# This section is a placeholder - configure separately if needed
+
+# rtmp {
+#     server {
+#         listen 1935;
+#         chunk_size 4096;
+#         
+#         application live {
+#             live on;
+#             record off;
+#             
+#             # Push to backend for processing
+#             on_publish http://127.0.0.1:5001/api/rtmp/on-publish;
+#             on_done http://127.0.0.1:5001/api/rtmp/on-done;
+#             
+#             # HLS output
+#             hls on;
+#             hls_path /var/www/hls;
+#             hls_fragment 3;
+#             hls_playlist_length 60;
+#         }
+#     }
+# }
+

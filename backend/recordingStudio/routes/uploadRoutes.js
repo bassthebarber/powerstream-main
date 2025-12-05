@@ -6,8 +6,12 @@ import express from "express";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
+import { requireAuth } from "../middleware/requireAuth.js";
 
 const router = express.Router();
+
+// All routes require authentication
+router.use(requireAuth);
 
 // ---- Cloudinary Config (from /backend/.env.local)
 cloudinary.config({

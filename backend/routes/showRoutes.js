@@ -1,11 +1,11 @@
-import express from 'express';
+import { Router } from "express";
 import {
   createShow,
   getAllShows,
   getShowById,
   updateShow,
   deleteShow,
-} from '../controllers/showController.js';
+} from "../controllers/showController.js";
 
 const router = Router();
 

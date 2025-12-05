@@ -1,5 +1,7 @@
 // backend/recordingStudio/middleware/requireAuth.js
+// Uses centralized config from /src/config/env.js
 import jwt from "jsonwebtoken";
+import env from "../../src/config/env.js";
 
 export function requireAuth(req, res, next) {
   const auth = req.headers.authorization || "";
@@ -7,7 +9,8 @@ export function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ ok: false, error: "No token" });
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET); // same secret/public key as main backend
+    // Use centralized JWT_SECRET from env.js
+    const payload = jwt.verify(token, env.JWT_SECRET);
     req.user = payload; // { id, email, role, ... }
     next();
   } catch (e) {

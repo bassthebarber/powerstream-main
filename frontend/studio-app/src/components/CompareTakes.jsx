@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import "./CompareTakes.css";
+import { API_BASE as MAIN_API } from "../config/api.js";
 
-// AI Coach endpoints are on the main PowerStream API (port 5001)
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
+// AI Coach endpoints are on the main PowerStream API
+const API_BASE = MAIN_API;
 
 const CompareTakes = ({ artistName, trackTitle, onSelectTake }) => {
   const [takes, setTakes] = useState([]);
@@ -172,4 +173,6 @@ const CompareTakes = ({ artistName, trackTitle, onSelectTake }) => {
 };
 
 export default CompareTakes;
+
+
 

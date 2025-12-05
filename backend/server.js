@@ -1,58 +1,36 @@
 // backend/server.js
-import dotenv from "dotenv";
+// TODO: Config normalized to use /src/config/env.js for consistency.
+// NOTE: This is the LEGACY server entry point. For new architecture, use /src/server.js
 import express from "express";
 import http from "http";
 import cors from "cors";
-import morgan from "morgan";
 import mongoose from "mongoose";
 import "colors";
 
-// Load .env.local (same as Recording Studio)
-dotenv.config({ path: ".env.local" });
+// Centralized configuration - SINGLE SOURCE OF TRUTH
+import env, { buildMongoUri, getAllowedOrigins, validateEnv } from "./src/config/env.js";
 
-const HOST = process.env.HOST || "127.0.0.1";
-const PORT = Number(process.env.PORT || 5001);
-const NODE_ENV = process.env.NODE_ENV || "development";
+// Custom middleware
+import logger from "./middleware/logger.js";
+import errorHandler, { notFoundHandler } from "./middleware/errorHandler.js";
+
+// Validate environment on startup
+validateEnv();
+
+const HOST = env.HOST;
+const PORT = env.PORT;
+const NODE_ENV = env.NODE_ENV;
 
 const app = express();
 
-// ------------------------------------
-// Build Mongo URI (supports two styles)
-// 1) Full MONGO_URI
-// 2) Split creds: MONGO_USER, MONGO_PASS, MONGO_HOST, MONGO_DB, MONGO_APP, MONGO_AUTH_SOURCE
-// ------------------------------------
-const buildMongoUri = () => {
-  if (process.env.MONGO_URI) return process.env.MONGO_URI; // use full URI if provided
-
-  const u = process.env.MONGO_USER;
-  const p = process.env.MONGO_PASS;
-  const host = process.env.MONGO_HOST || "cluster0.ldmtan.mongodb.net";
-  const db   = process.env.MONGO_DB   || "powerstream";
-  const appn = process.env.MONGO_APP  || "Cluster0";
-  const auth = (process.env.MONGO_AUTH_SOURCE || "").trim();
-
-  if (!u || !p) return null; // not enough info to build one
-  const encU = encodeURIComponent(u);
-  const encP = encodeURIComponent(p);
-  const base = `mongodb+srv://${encU}:${encP}@${host}/${db}?retryWrites=true&w=majority&appName=${encodeURIComponent(appn)}`;
-  return auth ? `${base}&authSource=${encodeURIComponent(auth)}` : base;
-};
-
 // ----- CORS -----
-const allowedFromEnv = [
-  ...(process.env.CORS_ALLOWED_ORIGINS?.split(",") ?? []),
-  ...(process.env.CORS_EXTRA_ORIGINS?.split(",") ?? []),
-  ...(process.env.CORS_ORIGINS?.split(",") ?? []),
-].map(s => s.trim()).filter(Boolean);
-
-if (allowedFromEnv.length === 0) {
-  allowedFromEnv.push("http://localhost:3000","http://localhost:5173","http://127.0.0.1:5173");
-}
+// TODO: Config normalized to env.js for consistency.
+const allowedOrigins = getAllowedOrigins();
 
 const corsOptions = {
   origin(origin, cb) {
     if (!origin) return cb(null, true);
-    if (allowedFromEnv.includes(origin)) return cb(null, true);
+    if (allowedOrigins.includes(origin) || env.isDev()) return cb(null, true);
     console.warn("⛔ CORS blocked:", origin);
     return cb(new Error("CORS not allowed for this origin"));
   },
@@ -66,17 +44,18 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
 app.use(express.json({ limit: "10mb" }));
-app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"))
+app.use(logger); // Custom request logger with timing
 
 // ----- Health -----
+// Lightweight inline health endpoint (no DB required)
 app.get(["/api/health", "/health"], (req, res) => {
   res.status(200).json({
-    ok: true,
+    status: "ok",
     service: "powerstream-api",
     host: req.hostname,
     port: PORT,
     env: NODE_ENV,
-    ts: new Date().toISOString(),
+    time: new Date().toISOString(),
   });
 });
 
@@ -106,6 +85,7 @@ const RETRY_INTERVAL = 5000; // 5 seconds
 let retryCount = 0;
 
 const connectDB = async () => {
+  // TODO: Config normalized to env.js for consistency.
   const uri = buildMongoUri();
   if (!uri) {
     console.warn("⚠️ No Mongo credentials/URI in env — server will start WITHOUT DB".yellow);
@@ -152,7 +132,8 @@ mongoose.connection.on("reconnected", () => {
 });
 
 const initRedisIfAvailable = async () => {
-  if (process.env.USE_REDIS !== "true") {
+  // TODO: Config normalized to env.js for consistency.
+  if (!env.USE_REDIS) {
     console.log("ℹ️ Redis disabled via USE_REDIS!=true");
     return;
   }
@@ -190,7 +171,7 @@ const attachTGTSocket = async (server) => {
       // If no io exists, create one (fallback)
       const { Server } = await import("socket.io");
       io = new Server(server, {
-        cors: { origin: "*", methods: ["GET", "POST"] },
+        cors: { origin: allowedOrigins, methods: ["GET", "POST"], credentials: true },
       });
       app.set("io", io);
       console.log("✅ Created Socket.IO instance for TGT");
@@ -202,6 +183,35 @@ const attachTGTSocket = async (server) => {
     }
   } catch (e) {
     console.warn("⚠️ TGT socket init skipped:", e?.message);
+  }
+};
+
+const attachChatSocket = async (server) => {
+  try {
+    // Get or create Socket.IO instance
+    // TODO: Config normalized to env.js for consistency.
+    let io = app.get("io");
+    if (!io) {
+      const { Server } = await import("socket.io");
+      io = new Server(server, {
+        cors: {
+          origin: allowedOrigins,
+          methods: ["GET", "POST"],
+          credentials: true,
+        },
+      });
+      app.set("io", io);
+      console.log("✅ Created Socket.IO instance for Chat");
+    }
+    
+    const chatSocketMod = await import("./sockets/chatSocket.js");
+    if (chatSocketMod.default) {
+      chatSocketMod.default(io);
+    } else if (chatSocketMod.initChatSocket) {
+      chatSocketMod.initChatSocket(io);
+    }
+  } catch (e) {
+    console.warn("⚠️ Chat socket init skipped:", e?.message);
   }
 };
 
@@ -252,6 +262,9 @@ const mountRoutesCompat = async () => {
   await mountOptional("/api/autopilot", "./routes/autopilotRoutes.js");
   await mountOptional("/api/jobs", "./routes/jobRoutes.js");
   await mountOptional("/api/stations", "./routes/stationRoutes.js");
+  await mountOptional("/api/shows", "./routes/showRoutes.js");
+  await mountOptional("/api/studio", "./routes/studioExportRoutes.js");
+  await mountOptional("/api/studio/sessions", "./routes/studioSessionRoutes.js");
   await mountOptional("/api/copilot", "./routes/copilotRoutes.js");
   await mountOptional("/api/aicoach", "./routes/aiCoachRoutes.js");
   await mountOptional("/api/aistudio", "./routes/aiStudioProRoutes.js");
@@ -266,9 +279,16 @@ const mountRoutesCompat = async () => {
   await mountOptional("/api/chat", "./routes/chatRoutes.js");
   await mountOptional("/api/tgt", "./routes/tgtRoutes.js");
   await mountOptional("/api/seed", "./routes/seedRoutes.js");
+  await mountOptional("/api/rtmp", "./routes/rtmpRoutes.js");
+  await mountOptional("/api/multistream", "./routes/multistreamProfileRoutes.js");
+  await mountOptional("/api/multistream", "./routes/multistreamSessionRoutes.js");
+  await mountOptional("/api/vod", "./routes/vodRoutes.js");
+  await mountOptional("/api/livepeer", "./routes/livepeerRoutes.js");
+  await mountOptional("/api/stories", "./routes/storyRoutes.js");
   
   // Auto-seed data on startup (optional - can be disabled)
-  if (process.env.AUTO_SEED_DATA === "true") {
+  // TODO: Config normalized to env.js for consistency.
+  if (env.AUTO_SEED_DATA) {
     try {
       const { seedSPSStations } = await import("./seeders/spsStationSeeder.js");
       const { seedTGTContestants } = await import("./seeders/tgtContestantSeeder.js");
@@ -289,43 +309,90 @@ const mountRoutesCompat = async () => {
 
 // 404 + error handlers must be registered after routes
 const registerErrors = () => {
-  app.use((req, res, next) => {
-    if (res.headersSent) return next();
-    return res.status(404).json({ ok:false, error:"Not found", path:req.originalUrl });
-  });
-  app.use((err, req, res, _next) => {
-    console.error("💥 Server error:", err?.stack || err?.message || err);
-    res.status(err.status || 500).json({ ok:false, error: err.message || "Internal server error" });
-  });
+  // 404 handler - catches unmatched routes
+  app.use(notFoundHandler);
+  
+  // Global error handler - catches all errors passed via next(err)
+  app.use(errorHandler);
 };
 
 // ---- Boot ----
 const startServer = async () => {
-  await connectDB();
-  await initRedisIfAvailable();
-
-  const mcbRan = await initMasterCircuitBoard();
-  if (!mcbRan) await mountRoutesCompat(); // fallback only if MCB missing
-
-  registerErrors();
-
-  const server = http.createServer(app);
-  await attachStudioSocket(server);
-  await attachTGTSocket(server);
-
-  server.listen(PORT, HOST, () => {
-    console.log(`🚀 PowerStream API listening at http://${HOST}:${PORT}`);
-  });
-
-  server.on("error", (err) => {
-    if (err?.code === "EADDRINUSE") {
-      console.error(`❌ EADDRINUSE: port ${PORT} is already in use on ${HOST}.
-Close the other process using that port, or change PORT in backend/.env.`);
+  try {
+    // Step 1: Connect to MongoDB
+    await connectDB();
+    
+    // Step 2: Verify connection is ready before proceeding
+    if (mongoose.connection.readyState !== 1) {
+      console.warn("⚠️ MongoDB not connected, continuing without DB features");
     } else {
-      console.error("❌ Server error:", err);
+      // Step 3: Seed users AFTER connection is confirmed ready
+      try {
+        const { seedAdminUser } = await import("./scripts/seedAdminUser.js");
+        await seedAdminUser();
+      } catch (err) {
+        console.warn("⚠️ Admin user seed failed (non-fatal):", err.message);
+      }
+
+      try {
+        const { ensureOwnerUser } = await import("./scripts/ensureOwnerUser.js");
+        await ensureOwnerUser();
+      } catch (err) {
+        console.warn("⚠️ Owner user seed failed (non-fatal):", err.message);
+      }
     }
+
+    // Step 4: Initialize Redis (optional)
+    await initRedisIfAvailable();
+
+    // Step 5: Mount routes
+    const mcbRan = await initMasterCircuitBoard();
+    if (!mcbRan) await mountRoutesCompat(); // fallback only if MCB missing
+
+    // Step 6: Register error handlers
+    registerErrors();
+
+    // Step 6.5: Start NodeMediaServer (Streaming Server)
+    try {
+      const { startStreamingServer } = await import("./services/StreamingServer.js");
+      const { onPublish, onDonePublish } = await import("./services/StreamingServerEvents.js").catch(() => ({ onPublish: null, onDonePublish: null }));
+      await startStreamingServer({
+        onPublish: onPublish || ((id, streamPath) => {
+          console.log(`[Server] Stream published: ${streamPath}`);
+        }),
+        onDonePublish: onDonePublish || ((id, streamPath) => {
+          console.log(`[Server] Stream ended: ${streamPath}`);
+        }),
+      });
+      console.log("✅ NodeMediaServer started");
+    } catch (err) {
+      console.warn("⚠️ NodeMediaServer failed to start (non-fatal):", err.message);
+    }
+
+    // Step 7: Create HTTP server
+    const server = http.createServer(app);
+    await attachStudioSocket(server);
+    await attachTGTSocket(server);
+    await attachChatSocket(server);
+
+    // Step 8: Start listening
+    server.listen(PORT, HOST, () => {
+      console.log(`🚀 PowerStream API listening at http://${HOST}:${PORT}`);
+    });
+
+    server.on("error", (err) => {
+      if (err?.code === "EADDRINUSE") {
+        console.error(`❌ EADDRINUSE: port ${PORT} is already in use on ${HOST}.
+Close the other process using that port, or change PORT in backend/.env.`);
+      } else {
+        console.error("❌ Server error:", err);
+      }
+      process.exit(1);
+    });
+  } catch (err) {
+    console.error("❌ Fatal startup error:", err);
     process.exit(1);
-  });
+  }
 };
 
 process.on("unhandledRejection", (e) => console.error("❌ unhandledRejection:", e));

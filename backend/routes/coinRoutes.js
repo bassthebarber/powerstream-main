@@ -1,5 +1,7 @@
 // backend/routes/coinRoutes.js
 import { Router } from 'express';
+import { buyCoins, tipCreator } from '../controllers/coinController.js';
+import { authRequired } from '../middleware/requireAuth.js';
 
 const router = Router();
 
@@ -10,6 +12,18 @@ const router = Router();
 router.get('/health', (req, res) => {
   res.json({ ok: true, route: '/api/coins' });
 });
+
+/**
+ * Buy coins (mocked payment)
+ * POST /api/coins/buy
+ */
+router.post('/buy', authRequired, buyCoins);
+
+/**
+ * Tip a creator on a feed post
+ * POST /api/coins/tip
+ */
+router.post('/tip', authRequired, tipCreator);
 
 /**
  * Example: GET /api/coins/balance

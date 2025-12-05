@@ -51,39 +51,62 @@ export async function createGram(req, res) {
 export async function likeGram(req, res) {
   try {
     const { id } = req.params;
-    const { userId } = req.body;
-
+    const userId = req.user?.id;
     if (!userId) {
-      return res.status(400).json({ ok: false, message: "userId required" });
+      return res.status(401).json({ ok: false, message: "Authentication required" });
     }
 
-    const gram = await GramPost.findById(id);
-    if (!gram) {
-      return res.status(404).json({ ok: false, message: "Gram not found" });
-    }
+    const existing = await GramPost.findOne({ _id: id, likes: userId }).lean();
 
-    const liked = gram.likes.includes(userId);
-    if (liked) {
-      gram.likes = gram.likes.filter((id) => id !== userId);
+    let liked;
+    if (existing) {
+      // Already liked → remove like
+      await GramPost.updateOne({ _id: id }, { $pull: { likes: userId } });
+      liked = false;
     } else {
-      gram.likes.push(userId);
+      // Not liked → add like
+      await GramPost.updateOne({ _id: id }, { $addToSet: { likes: userId } });
+      liked = true;
     }
 
-    await gram.save();
-    res.json({ ok: true, gram, liked: !liked });
+    const updated = await GramPost.findById(id).select("likes").lean();
+    const likesCount = Array.isArray(updated?.likes) ? updated.likes.length : 0;
+
+    return res.json({ ok: true, liked, likesCount });
   } catch (err) {
     console.error("Error liking gram:", err);
     res.status(500).json({ ok: false, message: "Failed to like gram" });
   }
 }
 
+export async function getGramComments(req, res) {
+  try {
+    const { id } = req.params;
+    const gram = await GramPost.findById(id).select("comments").lean();
+    if (!gram) {
+      return res.status(404).json({ ok: false, message: "Gram not found" });
+    }
+    const comments = Array.isArray(gram.comments) ? gram.comments : [];
+    return res.json({ ok: true, comments });
+  } catch (err) {
+    console.error("Error fetching gram comments:", err);
+    return res.status(500).json({ ok: false, message: "Failed to fetch comments" });
+  }
+}
+
 export async function commentOnGram(req, res) {
   try {
     const { id } = req.params;
-    const { userId, text } = req.body;
+    const { text } = req.body;
+    const userId = req.user?.id;
+    const authorName = req.user?.name || req.user?.username || "Guest";
 
-    if (!userId || !text) {
-      return res.status(400).json({ ok: false, message: "userId and text required" });
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: "Authentication required" });
+    }
+
+    if (!text || !text.trim()) {
+      return res.status(400).json({ ok: false, message: "Comment text is required" });
     }
 
     const gram = await GramPost.findById(id);
@@ -91,10 +114,17 @@ export async function commentOnGram(req, res) {
       return res.status(404).json({ ok: false, message: "Gram not found" });
     }
 
-    gram.comments.push({ userId, text });
+    gram.comments.push({
+      userId: String(userId),
+      text: text.trim(),
+      authorName,
+    });
     await gram.save();
 
-    res.json({ ok: true, gram });
+    const updated = await GramPost.findById(id).select("comments").lean();
+    const comments = Array.isArray(updated?.comments) ? updated.comments : [];
+
+    return res.json({ ok: true, comments });
   } catch (err) {
     console.error("Error commenting on gram:", err);
     res.status(500).json({ ok: false, message: "Failed to comment on gram" });

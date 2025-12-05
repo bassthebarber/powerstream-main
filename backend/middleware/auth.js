@@ -1,9 +1,12 @@
 // backend/middleware/auth.js
+// LEGACY: Uses centralized config from /src/config/env.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import env from "../src/config/env.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "dev-refresh-secret";
+// Use centralized config - secrets are validated there
+const JWT_SECRET = env.JWT_SECRET;
+const JWT_REFRESH_SECRET = env.JWT_REFRESH_SECRET;
 
 export function signAccessToken(user) {
   return jwt.sign(

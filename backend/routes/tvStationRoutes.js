@@ -17,3 +17,5 @@ router.get("/:slug", getStationBySlug);
 export default router;
 
 
+
+

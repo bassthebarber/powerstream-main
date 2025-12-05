@@ -30,95 +30,24 @@ try {
 
 // --- MongoDB Connection Logic
 mongoose.set("strictQuery", true);
-
-// Build Mongo URI with proper URL encoding for credentials
-const buildMongoUri = () => {
-  // Priority: MONGO_URI > STUDIO_MONGO_URI > build from split creds
-  if (process.env.MONGO_URI) return process.env.MONGO_URI;
-  if (process.env.STUDIO_MONGO_URI) return process.env.STUDIO_MONGO_URI;
-
-  const username = process.env.MONGO_USER;
-  const password = process.env.MONGO_PASS;
-  const host = process.env.MONGO_HOST || "cluster0.ldmtan.mongodb.net";
-  const db = process.env.STUDIO_MONGO_DB || process.env.MONGO_DB || "powerstream";
-  const appName = process.env.MONGO_APP || "Cluster0";
-  const authSource = (process.env.MONGO_AUTH_SOURCE || "").trim();
-
-  if (!username || !password) return null;
-
-  // URL-encode username and password to handle special characters
-  const encUser = encodeURIComponent(username);
-  const encPass = encodeURIComponent(password);
-
-  const base = `mongodb+srv://${encUser}:${encPass}@${host}/${db}?retryWrites=true&w=majority&appName=${encodeURIComponent(appName)}`;
-  return authSource ? `${base}&authSource=${encodeURIComponent(authSource)}` : base;
-};
-
-const STUDIO_MONGO_URI = buildMongoUri();
+const STUDIO_MONGO_URI = process.env.STUDIO_MONGO_URI || process.env.MONGO_URI;
 
 if (!STUDIO_MONGO_URI) {
-  console.error("❌ No MongoDB URI available! Set STUDIO_MONGO_URI, MONGO_URI, or MONGO_USER/MONGO_PASS in .env.local");
+  console.error("❌ STUDIO_MONGO_URI missing from environment!");
   process.exit(1);
 }
 
-// Debug: show masked URI structure to help diagnose auth issues
-const maskUri = (uri) => {
-  try {
-    const url = new URL(uri);
-    if (url.password) url.password = "****";
-    return url.toString();
-  } catch {
-    return uri.replace(/:([^:@]+)@/, ":****@");
-  }
-};
-console.log("🔗 Using MongoDB URI:", maskUri(STUDIO_MONGO_URI));
-
-// Retry configuration
-const MAX_RETRIES = 10;
-const RETRY_INTERVAL = 5000; // 5 seconds
-let retryCount = 0;
-
 async function connectMongo() {
   try {
-    console.log("🟡 MongoDB: connecting to Recording Studio database…");
     await mongoose.connect(STUDIO_MONGO_URI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
     });
     console.log("🧠 MongoDB connected for Recording Studio");
-    retryCount = 0; // Reset on successful connection
   } catch (err) {
-    retryCount++;
-    console.error(`❌ MongoDB Connection Error (attempt ${retryCount}/${MAX_RETRIES}):`, err.message);
-    if (err?.reason?.codeName) console.error("   codeName:", err.reason.codeName);
-    if (err?.code) console.error("   code:", err.code);
-
-    if (retryCount < MAX_RETRIES) {
-      console.log(`🔄 Retrying in ${RETRY_INTERVAL / 1000} seconds...`);
-      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
-      return connectMongo(); // Recursive retry
-    } else {
-      console.error("❌ Max retries reached. Exiting...");
-      process.exit(1);
-    }
+    console.error("❌ MongoDB Connection Error:", err.message);
+    process.exit(1);
   }
 }
-
-// Handle disconnection - auto reconnect
-mongoose.connection.on("disconnected", () => {
-  console.log("🔄 MongoDB disconnected. Attempting reconnection...");
-  retryCount = 0; // Reset for reconnection attempts
-  connectMongo();
-});
-
-mongoose.connection.on("error", (err) => {
-  console.error("❌ MongoDB connection error:", err.message);
-});
-
-mongoose.connection.on("reconnected", () => {
-  console.log("🟢 MongoDB reconnected (Recording Studio)");
-});
 
 // --- Import Routes
 import studioRoutes from "./routes/studioRoutes.js";
@@ -129,34 +58,45 @@ import beatRoutes from "./routes/beatRoutes.js";
 import collabRoutes from "./routes/collabRoutes.js";
 import sampleRoutes from "./routes/sampleRoutes.js";
 import mixingRoutes from "./routes/mixingRoutes.js";
-import mixRoutes from "./routes/mixRoutes.js"; // Real FFmpeg Mix & Master routes
 import royaltyRoutes from "./routes/royaltyRoutes.js";
 import winnerRoutes from "./routes/winnerRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import recordingsRoutes from "./routes/recordings.js";
 import authRoutes from "./routes/authRoutes.js"; // studio auth
 import deviceRoutes from "./routes/deviceRoutes.js";
-import libraryRoutes from "./routes/libraryRoutes.js"; // Library routes for unified access
-import beatLabRoutes from "./routes/beatLabRoutes.js"; // Beat Lab with AI generation
-import aiBeatRoutes from "./routes/aiBeatRoutes.js"; // AI Beat Engine routes
-import aiMasterRoutes from "./routes/aiMasterRoutes.js"; // AI Master Engine routes
-import beatStoreRoutes from "./routes/beatStoreRoutes.js"; // Beat Store routes
-import voiceRoutes from "./routes/voiceRoutes.js"; // AI Voice Clone routes
-import tvExportRoutes from "./routes/tvExportRoutes.js"; // TV Streaming Export routes
-import adminProducerRoutes from "./routes/adminProducerRoutes.js"; // Admin Producer Dashboard routes
 
 // --- Create App
 const app = express();
 
 // --- CORS Config
+// NOTE: Allow all common development ports for frontend apps
 const allowed = process.env.ALLOWED_ORIGIN
   ? process.env.ALLOWED_ORIGIN.split(",").map(s => s.trim())
-  : ["http://localhost:5173", "http://localhost:3000", "https://southernpowertvmusic.com"];
+  : [
+      "http://localhost:5173",   // Main frontend (Vite default)
+      "http://localhost:5174",   // Studio app (Vite alternate)
+      "http://localhost:5175",   // Additional frontend ports
+      "http://localhost:3000",   // Alternative dev port
+      "http://localhost:3001",   // Alternative dev port
+      "https://southernpowertvmusic.com",
+      "https://powerstream.app",
+      "https://studio.powerstream.app",
+    ];
 
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin || allowed.includes(origin)) return cb(null, true);
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return cb(null, true);
+      
+      // Check allowed list
+      if (allowed.includes(origin)) return cb(null, true);
+      
+      // In development, allow all localhost origins
+      if (process.env.NODE_ENV !== 'production' && origin.includes('localhost')) {
+        return cb(null, true);
+      }
+      
       console.warn("❌ CORS blocked:", origin);
       return cb(new Error("Not allowed by CORS"));
     },
@@ -181,39 +121,180 @@ app.get("/studio-env-check", (_req, res) =>
 
 // --- API Routes
 app.use("/api/studio", studioRoutes);
+
+// Session & Project Management
+try {
+  const sessionRoutes = (await import("./routes/studioSessionRoutes.js")).default;
+  app.use("/api/studio/session", sessionRoutes);
+} catch (err) {
+  console.warn("⚠️ studioSessionRoutes not found:", err.message);
+}
+
+// Recording Routes
+try {
+  const recordRoutes = (await import("./routes/studioRecordRoutes.js")).default;
+  app.use("/api/studio/record", recordRoutes);
+} catch (err) {
+  console.warn("⚠️ studioRecordRoutes not found:", err.message);
+}
+
+// Lyrics Routes
+try {
+  const lyricsRoutes = (await import("./routes/studioLyricsRoutes.js")).default;
+  app.use("/api/studio/lyrics", lyricsRoutes);
+} catch (err) {
+  console.warn("⚠️ studioLyricsRoutes not found:", err.message);
+}
+
+// Mastering Routes (legacy)
+try {
+  const masterRoutes = (await import("./routes/studioMasterRoutes.js")).default;
+  app.use("/api/studio/master", masterRoutes);
+} catch (err) {
+  console.warn("⚠️ studioMasterRoutes not found:", err.message);
+}
+
+// Mix Routes (unified)
+try {
+  const mixRoutes = (await import("./routes/studioMixRoutes.js")).default;
+  app.use("/api/mix", mixRoutes);
+} catch (err) {
+  console.warn("⚠️ studioMixRoutes not found:", err.message);
+}
+
+// === STUDIO WIRING ADDITIONS (Frontend expects these) ===
+
+// Library Routes (recordings, beats, mixes in one place)
+try {
+  const libraryRoutes = (await import("./routes/libraryRoutes.js")).default;
+  app.use("/api/library", libraryRoutes);
+  console.log("✅ /api/library mounted");
+} catch (err) {
+  console.warn("⚠️ libraryRoutes not found:", err.message);
+}
+
+// Beat Store Routes (/api/studio/beats - for Beat Store pages)
+try {
+  const beatStoreRoutes = (await import("./routes/beatStoreRoutes.js")).default;
+  app.use("/api/studio/beats", beatStoreRoutes);
+  console.log("✅ /api/studio/beats mounted (Beat Store)");
+} catch (err) {
+  console.warn("⚠️ beatStoreRoutes not found:", err.message);
+}
+
+// AI Beat Generation Routes (/api/studio/ai - for beat generation)
+try {
+  const aiBeatRoutes = (await import("./routes/aiBeatRoutes.js")).default;
+  app.use("/api/studio/ai", aiBeatRoutes);
+  console.log("✅ /api/studio/ai mounted (AI Beat Engine)");
+} catch (err) {
+  console.warn("⚠️ aiBeatRoutes not found:", err.message);
+}
+
+// AI Master Routes (/api/studio/ai/master - for mastering)
+try {
+  const aiMasterRoutes = (await import("./routes/aiMasterRoutes.js")).default;
+  app.use("/api/studio/ai/master", aiMasterRoutes);
+  console.log("✅ /api/studio/ai/master mounted (AI Mastering)");
+} catch (err) {
+  console.warn("⚠️ aiMasterRoutes not found:", err.message);
+}
+
+// Beat Lab Routes (/api/beatlab - pattern-based beat generation)
+try {
+  const beatLabRoutes = (await import("./routes/beatLabRoutes.js")).default;
+  app.use("/api/beatlab", beatLabRoutes);
+  console.log("✅ /api/beatlab mounted");
+} catch (err) {
+  console.warn("⚠️ beatLabRoutes not found:", err.message);
+}
+
+// Export Routes (/api/export - for email exports)
+// Reuses upload routes for file export functionality
+try {
+  const exportRoutes = (await import("./routes/uploadRoutes.js")).default;
+  app.use("/api/export", exportRoutes);
+  console.log("✅ /api/export mounted");
+} catch (err) {
+  console.warn("⚠️ exportRoutes not found:", err.message);
+}
+
+// Royalty Routes (frontend expects /api/royalty, not /api/royalties)
+app.use("/api/royalty", royaltyRoutes);
+
+// TV Export Routes
+try {
+  const tvExportRoutes = (await import("./routes/tvExportRoutes.js")).default;
+  app.use("/api/studio/tv", tvExportRoutes);
+  console.log("✅ /api/studio/tv mounted");
+} catch (err) {
+  console.warn("⚠️ tvExportRoutes not found:", err.message);
+}
+
+// Voice Routes
+try {
+  const voiceRoutes = (await import("./routes/voiceRoutes.js")).default;
+  app.use("/api/studio/voice", voiceRoutes);
+  console.log("✅ /api/studio/voice mounted");
+} catch (err) {
+  console.warn("⚠️ voiceRoutes not found:", err.message);
+}
+
+// Admin Producers Routes
+try {
+  const adminProducerRoutes = (await import("./routes/adminProducerRoutes.js")).default;
+  app.use("/api/studio/admin/producers", adminProducerRoutes);
+  console.log("✅ /api/studio/admin/producers mounted");
+} catch (err) {
+  console.warn("⚠️ adminProducerRoutes not found:", err.message);
+}
+
+// === END STUDIO WIRING ADDITIONS ===
+
+// === LIVE ROOM & ENGINEER CONTRACT MODE (New Feature) ===
+
+// Live Room Routes (real-time recording sessions)
+try {
+  const liveRoomRoutes = (await import("./routes/liveRoomRoutes.js")).default;
+  app.use("/api/studio/live-room", liveRoomRoutes);
+  console.log("✅ /api/studio/live-room mounted (Live Room)");
+} catch (err) {
+  console.warn("⚠️ liveRoomRoutes not found:", err.message);
+}
+
+// Studio Job Routes (paid tasks: mix, master, beat production)
+try {
+  const studioJobRoutes = (await import("./routes/studioJobRoutes.js")).default;
+  app.use("/api/studio/jobs", studioJobRoutes);
+  console.log("✅ /api/studio/jobs mounted (Studio Jobs)");
+} catch (err) {
+  console.warn("⚠️ studioJobRoutes not found:", err.message);
+}
+
+// Studio Contract Routes (legal agreements, signatures)
+try {
+  const studioContractRoutes = (await import("./routes/studioContractRoutes.js")).default;
+  app.use("/api/studio/contracts", studioContractRoutes);
+  console.log("✅ /api/studio/contracts mounted (Studio Contracts)");
+} catch (err) {
+  console.warn("⚠️ studioContractRoutes not found:", err.message);
+}
+
+// === END LIVE ROOM & ENGINEER CONTRACT MODE ===
+
 app.use("/api/intake", intakeRoutes);
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/beats", beatRoutes);
-app.use("/api/beat-drafts", beatRoutes); // Alias for library
 app.use("/api/collabs", collabRoutes);
 app.use("/api/samples", sampleRoutes);
 app.use("/api/mixing", mixingRoutes);
-app.use("/api/mix", mixRoutes); // New Mix & Master API
-app.use("/api/mixes", mixRoutes); // Alias for library
-app.use("/api/royalty", royaltyRoutes); // New path
 app.use("/api/royalties", royaltyRoutes);
 app.use("/api/winners", winnerRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/recordings", recordingsRoutes);
 app.use("/api/devices", deviceRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/export", uploadRoutes); // Reuse upload for exports
-app.use("/api/library", libraryRoutes); // Unified library access
-app.use("/api/beatlab", beatLabRoutes); // AI Beat Generation
-app.use("/api/aistudio/beat", beatLabRoutes); // Alias for frontend compatibility
-app.use("/api/studio/ai", aiBeatRoutes); // AI Beat Engine (new)
-app.use("/api/ai/beat", aiBeatRoutes); // Alias for AI beat generation
-app.use("/api/studio/ai/master", aiMasterRoutes); // AI Master Engine
-app.use("/api/master", aiMasterRoutes); // Alias for mastering
-app.use("/api/studio/beats", beatStoreRoutes); // Beat Store
-app.use("/api/beatstore", beatStoreRoutes); // Alias for Beat Store
-app.use("/api/studio/voice", voiceRoutes); // AI Voice Clone
-app.use("/api/voice", voiceRoutes); // Alias for Voice Clone
-app.use("/api/studio/tv", tvExportRoutes); // TV Streaming Export
-app.use("/api/tv", tvExportRoutes); // Alias for TV Export
-app.use("/api/studio/admin/producers", adminProducerRoutes); // Admin Producer Dashboard
-app.use("/api/admin/producers", adminProducerRoutes); // Alias for Admin Producers
 
 // --- 404 Handler
 app.use((req, res) => {

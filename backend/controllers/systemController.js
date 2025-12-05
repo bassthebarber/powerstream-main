@@ -1,9 +1,9 @@
 // backend/controllers/systemController.js
 
-const os = require('os');
+import os from 'os';
 import logUplink from "../logs/logUplink.js";
 
-exports.getSystemStatus = (req, res) => {
+export const getSystemStatus = (req, res) => {
   const uptime = os.uptime();
   const memoryUsage = process.memoryUsage();
   const load = os.loadavg();

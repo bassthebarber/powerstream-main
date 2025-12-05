@@ -1,7 +1,7 @@
 // backend/controllers/systemHealthController.js
 
-const os = require('os');
-const mongoose = require('mongoose');
+import os from 'os';
+import mongoose from 'mongoose';
 import SystemStatus from "../models/SystemStatusModel.js";
 import logUplink from "../logs/logUplink.js";
 
@@ -9,7 +9,7 @@ import logUplink from "../logs/logUplink.js";
  * @desc Get live system health info
  * @route GET /api/system/health
  */
-exports.getSystemHealth = async (req, res) => {
+export const getSystemHealth = async (req, res) => {
   try {
     const status = {
       app: 'PowerStream Backend',
@@ -41,7 +41,7 @@ exports.getSystemHealth = async (req, res) => {
  * @desc Save current snapshot to DB (optional logging endpoint)
  * @route POST /api/system/health/log
  */
-exports.logSystemSnapshot = async (req, res) => {
+export const logSystemSnapshot = async (req, res) => {
   try {
     const snapshot = new SystemStatus({
       uptime: os.uptime(),

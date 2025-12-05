@@ -2,9 +2,11 @@
 // Custom hook for making API calls to the studio backend
 
 import { useState, useCallback } from "react";
+import { STUDIO_API_BASE, API_BASE as MAIN_API_CONFIG } from "../config/api.js";
 
-const API_BASE = import.meta.env.VITE_STUDIO_API_BASE_URL || "";
-const MAIN_API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
+// Use centralized API config
+const API_BASE = STUDIO_API_BASE;
+const MAIN_API = MAIN_API_CONFIG;
 
 export function useStudioApi() {
   const [loading, setLoading] = useState(false);
@@ -91,6 +93,8 @@ export function useStudioApi() {
 }
 
 export default useStudioApi;
+
+
 
 
 

@@ -1,3 +1,7 @@
+// backend/models/Chatmessagemodel.js
+// DEPRECATED: Model moved to /src/domain/models/Message.model.js
+// This file remains for backward compatibility with existing imports.
+// TODO: Update all imports to use /src/domain/models/Message.model.js
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 

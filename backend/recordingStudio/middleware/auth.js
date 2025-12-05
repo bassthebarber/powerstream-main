@@ -1,11 +1,14 @@
 import jwt from 'jsonwebtoken';
+import env from '../../src/config/env.js';
 
 export const verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(403).json({ message: 'No token provided' });
 
   try {
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    // Use centralized JWT_SECRET from env.js (falls back to TOKEN_SECRET for backwards compat)
+    const secret = env.JWT_SECRET || process.env.TOKEN_SECRET;
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();
   } catch (err) {
