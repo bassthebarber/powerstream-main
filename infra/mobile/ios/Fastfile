@@ -1,0 +1,190 @@
+# PowerStream iOS Fastlane Configuration
+# Automated build and deployment for App Store
+
+default_platform(:ios)
+
+platform :ios do
+  
+  # ========================================
+  # BEFORE ALL
+  # ========================================
+  before_all do
+    setup_ci if ENV['CI']
+  end
+
+  # ========================================
+  # BUILD FOR TESTING
+  # ========================================
+  desc "Build for testing"
+  lane :build_debug do
+    build_app(
+      workspace: "ios/App/App.xcworkspace",
+      scheme: "App",
+      configuration: "Debug",
+      export_method: "development",
+      skip_codesigning: true,
+      silent: true
+    )
+  end
+
+  # ========================================
+  # BETA RELEASE (TestFlight)
+  # ========================================
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    # Increment build number
+    increment_build_number(
+      xcodeproj: "ios/App/App.xcodeproj",
+      build_number: latest_testflight_build_number + 1
+    )
+    
+    # Match certificates and profiles
+    match(
+      type: "appstore",
+      app_identifier: "tv.powerstream.app",
+      readonly: is_ci
+    )
+    
+    # Build
+    build_app(
+      workspace: "ios/App/App.xcworkspace",
+      scheme: "App",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "tv.powerstream.app" => "match AppStore tv.powerstream.app"
+        }
+      }
+    )
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      apple_id: ENV['APPLE_ID'],
+      app_identifier: "tv.powerstream.app"
+    )
+    
+    # Notify
+    slack(
+      message: "PowerStream iOS Beta uploaded to TestFlight! 🎉",
+      success: true,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+
+  # ========================================
+  # PRODUCTION RELEASE (App Store)
+  # ========================================
+  desc "Push a new production build to App Store"
+  lane :release do
+    # Ensure we're on the right branch
+    ensure_git_branch(branch: 'main')
+    
+    # Ensure clean git status
+    ensure_git_status_clean
+    
+    # Increment version number
+    increment_version_number(
+      xcodeproj: "ios/App/App.xcodeproj",
+      bump_type: "patch" # or "minor" or "major"
+    )
+    
+    increment_build_number(
+      xcodeproj: "ios/App/App.xcodeproj",
+      build_number: latest_testflight_build_number + 1
+    )
+    
+    # Match certificates
+    match(
+      type: "appstore",
+      app_identifier: "tv.powerstream.app",
+      readonly: true
+    )
+    
+    # Build
+    build_app(
+      workspace: "ios/App/App.xcworkspace",
+      scheme: "App",
+      configuration: "Release",
+      export_method: "app-store",
+      include_bitcode: false,
+      include_symbols: true
+    )
+    
+    # Upload to App Store Connect
+    upload_to_app_store(
+      app_identifier: "tv.powerstream.app",
+      skip_metadata: true,
+      skip_screenshots: true,
+      precheck_include_in_app_purchases: false,
+      submit_for_review: false, # Set to true for auto-submit
+      automatic_release: false
+    )
+    
+    # Commit version bump
+    commit_version_bump(
+      xcodeproj: "ios/App/App.xcodeproj",
+      message: "Version bump for App Store release"
+    )
+    
+    # Create git tag
+    add_git_tag(
+      tag: "ios/v#{get_version_number}-#{get_build_number}"
+    )
+    
+    # Push changes
+    push_to_git_remote
+  end
+
+  # ========================================
+  # SCREENSHOTS
+  # ========================================
+  desc "Generate App Store screenshots"
+  lane :screenshots do
+    capture_screenshots(
+      scheme: "PowerStreamUITests",
+      devices: [
+        "iPhone 15 Pro Max",
+        "iPhone 15 Pro",
+        "iPhone SE (3rd generation)",
+        "iPad Pro (12.9-inch) (6th generation)"
+      ],
+      languages: ["en-US"],
+      output_directory: "./fastlane/screenshots"
+    )
+    
+    frame_screenshots(
+      path: "./fastlane/screenshots"
+    )
+  end
+
+  # ========================================
+  # CERTIFICATES
+  # ========================================
+  desc "Sync certificates and profiles"
+  lane :certs do
+    match(
+      type: "development",
+      app_identifier: "tv.powerstream.app"
+    )
+    match(
+      type: "appstore",
+      app_identifier: "tv.powerstream.app"
+    )
+  end
+
+  # ========================================
+  # ERROR HANDLING
+  # ========================================
+  error do |lane, exception|
+    slack(
+      message: "iOS Build Failed: #{exception.message}",
+      success: false,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+end
+
+
+

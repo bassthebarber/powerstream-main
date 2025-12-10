@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Distribution Method -->
+    <key>method</key>
+    <string>app-store</string>
+    
+    <!-- Team ID -->
+    <key>teamID</key>
+    <string>YOUR_TEAM_ID</string>
+    
+    <!-- Signing Style -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+    
+    <!-- Upload to App Store Connect -->
+    <key>uploadBitcode</key>
+    <false/>
+    
+    <key>uploadSymbols</key>
+    <true/>
+    
+    <!-- Strip Swift Symbols -->
+    <key>stripSwiftSymbols</key>
+    <true/>
+    
+    <!-- Provisioning Profiles -->
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>tv.powerstream.app</key>
+        <string>PowerStream AppStore</string>
+    </dict>
+    
+    <!-- Destination -->
+    <key>destination</key>
+    <string>upload</string>
+    
+    <!-- Manifest for Enterprise Distribution (if needed) -->
+    <!--
+    <key>manifest</key>
+    <dict>
+        <key>appURL</key>
+        <string>https://download.powerstream.tv/ios/PowerStream.ipa</string>
+        <key>displayImageURL</key>
+        <string>https://powerstream.tv/images/app-icon-57.png</string>
+        <key>fullSizeImageURL</key>
+        <string>https://powerstream.tv/images/app-icon-512.png</string>
+    </dict>
+    -->
+</dict>
+</plist>
+
+
+

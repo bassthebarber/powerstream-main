@@ -1,0 +1,202 @@
+# PowerStream Android Fastlane Configuration
+# Automated build and deployment for Google Play Store
+
+default_platform(:android)
+
+platform :android do
+
+  # ========================================
+  # BEFORE ALL
+  # ========================================
+  before_all do
+    # Ensure environment is set up
+    ENV['ANDROID_HOME'] ||= '/usr/local/share/android-commandlinetools'
+  end
+
+  # ========================================
+  # BUILD DEBUG APK
+  # ========================================
+  desc "Build debug APK"
+  lane :build_debug do
+    gradle(
+      project_dir: "android",
+      task: "assembleDebug"
+    )
+  end
+
+  # ========================================
+  # BUILD RELEASE APK
+  # ========================================
+  desc "Build release APK"
+  lane :build_release do
+    gradle(
+      project_dir: "android",
+      task: "assembleRelease",
+      properties: {
+        "android.injected.signing.store.file" => ENV['ANDROID_KEYSTORE_PATH'],
+        "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+        "android.injected.signing.key.alias" => "powerstream",
+        "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+      }
+    )
+  end
+
+  # ========================================
+  # BUILD RELEASE BUNDLE (AAB)
+  # ========================================
+  desc "Build release Android App Bundle"
+  lane :build_bundle do
+    # Increment version code
+    android_set_version_code(
+      version_code: google_play_track_version_codes(track: 'internal').max + 1,
+      gradle_file: "android/app/build.gradle"
+    )
+    
+    gradle(
+      project_dir: "android",
+      task: "bundleRelease",
+      properties: {
+        "android.injected.signing.store.file" => ENV['ANDROID_KEYSTORE_PATH'],
+        "android.injected.signing.store.password" => ENV['ANDROID_KEYSTORE_PASSWORD'],
+        "android.injected.signing.key.alias" => "powerstream",
+        "android.injected.signing.key.password" => ENV['ANDROID_KEY_PASSWORD']
+      }
+    )
+  end
+
+  # ========================================
+  # INTERNAL TESTING TRACK
+  # ========================================
+  desc "Deploy to internal testing track"
+  lane :internal do
+    build_bundle
+    
+    upload_to_play_store(
+      track: 'internal',
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+    
+    slack(
+      message: "PowerStream Android Internal build uploaded! 🤖",
+      success: true,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+
+  # ========================================
+  # BETA (CLOSED TESTING)
+  # ========================================
+  desc "Deploy to closed testing (beta)"
+  lane :beta do
+    build_bundle
+    
+    upload_to_play_store(
+      track: 'beta',
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+    
+    slack(
+      message: "PowerStream Android Beta uploaded to Play Store! 🎉",
+      success: true,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+
+  # ========================================
+  # PRODUCTION RELEASE
+  # ========================================
+  desc "Deploy to production"
+  lane :release do
+    # Ensure we're on main branch
+    ensure_git_branch(branch: 'main')
+    
+    # Build the bundle
+    build_bundle
+    
+    # Upload to Play Store (production track)
+    upload_to_play_store(
+      track: 'production',
+      aab: "android/app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      release_status: 'completed', # or 'draft' for manual release
+      rollout: '0.1' # 10% staged rollout
+    )
+    
+    # Tag the release
+    add_git_tag(
+      tag: "android/v#{android_get_version_name}-#{android_get_version_code}"
+    )
+    
+    push_to_git_remote
+    
+    slack(
+      message: "PowerStream Android released to production! 🚀",
+      success: true,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+
+  # ========================================
+  # PROMOTE BETA TO PRODUCTION
+  # ========================================
+  desc "Promote beta to production"
+  lane :promote_to_production do
+    upload_to_play_store(
+      track: 'beta',
+      track_promote_to: 'production',
+      rollout: '0.1'
+    )
+  end
+
+  # ========================================
+  # SCREENSHOTS
+  # ========================================
+  desc "Capture screenshots"
+  lane :screenshots do
+    # Build test APK
+    gradle(
+      project_dir: "android",
+      task: "assembleDebug assembleAndroidTest"
+    )
+    
+    screengrab(
+      app_apk_path: "android/app/build/outputs/apk/debug/app-debug.apk",
+      tests_apk_path: "android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      locales: ['en-US'],
+      clear_previous_screenshots: true,
+      output_directory: "./fastlane/metadata/android/screenshots"
+    )
+  end
+
+  # ========================================
+  # VALIDATE
+  # ========================================
+  desc "Validate Play Store metadata"
+  lane :validate do
+    validate_play_store_json_key(
+      json_key: ENV['GOOGLE_PLAY_JSON_KEY_PATH']
+    )
+  end
+
+  # ========================================
+  # ERROR HANDLING
+  # ========================================
+  error do |lane, exception|
+    slack(
+      message: "Android Build Failed: #{exception.message}",
+      success: false,
+      slack_url: ENV['SLACK_WEBHOOK_URL']
+    ) if ENV['SLACK_WEBHOOK_URL']
+  end
+end
+
+
+
