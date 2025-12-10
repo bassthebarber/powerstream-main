@@ -1,4 +1,5 @@
-// /backend/system-core/InfinityCoreBridge.js
+// backend/system-core/InfinityCoreBridge.js
+
 class InfinityCoreBridge {
   connect() {
     console.log("🔌 [InfinityCoreBridge] Connected to Infinity Core backend.");
@@ -10,4 +11,5 @@ class InfinityCoreBridge {
   }
 }
 
-module.exports = new InfinityCoreBridge();
+const infinityCoreBridge = new InfinityCoreBridge();
+export default infinityCoreBridge;

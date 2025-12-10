@@ -1,4 +1,5 @@
-// backend/analyticsEngine/stationStats.js
+// backend/analytics/stationStats.js
+
 const stationStats = (viewData) => {
   return viewData.reduce((acc, entry) => {
     const { station } = entry;
@@ -7,4 +8,4 @@ const stationStats = (viewData) => {
   }, {});
 };
 
-module.exports = stationStats;
+export default stationStats;

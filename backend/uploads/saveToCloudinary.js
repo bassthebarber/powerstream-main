@@ -1,8 +1,7 @@
 // backend/uploads/saveToCloudinary.js
+import { v2 as cloudinary } from "cloudinary";
 
-const cloudinary = require('../configs/cloudinary');
-
-exports.saveToCloudinary = async (filePath, folder) => {
+export async function saveToCloudinary(filePath, folder) {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       resource_type: 'auto',
@@ -13,4 +12,6 @@ exports.saveToCloudinary = async (filePath, folder) => {
   } catch (error) {
     throw new Error('Cloudinary upload failed');
   }
-};
+}
+
+export default { saveToCloudinary };

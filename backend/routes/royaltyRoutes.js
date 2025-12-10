@@ -1,11 +1,16 @@
-// backend/routes/royaltyRoutes.js
-import express from 'express';
-import { logRoyalty, getRoyalties, calculatePayout } from '../recordingStudio/controllers/royaltyController.js';
+import { Router } from "express";
+import {
+  createWorkFromExport,
+  logPlay,
+  getWorkSummary,
+  listWorks,
+} from "../controllers/royaltyController.js";
 
-const router = express.Router();
+const router = Router();
 
-router.post('/log', logRoyalty);
-router.get('/', getRoyalties);
-router.get('/payout/:trackId', calculatePayout);
+router.post("/work-from-export", createWorkFromExport);
+router.post("/log-play", logPlay);
+router.get("/work/:id", getWorkSummary);
+router.get("/works", listWorks);
 
 export default router;

@@ -1,10 +1,13 @@
-// /backend/AI/AILoader.js
-const MainCircuitBoard = require('../system-core/MainCircuitBoard');
+// backend/AI/aiLoader.js
 
-module.exports = {
-    boot: async () => {
-        console.log("🧠 [AILoader] Starting AI boot sequence...");
-        await MainCircuitBoard.boot();
-        console.log("✅ [AILoader] All AI systems operational.");
-    }
+import MainCircuitBoard from '../system-core/MainCircuitBoard.js';
+
+const AILoader = {
+  boot: async () => {
+    console.log("🧠 [AILoader] Starting AI boot sequence...");
+    await MainCircuitBoard.boot();
+    console.log("✅ [AILoader] All AI systems operational.");
+  }
 };
+
+export default AILoader;

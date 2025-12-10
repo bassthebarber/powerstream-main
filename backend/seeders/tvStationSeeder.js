@@ -1,58 +1,73 @@
-// /backend/utils/tvStationSeeder.js
+// backend/seeders/tvStationSeeder.js
+import Station from "../models/Station.js";
 
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import { connectDB } from "../configs/db.js";
-import Station from "../models/Stationmodel.js"; // Make sure this model exists
+const DEFAULT_STATIONS = [
+  {
+    name: "Southern Power Network",
+    slug: "southern-power-network",
+    description:
+      "Houston's premier network for Southern culture, film, and live broadcasts.",
+    logoUrl: "/logos/southernpowernetworklogo.png",
+  },
+  {
+    name: "No Limit East Houston TV",
+    slug: "nolimit-east-houston",
+    description:
+      "Exclusive No Limit East Houston content, games, events, and shows.",
+    logoUrl: "/logos/nolimiteasthoustonlogo.png",
+  },
+  {
+    name: "Texas Got Talent TV",
+    slug: "texas-got-talent",
+    description:
+      "Talent shows, live competitions, and fan voting across Texas.",
+    logoUrl: "/logos/texasgottalentlogo.png",
+  },
+  {
+    name: "Civic Connect TV",
+    slug: "civic-connect",
+    description:
+      "Community issues, city council coverage, and civic education.",
+    logoUrl: "/logos/civicconnectlogo.png",
+  },
+  {
+    name: "Worldwide TV",
+    slug: "worldwide-tv",
+    description:
+      "Global films, documentaries, and international events.",
+    logoUrl: "/logos/worldwidetvlogo.png",
+  },
+];
 
-dotenv.config();
+export async function seedTVStations() {
+  console.log("🌍 [TV SEED] Seeding TV Stations with lock…");
 
-const seedStations = async () => {
-  try {
-    await connectDB();
+  for (const station of DEFAULT_STATIONS) {
+    const existing = await Station.findOne({ slug: station.slug });
 
-    // Optional: Clear existing data
-    await Station.deleteMany();
+    if (existing && existing.seedLock) {
+      console.log(`   🔒 Locked – keeping existing station: ${station.slug}`);
+      continue;
+    }
 
-    // Add demo TV station data
-    const stations = [
-      {
-        name: "Southern Power Network",
-        slug: "southern-power",
-        description: "Main hub for PowerStream TV broadcasts.",
-        logo: "https://res.cloudinary.com/yourcloud/image/upload/v123456/southern-logo.png",
-        isLive: true,
-      },
-      {
-        name: "Texas Got Talent",
-        slug: "texas-got-talent",
-        description: "Discover local talent in Texas through live performances.",
-        logo: "https://res.cloudinary.com/yourcloud/image/upload/v123456/texasgottalentlogo.PNG",
-        isLive: false,
-      },
-      {
-        name: "Civic Connect",
-        slug: "civic-connect",
-        description: "Civic education and community discussions.",
-        logo: "https://res.cloudinary.com/yourcloud/image/upload/v123456/civicconnectlogo.PNG",
-        isLive: false,
-      },
-      {
-        name: "No Limit East Houston",
-        slug: "no-limit-east-houston",
-        description: "Independent label streaming and artist features.",
-        logo: "https://res.cloudinary.com/yourcloud/image/upload/v123456/nolimiteasthoustonlogo.PNG",
-        isLive: false,
-      },
-    ];
+    if (existing && !existing.seedLock) {
+      console.log(`   ✏️ Updating existing station: ${station.slug}`);
+      existing.name = station.name;
+      existing.description = station.description;
+      existing.logoUrl = station.logoUrl;
+      existing.seedLock = true;
+      await existing.save();
+      continue;
+    }
 
-    await Station.insertMany(stations);
-    console.log("✅ TV stations seeded successfully.");
-    process.exit();
-  } catch (error) {
-    console.error("❌ Seeding failed:", error);
-    process.exit(1);
+    console.log(`   🆕 Creating station: ${station.slug}`);
+    await Station.create({
+      ...station,
+      seedLock: true,
+    });
   }
-};
 
-seedStations();
+  console.log("✅ [TV SEED] Done – nothing was deleted.");
+}
+
+export default seedTVStations;

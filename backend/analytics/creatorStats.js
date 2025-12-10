@@ -1,4 +1,5 @@
-// backend/analyticsEngine/creatorStats.js
+// backend/analytics/creatorStats.js
+
 const creatorStats = (plays) => {
   return plays.reduce((acc, entry) => {
     const { creatorId } = entry;
@@ -10,4 +11,4 @@ const creatorStats = (plays) => {
   }, {});
 };
 
-module.exports = creatorStats;
+export default creatorStats;

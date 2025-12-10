@@ -1,11 +1,13 @@
 // frontend/src/components/TalentVoting.jsx
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5001";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5001";
 
 export default function TalentVoting({ stationSlug = "texas-got-talent" }) {
+  const { user } = useAuth();
   const [contestants, setContestants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [voting, setVoting] = useState({});
@@ -67,7 +69,7 @@ export default function TalentVoting({ stationSlug = "texas-got-talent" }) {
       const res = await fetch(`${API_BASE}/api/tgt/contestants/${idStr}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: localStorage.getItem("userId") || "guest" }),
+        body: JSON.stringify({ userId: user?.id || user?._id || "guest" }),
       });
       const data = await res.json();
       if (data.ok) {

@@ -1,4 +1,7 @@
 /* PowerReel - TikTok-style vertical video feed */
+/* Enterprise Edition with Cinematic Effects */
+
+@import url('./animations.css');
 
 .pr-page {
   position: fixed;
@@ -6,6 +9,7 @@
   background: #000;
   overflow: hidden;
   z-index: 10;
+  animation: fadeIn 0.3s ease forwards;
 }
 
 .pr-container {
@@ -15,6 +19,7 @@
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
 .pr-container::-webkit-scrollbar {
@@ -32,6 +37,7 @@
   background: #000;
   overflow: hidden;
   cursor: pointer;
+  animation: fadeIn 0.5s var(--ease-out-expo, ease) forwards;
 }
 
 /* Video container */
@@ -423,4 +429,5 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
 

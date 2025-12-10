@@ -1,13 +1,7 @@
-import mongoose from 'mongoose';
+// backend/models/StationModel.js
+// Re-export the main Station model to avoid duplicate model registration
+// All Station model imports should use this or backend/models/Station.js
 
-const stationSchema = new mongoose.Schema({
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  name: { type: String, required: true },
-  layout: { type: Object, default: {} },
-  streamKey: { type: String, unique: true },
-  isLive: { type: Boolean, default: false },
-  playlist: { type: Array, default: [] }
-}, { timestamps: true });
+import Station from './Station.js';
 
-const Station = mongoose.model('Station', stationSchema);
 export default Station;

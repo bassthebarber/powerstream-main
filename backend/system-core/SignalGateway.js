@@ -1,19 +1,20 @@
-// /backend/system-core/SignalGateway.js
-const WebSocket = require('ws');
-const EventBus = require('./EventBus');
+// backend/system-core/SignalGateway.js
+
+import { WebSocketServer, WebSocket } from 'ws';
+import EventBus from './EventBus.js';
 
 let wss;
 
-module.exports = {
+const SignalGateway = {
   init(server) {
-    wss = new WebSocket.Server({ server });
+    wss = new WebSocketServer({ server });
 
     wss.on('connection', (ws) => {
       console.log("🔗 [SignalGateway] Frontend connected.");
 
       ws.on('message', (message) => {
         try {
-          const data = JSON.parse(message);
+          const data = JSON.parse(message.toString());
           EventBus.emit('frontend:command', data);
         } catch (err) {
           console.error("❌ [SignalGateway] Invalid message from frontend:", err);
@@ -21,6 +22,7 @@ module.exports = {
       });
     });
   },
+
   sendToFrontend(command, payload) {
     const message = JSON.stringify({ type: command, payload });
     if (wss) {
@@ -32,3 +34,5 @@ module.exports = {
     }
   }
 };
+
+export default SignalGateway;

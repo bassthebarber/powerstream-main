@@ -2,6 +2,7 @@
 // Centralized HTTP client with interceptors
 import axios from 'axios';
 import { API_BASE_URL, LIMITS } from '../config/apiConfig.js';
+import { getToken, saveToken, clearToken } from '../utils/auth.js';
 
 /**
  * Create axios instance with default configuration
@@ -16,10 +17,11 @@ const httpClient = axios.create({
 
 /**
  * Request interceptor - attach auth token
+ * Uses centralized getToken() from utils/auth.js for consistency
  */
 httpClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,6 +34,7 @@ httpClient.interceptors.request.use(
 
 /**
  * Response interceptor - handle errors
+ * Uses centralized clearToken() from utils/auth.js for consistency
  */
 httpClient.interceptors.response.use(
   (response) => response,
@@ -42,7 +45,7 @@ httpClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       
-      // Try to refresh token
+      // Try to refresh token (using localStorage directly for refresh token)
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
@@ -50,18 +53,20 @@ httpClient.interceptors.response.use(
             refreshToken,
           });
           
-          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          const { accessToken, refreshToken: newRefreshToken, token } = response.data;
+          const newAccessToken = accessToken || token;
           
-          localStorage.setItem('token', accessToken);
+          // Use centralized token storage
+          saveToken(newAccessToken);
           if (newRefreshToken) {
             localStorage.setItem('refreshToken', newRefreshToken);
           }
           
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return httpClient(originalRequest);
         } catch (refreshError) {
           // Refresh failed - clear tokens and redirect
-          localStorage.removeItem('token');
+          clearToken();
           localStorage.removeItem('refreshToken');
           
           // Dispatch custom event for auth context to handle
@@ -69,7 +74,7 @@ httpClient.interceptors.response.use(
         }
       } else {
         // No refresh token - clear and redirect
-        localStorage.removeItem('token');
+        clearToken();
         window.dispatchEvent(new CustomEvent('auth:logout'));
       }
     }
@@ -80,13 +85,12 @@ httpClient.interceptors.response.use(
 
 /**
  * Token management utilities
+ * These wrap the centralized utils/auth.js functions for consistency
  */
 export const tokenUtils = {
-  getToken: () => localStorage.getItem('token'),
+  getToken,
   
-  setToken: (token) => {
-    localStorage.setItem('token', token);
-  },
+  setToken: saveToken,
   
   getRefreshToken: () => localStorage.getItem('refreshToken'),
   
@@ -95,19 +99,19 @@ export const tokenUtils = {
   },
   
   setTokens: (accessToken, refreshToken) => {
-    localStorage.setItem('token', accessToken);
+    saveToken(accessToken);
     if (refreshToken) {
       localStorage.setItem('refreshToken', refreshToken);
     }
   },
   
   clearTokens: () => {
-    localStorage.removeItem('token');
+    clearToken();
     localStorage.removeItem('refreshToken');
   },
   
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
+    return !!getToken();
   },
 };
 
@@ -122,10 +126,10 @@ export const uploadClient = axios.create({
   },
 });
 
-// Add same interceptors to upload client
+// Add same interceptors to upload client (uses centralized getToken)
 uploadClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -140,4 +144,3 @@ uploadClient.interceptors.response.use(
 );
 
 export default httpClient;
-

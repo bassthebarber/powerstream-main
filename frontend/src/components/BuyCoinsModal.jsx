@@ -1,25 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { buyCoins } from "../lib/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import api from "../lib/api.js";
+import ServiceNotConfiguredBanner from "./ServiceNotConfiguredBanner.jsx";
 import "../styles/theme.css";
 
-const COIN_PACKAGES = [
-  { amount: 100, label: "100 Coins", price: "$0.99" },
-  { amount: 500, label: "500 Coins", price: "$4.99" },
-  { amount: 1000, label: "1,000 Coins", price: "$9.99" },
-  { amount: 5000, label: "5,000 Coins", price: "$39.99" },
-  { amount: 10000, label: "10,000 Coins", price: "$79.99" },
+// Fallback packages in case API is unavailable
+const FALLBACK_PACKAGES = [
+  { id: "pack_100", coins: 100, label: "100 Coins", price: 0.99 },
+  { id: "pack_500", coins: 500, label: "500 Coins", price: 4.99, popular: true },
+  { id: "pack_1000", coins: 1000, label: "1,000 Coins", price: 9.99 },
+  { id: "pack_5000", coins: 5000, label: "5,000 Coins", price: 39.99, bestValue: true },
+  { id: "pack_10000", coins: 10000, label: "10,000 Coins", price: 74.99 },
 ];
 
 export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
   const { user, refreshUser } = useAuth();
-  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [packages, setPackages] = useState(FALLBACK_PACKAGES);
+  const [selectedPackage, setSelectedPackage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [paymentsAvailable, setPaymentsAvailable] = useState(true);
+  const [loadingPackages, setLoadingPackages] = useState(true);
+
+  // Load packages on mount
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const loadPackages = async () => {
+      setLoadingPackages(true);
+      try {
+        // Check payments service health
+        const res = await api.get("/payments/health");
+        if (res.data?.ok) {
+          // Check if any payment provider is configured
+          const hasProvider = res.data.providers?.paypal || res.data.providers?.stripe;
+          setPaymentsAvailable(hasProvider);
+        }
+        
+        // Try to load packages from coins endpoint first
+        try {
+          const packagesRes = await api.get("/coins/packages");
+          if (packagesRes.data?.packages) {
+            setPackages(packagesRes.data.packages);
+          }
+        } catch {
+          // Fall back to payments endpoint
+          const packagesRes = await api.get("/payments/packages");
+          if (packagesRes.data?.packages) {
+            setPackages(packagesRes.data.packages);
+          }
+        }
+      } catch (err) {
+        console.debug("[BuyCoins] Payment service check:", err.message);
+        // Use fallback packages - payments might not be configured
+        setPaymentsAvailable(false);
+      } finally {
+        setLoadingPackages(false);
+      }
+    };
+    
+    loadPackages();
+  }, [isOpen]);
 
   const handleBuy = async () => {
-    if (!selectedAmount) {
+    if (!selectedPackage) {
       setError("Please select a coin package");
       return;
     }
@@ -29,14 +75,25 @@ export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
     setLoading(true);
 
     try {
-      const result = await buyCoins({ amount: selectedAmount });
+      // Try to create a real checkout session first
+      const checkoutRes = await api.post("/coins/checkout", {
+        packageId: selectedPackage.id,
+        provider: "stripe",
+      });
+
+      if (checkoutRes.data?.url) {
+        // Redirect to Stripe checkout
+        window.location.href = checkoutRes.data.url;
+        return;
+      }
+
+      // Fallback to mock buy (for development)
+      const result = await buyCoins({ amount: selectedPackage.coins });
       if (result?.ok) {
-        setSuccess(`Successfully purchased ${selectedAmount} coins!`);
-        // Refresh user data to get updated balance
+        setSuccess(`Successfully purchased ${selectedPackage.coins} coins!`);
         if (refreshUser) {
           await refreshUser();
         }
-        // Call onSuccess callback if provided
         if (onSuccess) {
           setTimeout(() => {
             onSuccess(result);
@@ -47,12 +104,21 @@ export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
             onClose();
           }, 1500);
         }
+      } else if (result?.code === "SERVICE_NOT_CONFIGURED") {
+        setError("Payments are not configured yet. Please try again later.");
+        setPaymentsAvailable(false);
       } else {
         setError(result?.message || "Failed to buy coins");
       }
     } catch (err) {
       console.error("Error buying coins:", err);
-      setError(err.response?.data?.message || "Failed to buy coins");
+      const errData = err.response?.data;
+      if (errData?.code === "SERVICE_NOT_CONFIGURED") {
+        setPaymentsAvailable(false);
+        setError("Payment processing is not available yet.");
+      } else {
+        setError(errData?.message || "Failed to buy coins");
+      }
     } finally {
       setLoading(false);
     }
@@ -119,6 +185,15 @@ export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
           </div>
         )}
 
+        {!paymentsAvailable && (
+          <ServiceNotConfiguredBanner
+            message="Payment processing is being set up. Purchases will be available soon!"
+            type="warning"
+            icon="💳"
+            dismissible={false}
+          />
+        )}
+
         {error && (
           <div
             style={{
@@ -153,28 +228,60 @@ export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
 
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontSize: 14, color: "#888", marginBottom: 12 }}>Select Package</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-            {COIN_PACKAGES.map((pkg) => (
-              <button
-                key={pkg.amount}
-                onClick={() => setSelectedAmount(pkg.amount)}
-                disabled={loading}
-                style={{
-                  padding: 16,
-                  background: selectedAmount === pkg.amount ? "rgba(255,184,77,0.2)" : "rgba(255,255,255,0.05)",
-                  border: `2px solid ${selectedAmount === pkg.amount ? "var(--ps-gold)" : "rgba(255,255,255,0.1)"}`,
-                  borderRadius: 8,
-                  color: "#fff",
-                  cursor: loading ? "not-allowed" : "pointer",
-                  textAlign: "left",
-                  transition: "all 0.2s",
-                }}
-              >
-                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{pkg.label}</div>
-                <div style={{ fontSize: 14, color: "var(--ps-gold)" }}>{pkg.price}</div>
-              </button>
-            ))}
-          </div>
+          {loadingPackages ? (
+            <div style={{ textAlign: "center", padding: 20, color: "#888" }}>Loading packages...</div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+              {packages.map((pkg) => (
+                <button
+                  key={pkg.id || pkg.coins}
+                  onClick={() => setSelectedPackage(pkg)}
+                  disabled={loading || !paymentsAvailable}
+                  style={{
+                    padding: 16,
+                    background: selectedPackage?.id === pkg.id ? "rgba(255,184,77,0.2)" : "rgba(255,255,255,0.05)",
+                    border: `2px solid ${selectedPackage?.id === pkg.id ? "var(--ps-gold)" : "rgba(255,255,255,0.1)"}`,
+                    borderRadius: 8,
+                    color: "#fff",
+                    cursor: loading || !paymentsAvailable ? "not-allowed" : "pointer",
+                    textAlign: "left",
+                    transition: "all 0.2s",
+                    position: "relative",
+                    opacity: paymentsAvailable ? 1 : 0.5,
+                  }}
+                >
+                  {pkg.popular && (
+                    <span style={{
+                      position: "absolute",
+                      top: -8,
+                      right: 8,
+                      background: "var(--ps-gold)",
+                      color: "#000",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                    }}>POPULAR</span>
+                  )}
+                  {pkg.bestValue && (
+                    <span style={{
+                      position: "absolute",
+                      top: -8,
+                      right: 8,
+                      background: "#4ade80",
+                      color: "#000",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                    }}>BEST VALUE</span>
+                  )}
+                  <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{pkg.label}</div>
+                  <div style={{ fontSize: 14, color: "var(--ps-gold)" }}>${pkg.price?.toFixed(2) || pkg.price}</div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div style={{ display: "flex", gap: 12 }}>
@@ -196,24 +303,24 @@ export default function BuyCoinsModal({ isOpen, onClose, onSuccess }) {
           </button>
           <button
             onClick={handleBuy}
-            disabled={loading || !selectedAmount}
+            disabled={loading || !selectedPackage || !paymentsAvailable}
             style={{
               flex: 1,
               padding: 12,
-              background: loading || !selectedAmount ? "#666" : "var(--ps-gold)",
+              background: loading || !selectedPackage || !paymentsAvailable ? "#666" : "var(--ps-gold)",
               border: "none",
               borderRadius: 8,
-              color: loading || !selectedAmount ? "#999" : "#000",
-              cursor: loading || !selectedAmount ? "not-allowed" : "pointer",
+              color: loading || !selectedPackage || !paymentsAvailable ? "#999" : "#000",
+              cursor: loading || !selectedPackage || !paymentsAvailable ? "not-allowed" : "pointer",
               fontWeight: 700,
             }}
           >
-            {loading ? "Processing..." : "Buy Coins"}
+            {loading ? "Processing..." : paymentsAvailable ? "Buy Coins" : "Coming Soon"}
           </button>
         </div>
 
         <div style={{ marginTop: 16, fontSize: 11, color: "#666", textAlign: "center" }}>
-          * Payment processing is mocked for development
+          {paymentsAvailable ? "Secure payment powered by Stripe" : "Payment processing will be available soon"}
         </div>
       </div>
     </div>

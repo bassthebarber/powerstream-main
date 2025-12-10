@@ -1,38 +1,50 @@
 // backend/models/Station.js
-// DEPRECATED: Model moved to /src/domain/models/Station.model.js
-// This file remains for backward compatibility with existing imports.
-// TODO: Update all imports to use /src/domain/models/Station.model.js
 import mongoose from "mongoose";
 
-const StationSchema = new mongoose.Schema(
-  {
-    owner: { type: mongoose.Types.ObjectId, required: true, index: true },
-    name: { type: String, required: true, index: true },
-    slug: { type: String, unique: true, sparse: true, index: true },
-    logoUrl: { type: String },
-    description: { type: String },
-    category: { type: String, index: true },
-    layout: { type: String, default: "powerfeed:auto" },
-    streamKey: String, // optional local key
-    ingest: {
-      rtmpUrl: String,
-      streamKey: String,     // Livepeer streamKey
-      playbackId: String
-    },
-    playbackUrl: String,      // https://livepeercdn.com/hls/<playbackId>/index.m3u8
-    liveStreamUrl: { type: String }, // HLS URL for live stream
-    recordedPlaylistId: { type: String }, // reference to playlist of recorded content
-    isLive: { type: Boolean, default: false },
-    isPublic: { type: Boolean, default: true, index: true },
-    playlist: { type: Array, default: [] },
-    status: { type: String, default: "ready" },
-    tags: { type: Array, default: [] },
-    // Network/region fields
-    network: { type: String, index: true }, // e.g., "Southern Power Syndicate"
-    region: { type: String, index: true }, // e.g., "US", "Global", "International"
-    country: { type: String, index: true },
-  },
-  { timestamps: true }
-);
+// Video schema - embedded in Station
+const videoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, default: "" },
+  url: { type: String, required: true },
+  thumbnail: { type: String, default: "" },
+  duration: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  stationId: { type: mongoose.Schema.Types.ObjectId, ref: "Station" },
+});
 
-export default mongoose.models.Station || mongoose.model("Station", StationSchema);
+const stationSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true, unique: true, index: true },
+  description: { type: String, default: "" },
+  logo: { type: String, default: "" },
+  logoUrl: { type: String, default: "" },
+  bannerUrl: { type: String, default: "" },
+  
+  // Persistence lock - prevents seeder from overwriting station data
+  seedLock: {
+    type: Boolean,
+    default: true,
+  },
+
+  // Videos array - NEVER reset by seeders
+  videos: [videoSchema],
+
+  // Additional fields
+  network: { type: String, default: "" },
+  region: { type: String, default: "" },
+  country: { type: String, default: "" },
+  isPublic: { type: Boolean, default: true },
+  isLive: { type: Boolean, default: false },
+  streamUrl: { type: String, default: "" },
+  theme: {
+    primaryColor: { type: String, default: "#000000" },
+    accentColor: { type: String, default: "#FFD700" },
+    backgroundColor: { type: String, default: "#0a0a0a" }
+  },
+
+  createdAt: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+const Station = mongoose.model("Station", stationSchema);
+
+export default Station;

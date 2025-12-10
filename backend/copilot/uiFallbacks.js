@@ -1,8 +1,10 @@
-// ✅ /backend/copilot/uiFallbacks.js
+// backend/copilot/uiFallbacks.js
 
-module.exports = {
+const uiFallbacks = {
   loadDefaultUI(component) {
     console.log(`[UIFallbacks] Loading fallback UI for ${component}`);
     return { component, fallbackApplied: true };
   },
 };
+
+export default uiFallbacks;

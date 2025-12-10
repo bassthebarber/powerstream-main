@@ -12,6 +12,9 @@ import {
 
 const router = express.Router();
 
+// Feature availability check
+const AI_CONFIGURED = !!(process.env.MUSICGEN_API_BASE || process.env.MUSICGEN_API_KEY);
+
 // ==========================================
 // HEALTH & OPTIONS
 // ==========================================
@@ -21,11 +24,21 @@ const router = express.Router();
  * GET /api/studio/ai/health
  */
 router.get('/health', (_req, res) => {
+  const capabilities = ['pattern-fallback'];
+  if (process.env.MUSICGEN_API_BASE || process.env.MUSICGEN_API_KEY) {
+    capabilities.unshift('musicgen');
+  }
+  if (process.env.OPENAI_API_KEY) {
+    capabilities.unshift('openai');
+  }
+
   res.json({
     ok: true,
     service: 'AI Beat Engine',
     version: '2.0.0',
-    capabilities: ['openai', 'musicgen', 'pattern-fallback'],
+    aiConfigured: AI_CONFIGURED,
+    capabilities,
+    fallbackMode: !AI_CONFIGURED,
     timestamp: new Date().toISOString(),
   });
 });
@@ -139,6 +152,7 @@ router.post('/preset/:presetName', async (req, res) => {
 });
 
 export default router;
+
 
 
 

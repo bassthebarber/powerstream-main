@@ -242,6 +242,52 @@ For detailed production deployment instructions, see **[docs/DEPLOYMENT.md](./do
 - Port 8000 for HTTP-FLV playback
 - See [DEPLOYMENT.md](./docs/DEPLOYMENT.md#rtmp-streaming-setup) for firewall setup
 
+## 🔧 Diagnostics & Repair
+
+### Auto-Port-Heal Script
+
+If you encounter port conflicts or stale processes blocking PowerStream services, use the Auto-Port-Heal script:
+
+```powershell
+# From project root
+.\backend\scripts\AutoPortHeal.ps1
+
+# Options:
+.\backend\scripts\AutoPortHeal.ps1 -SkipRestart      # Only kill processes, don't restart
+.\backend\scripts\AutoPortHeal.ps1 -BackendOnly     # Only restart backend (not frontend)
+.\backend\scripts\AutoPortHeal.ps1 -Verbose         # Show detailed output
+```
+
+**What it does:**
+1. ✅ Checks ports 1935 (RTMP), 8000 (HLS), 5001 (API)
+2. ✅ Kills any processes blocking those ports
+3. ✅ Clears all stale Node.js processes
+4. ✅ Restarts Backend (API + NodeMediaServer)
+5. ✅ Restarts Frontend (Vite)
+
+### Manual Port Check
+
+```powershell
+# Check which processes are using critical ports
+netstat -ano | findstr ":1935 :8000 :5001"
+
+# Kill a specific process by PID
+taskkill /PID <pid_number> /F
+
+# Kill all Node processes
+taskkill /IM node.exe /F
+```
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Port 5001 in use | Run `AutoPortHeal.ps1` |
+| RTMP not connecting | Check port 1935, ensure NodeMediaServer started |
+| Frontend shows blank | Check API connection, verify backend is running |
+| MongoDB connection failed | Check `MONGO_URI` in `.env.local` |
+| ffmpeg warning | Install ffmpeg for transcoding (optional) |
+
 ## 📄 License
 
 Proprietary - PowerStream Platform

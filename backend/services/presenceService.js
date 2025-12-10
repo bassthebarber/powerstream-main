@@ -1,7 +1,7 @@
 // backend/services/presenceService.js
-const Presence = require('../models/Presence');
+import Presence from "../models/Presence.js";
 
-async function updateUserPresence(userId, isOnline) {
+export async function updateUserPresence(userId, isOnline) {
   return await Presence.findOneAndUpdate(
     { userId },
     { isOnline, lastSeen: new Date() },
@@ -9,11 +9,11 @@ async function updateUserPresence(userId, isOnline) {
   );
 }
 
-async function getUserPresence(userId) {
+export async function getUserPresence(userId) {
   return await Presence.findOne({ userId });
 }
 
-module.exports = {
+export default {
   updateUserPresence,
   getUserPresence,
 };

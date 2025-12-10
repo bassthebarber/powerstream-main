@@ -1,4 +1,6 @@
-module.exports = async function SovereignBuild() {
+// backend/sovereign/SovereignBuild.js
+
+export default async function SovereignBuild() {
   // Here your AI Override would listen and self-build modules
 
   console.log("🚀 Sovereign Build Command Received");
@@ -12,4 +14,4 @@ module.exports = async function SovereignBuild() {
   
   // This is where your Infinity Core / Override AI triggers code generation
   return { success: true, message: "Sovereign Build Complete" };
-};
+}

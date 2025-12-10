@@ -1,13 +1,14 @@
-// /backend/AI/InfinityStatus.js
-const InfinityCore = require('./InfinityCore/InfinityCore');
+// backend/AI/infinityStatus.js
+
+import InfinityCore from './InfinityCore/InfinityCore.js';
 
 class InfinityStatus {
-    static getStatus() {
-        return {
-            active: InfinityCore.isActive(),
-            timestamp: Date.now()
-        };
-    }
+  static getStatus() {
+    return {
+      active: InfinityCore.isActive(),
+      timestamp: Date.now()
+    };
+  }
 }
 
-module.exports = InfinityStatus;
+export default InfinityStatus;

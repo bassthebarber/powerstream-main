@@ -5,19 +5,24 @@ const badWords = ['nigger', 'bitch', 'fuck', 'shit', 'kill', 'suicide']; // Add 
 /**
  * Checks if a message contains banned words
  */
-exports.containsInappropriateLanguage = (text) => {
+export function containsInappropriateLanguage(text) {
   const lower = text.toLowerCase();
   return badWords.some((word) => lower.includes(word));
-};
+}
 
 /**
  * Cleans the message by replacing banned words with asterisks
  */
-exports.censorMessage = (text) => {
+export function censorMessage(text) {
   let cleaned = text;
   badWords.forEach(word => {
     const regex = new RegExp(`\\b${word}\\b`, 'gi');
     cleaned = cleaned.replace(regex, '****');
   });
   return cleaned;
+}
+
+export default {
+  containsInappropriateLanguage,
+  censorMessage,
 };

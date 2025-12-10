@@ -1,6 +1,5 @@
 /* =====================================================
-   POWERHARMONY AI RECORDING STUDIO - SHARED STYLES
-   Hybrid: Futuristic AI + Professional DAW
+   POWERHARMONY AI RECORDING STUDIO - MOBILE RESPONSIVE
    Black background, gold/amber accents
    ===================================================== */
 
@@ -31,7 +30,92 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #0a0a0c 0%, #000 50%, #050508 100%);
   padding: 24px;
+  padding-bottom: 100px; /* Space for bottom dock */
   box-sizing: border-box;
+}
+
+/* === TOP BAR / PILL NAVIGATION === */
+.studio-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #0a0a0a;
+  padding: 12px;
+  border-radius: 999px;
+  border: 1px solid #c9a33a;
+  box-shadow: 0 0 24px rgba(201, 163, 58, 0.15);
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.studio-pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid #c9a33a;
+  background: #0b0b0b;
+  color: #f0c85a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.studio-pill:hover {
+  box-shadow: 0 0 10px rgba(201, 163, 58, 0.3);
+}
+
+.studio-pill-active {
+  background: #f0c85a;
+  color: #101010;
+}
+
+/* === BODY / CONTENT === */
+.studio-body {
+  max-width: 1400px;
+  margin: 22px auto;
+}
+
+/* === GRID LAYOUT === */
+.studio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* === CARDS === */
+.studio-card {
+  background: #111;
+  border: 1px solid #2b2b2b;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* === BUTTONS === */
+.studio-btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+  background: #f0c85a;
+  color: #101010;
+  border: 1px solid #c9a33a;
+}
+
+.studio-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(201, 163, 58, 0.35);
+}
+
+.studio-btn-outline {
+  background: transparent;
+  color: #f0c85a;
+  border: 1px solid #c9a33a;
 }
 
 /* === METERS === */
@@ -50,16 +134,6 @@
   transition: width 0.3s ease;
 }
 
-.studio-meter-fill--animated {
-  animation: meter-shimmer 2s ease-in-out infinite;
-}
-
-@keyframes meter-shimmer {
-  0% { filter: brightness(1); }
-  50% { filter: brightness(1.2); }
-  100% { filter: brightness(1); }
-}
-
 /* === TRACK CARDS === */
 .studio-track-card {
   background: rgba(0, 0, 0, 0.4);
@@ -76,41 +150,278 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.studio-track-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* === ROOMS SECTION === */
+.studio-rooms {
+  margin-top: 28px;
+}
+
+.studio-rooms-title {
+  font-size: 22px;
   margin-bottom: 12px;
+  color: #f0c85a;
 }
 
-.studio-track-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--studio-gold);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.studio-rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
 }
 
-.studio-track-controls {
-  display: flex;
-  gap: 8px;
+.studio-room-card {
+  background: #0f0f0f;
+  border: 1px solid #2b2b2b;
+  border-radius: 16px;
+  padding: 14px;
 }
 
-.studio-track-meter {
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 8px;
+/* ============================================================
+   MOBILE RESPONSIVE STYLES
+   ============================================================ */
+
+/* ========== TABLET (max-width: 900px) ========== */
+@media (max-width: 900px) {
+  .studio-page {
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+  
+  .studio-top-bar {
+    padding: 10px;
+    gap: 8px;
+    border-radius: 16px;
+    justify-content: flex-start;
+  }
+  
+  .studio-pill {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .studio-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  
+  .studio-rooms-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
 }
 
-.studio-track-meter-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--studio-gold-dim), var(--studio-gold));
-  border-radius: 4px;
-  transition: width 0.1s ease;
+/* ========== MOBILE (max-width: 600px) ========== */
+@media (max-width: 600px) {
+  .studio-page {
+    padding: 12px;
+    padding-bottom: 90px;
+  }
+  
+  .studio-top-bar {
+    position: relative;
+    top: 0;
+    padding: 8px;
+    gap: 6px;
+    border-radius: 12px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .studio-top-bar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .studio-pill {
+    padding: 8px 10px;
+    font-size: 12px;
+    min-width: max-content;
+  }
+  
+  .studio-body {
+    margin: 16px auto;
+  }
+  
+  .studio-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .studio-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  
+  .studio-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .studio-rooms {
+    margin-top: 20px;
+  }
+  
+  .studio-rooms-title {
+    font-size: 18px;
+  }
+  
+  .studio-rooms-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .studio-room-card {
+    padding: 12px;
+  }
+  
+  .studio-track-card {
+    padding: 12px;
+  }
+  
+  /* Mix Master Controls */
+  .studio-controls-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  .studio-fader-container {
+    flex-direction: row !important;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .studio-fader {
+    height: 120px !important;
+  }
+  
+  /* AI Recipe Input */
+  .studio-ai-recipe {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .studio-ai-recipe input {
+    width: 100%;
+  }
+  
+  .studio-ai-recipe button {
+    width: 100%;
+  }
 }
 
+/* ========== SMALL MOBILE (max-width: 375px) ========== */
+@media (max-width: 375px) {
+  .studio-page {
+    padding: 8px;
+    padding-bottom: 85px;
+  }
+  
+  .studio-top-bar {
+    padding: 6px;
+    gap: 4px;
+  }
+  
+  .studio-pill {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  
+  .studio-grid {
+    gap: 10px;
+  }
+  
+  .studio-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+  
+  .studio-rooms-title {
+    font-size: 16px;
+  }
+  
+  .studio-room-card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+  
+  .studio-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   STUDIO MODULE STYLES - Mobile Overrides
+   (For styles defined in Studio.module.css)
+   ============================================================ */
+
+/* These use :global() to override module styles from regular CSS */
+:global(.page) {
+  padding-bottom: 100px !important;
+}
+
+@media (max-width: 600px) {
+  :global(.topBar) {
+    position: relative !important;
+    top: 0 !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 8px !important;
+    border-radius: 12px !important;
+  }
+  
+  :global(.pill),
+  :global(.pillActive) {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+  
+  :global(.grid) {
+    grid-template-columns: 1fr !important;
+  }
+  
+  :global(.roomsGrid) {
+    grid-template-columns: 1fr !important;
+  }
+  
+  :global(.actions) {
+    flex-direction: column !important;
+  }
+  
+  :global(.btn),
+  :global(.btnOutline) {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  
+  :global(.royaltyContainer) {
+    grid-template-columns: 1fr !important;
+  }
+  
+  :global(.mixMasterControlsGrid) {
+    grid-template-columns: 1fr !important;
+  }
+  
+  :global(.libraryGrid) {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  :global(.visualizerPresetList) {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 375px) {
+  :global(.libraryGrid) {
+    grid-template-columns: 1fr !important;
+  }
+  
+  :global(.visualizerPresetList) {
+    grid-template-columns: 1fr !important;
+  }
+}
 
 

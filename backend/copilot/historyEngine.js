@@ -1,8 +1,15 @@
-const fs = require("fs");
-const path = require("path");
+// backend/copilot/historyEngine.js
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const LOG_PATH = path.join(__dirname, "../../logs/override-log.txt");
 
-module.exports = {
+const historyEngine = {
   listSnapshots() {
     if (!fs.existsSync(LOG_PATH)) return [];
 
@@ -57,3 +64,5 @@ module.exports = {
     console.log(`[HistoryEngine] Snapshot "${name}" saved.`);
   },
 };
+
+export default historyEngine;

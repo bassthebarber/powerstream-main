@@ -24,8 +24,8 @@ function formatMessage({
     type,
     roomId,
     isAI,
-    replyTo,           // messageId it replies to
-    attachments,       // array of media links
+    replyTo,
+    attachments,
     sentAt: timestamp,
     deliveredAt: null,
     readAt: null,
@@ -33,4 +33,4 @@ function formatMessage({
   };
 }
 
-module.exports = formatMessage;
+export default formatMessage;

@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema(
 
     // ✅ Coin balance for PowerCoins
     coinBalance: { type: Number, default: 0, min: 0 },
+
+    // ✅ Social graph - following/followers
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
@@ -85,7 +89,5 @@ UserSchema.pre("save", function (next) {
   next();
 });
 
-// ❌ REMOVE this line completely:
-// UserSchema.index({ email: 1 });   ← this caused the duplicate index warning
-
-export default mongoose.model("User", UserSchema);
+// Use existing model or create new
+export default mongoose.models.User || mongoose.model("User", UserSchema);

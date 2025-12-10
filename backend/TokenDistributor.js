@@ -1,4 +1,5 @@
-// TokenDistributor.js
+// backend/TokenDistributor.js
+
 const distributeTokens = (trackId, splits) => {
   return {
     track: trackId,
@@ -9,4 +10,4 @@ const distributeTokens = (trackId, splits) => {
   };
 };
 
-module.exports = distributeTokens;
+export default distributeTokens;

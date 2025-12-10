@@ -3,4 +3,4 @@ const enhanceVideoVisual = (videoPath) => {
   return videoPath.replace("raw/", "visual-enhanced/");
 };
 
-module.exports = enhanceVideoVisual;
+export default enhanceVideoVisual;

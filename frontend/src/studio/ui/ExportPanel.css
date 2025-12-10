@@ -1,0 +1,372 @@
+/* frontend/src/studio/ui/ExportPanel.css */
+
+.export-panel {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+  border: 1px solid #2d2d44;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 320px;
+}
+
+.export-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.export-icon {
+  font-size: 1.5rem;
+}
+
+.export-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.export-info {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.info-row span:first-child {
+  color: #9ca3af;
+}
+
+.info-row span:last-child {
+  color: #fff;
+  font-weight: 500;
+}
+
+.export-format {
+  margin-bottom: 1rem;
+}
+
+.export-format label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.export-format span {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.export-format select {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.export-format select:focus {
+  border-color: #f5b342;
+}
+
+.export-format select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.export-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-btn.primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.export-btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.export-btn.secondary {
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+}
+
+.export-btn.secondary:hover:not(:disabled) {
+  background: #374151;
+}
+
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.export-progress {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #1f2937;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.export-error {
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.export-result {
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.export-result p {
+  margin: 0 0 0.75rem 0;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.export-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #1f2937;
+  color: #60a5fa;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.export-link:hover {
+  background: #374151;
+}
+
+/* Royalty Form */
+.royalty-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+}
+
+.royalty-form h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #a78bfa;
+}
+
+.royalty-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.royalty-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.royalty-fields label span {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.royalty-fields input {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.royalty-fields input:focus {
+  border-color: #a78bfa;
+}
+
+.royalty-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.royalty-actions .export-btn {
+  flex: 1;
+  padding: 0.6rem;
+}
+
+/* Royalty Work Summary */
+.royalty-work-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+}
+
+.royalty-work-summary h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #10b981;
+}
+
+.work-details p {
+  margin: 0.35rem 0;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.work-details p strong {
+  color: #9ca3af;
+}
+
+.work-details code {
+  background: #1f2937;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  color: #60a5fa;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  background: #374151;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #fbbf24;
+}
+
+/* Current Track */
+.export-current-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.track-badge {
+  padding: 3px 8px;
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #d4af37;
+  text-transform: uppercase;
+}
+
+.track-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* Version Options (Clean/Explicit) */
+.export-version-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.version-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.version-option:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.version-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #d4af37;
+}
+
+.version-option input[type="checkbox"]:checked + .option-label {
+  color: #d4af37;
+}
+
+.option-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-weight: 500;
+  color: #aaa;
+}
+
+.option-label small {
+  font-size: 10px;
+  font-weight: 400;
+  color: #666;
+  margin-top: 2px;
+}
+

@@ -1,7 +1,11 @@
-// /backend/AI/Copilot/CopilotEventHandler.js
-const EventBus = require('../../system-core/EventBus');
-const CopilotCore = require('./CopilotCore');
-const CopilotIntentMap = require('./CopilotIntentMap');
+// backend/AI/Copilot/CopilotEventHandler.js
+
+import EventBus from '../../system-core/EventBus.js';
+// Note: These may need to be created as separate modules
+// import CopilotCore from './CopilotCore.js';
+// import CopilotIntentMap from './CopilotIntentMap.js';
+
+const CopilotIntentMap = {}; // Placeholder
 
 class CopilotEventHandler {
   listen() {
@@ -19,9 +23,10 @@ class CopilotEventHandler {
     // Listen for AI requests to override
     EventBus.on('copilot:override', (payload) => {
       console.log("⚡ [CopilotEventHandler] Override request received.");
-      CopilotCore.executeOverride(payload);
+      // CopilotCore.executeOverride(payload);
     });
   }
 }
 
-module.exports = new CopilotEventHandler();
+const copilotEventHandler = new CopilotEventHandler();
+export default copilotEventHandler;

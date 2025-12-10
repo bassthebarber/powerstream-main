@@ -1,6 +1,6 @@
-// backend/testmongo.js
-require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+// backend/test-mongo.js
+import 'dotenv/config';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 const uri = process.env.MONGO_URI;
 

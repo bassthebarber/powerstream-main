@@ -3,4 +3,4 @@ const enhanceVideo = (rawVideoPath) => {
   return rawVideoPath.replace("/raw/", "/enhanced/");
 };
 
-module.exports = enhanceVideo;
+export default enhanceVideo;

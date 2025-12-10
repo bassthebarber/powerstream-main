@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideSystemMap.js
+// /backend/control-tower/override/overrideSystemMap.js
 
-const systemMap = {
+export const systemMap = {
   'boot': 'commandTrigger.boot',
   'copilot-core': 'copilotOverrideCore',
   'scan': 'copilotPowerFamousScan',
@@ -14,4 +14,4 @@ const systemMap = {
   'bridge': 'overrideInterfaceBridge',
 };
 
-module.exports = systemMap;
+export default systemMap;

@@ -16,4 +16,4 @@ const applyPitchCorrection = (audioBuffer) => {
   };
 };
 
-module.exports = applyPitchCorrection;
+export default applyPitchCorrection;

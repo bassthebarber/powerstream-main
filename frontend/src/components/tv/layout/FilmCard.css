@@ -1,0 +1,365 @@
+/* frontend/src/components/tv/layout/FilmCard.css */
+/* Netflix-style Film Card Styles */
+
+.film-card {
+  position: relative;
+  flex-shrink: 0;
+  width: 220px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.film-card--hovered {
+  z-index: 100;
+  transform: scale(1.15);
+}
+
+.film-card__thumbnail {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.film-card__thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.film-card:hover .film-card__thumbnail img {
+  transform: scale(1.05);
+}
+
+.film-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.film-card__duration {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+.film-card__play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  opacity: 0;
+}
+
+.film-card:hover .film-card__play-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 1;
+}
+
+.film-card__play-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.95);
+  border: none;
+  color: #000;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.film-card:hover .film-card__play-btn {
+  transform: scale(1);
+}
+
+.film-card__play-btn:hover {
+  background: #d4af37;
+  transform: scale(1.1);
+}
+
+.film-card__badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.film-card__badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.film-card__badge--new {
+  background: #e50914;
+  color: #fff;
+}
+
+.film-card__badge--featured {
+  background: #d4af37;
+  color: #000;
+}
+
+.film-card__badge--live {
+  background: #ff0000;
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.film-card__info {
+  padding: 10px 4px;
+}
+
+.film-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.film-card__category {
+  font-size: 11px;
+  color: #888;
+  margin-right: 8px;
+}
+
+.film-card__views {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Hover Preview Card */
+.film-card__hover-preview {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background: #1a1a1a;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  z-index: 101;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.film-card__hover-content {
+  padding: 12px;
+}
+
+.film-card__hover-content h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.film-card__hover-content p {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.film-card__hover-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.film-card__action-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+.film-card__action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.film-card__action-btn--play {
+  background: #d4af37;
+  color: #000;
+  border: none;
+}
+
+.film-card__action-btn--play:hover {
+  background: #e6c348;
+}
+
+.film-card__hover-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #888;
+}
+
+/* Delete Button */
+.film-card__delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 15;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(200, 30, 30, 0.9);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.film-card:hover .film-card__delete-btn {
+  opacity: 1;
+}
+
+.film-card__delete-btn:hover {
+  background: rgba(220, 50, 50, 1);
+  transform: scale(1.15);
+}
+
+/* Delete Confirmation */
+.film-card__delete-confirm {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.film-card__delete-confirm p {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.film-card__delete-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.film-card__delete-btns button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+
+.film-card__delete-yes {
+  background: #c0392b;
+  color: #fff;
+}
+
+.film-card__delete-yes:hover {
+  background: #e74c3c;
+}
+
+.film-card__delete-yes:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.film-card__delete-no {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.film-card__delete-no:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .film-card {
+    width: 160px;
+  }
+
+  .film-card--hovered {
+    transform: none;
+  }
+
+  .film-card__hover-preview {
+    display: none;
+  }
+
+  .film-card__play-overlay {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .film-card__play-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+    transform: scale(1);
+  }
+}
+
+

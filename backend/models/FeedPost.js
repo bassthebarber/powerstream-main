@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const FeedPostSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // make sure you have a User model
+    ref: 'User',
     required: true,
   },
   username: {
@@ -11,14 +11,14 @@ const FeedPostSchema = new mongoose.Schema({
     required: true,
   },
   userAvatar: {
-    type: String, // Cloudinary URL or file path
+    type: String,
   },
   content: {
     type: String,
     required: true,
   },
   mediaUrl: {
-    type: String, // optional image or video
+    type: String,
   },
   likes: {
     type: Number,
@@ -33,4 +33,5 @@ const FeedPostSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-module.exports = mongoose.model('FeedPost', FeedPostSchema);
+const FeedPost = mongoose.model('FeedPost', FeedPostSchema);
+export default FeedPost;

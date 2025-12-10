@@ -1,7 +1,8 @@
 // backend/controllers/autoResponseController.js
+
 import AutoResponse from "../models/AutoResponsemodel.js";
 
-exports.addResponse = async (req, res) => {
+export const addResponse = async (req, res) => {
   try {
     const { trigger, response, createdBy } = req.body;
     const newResponse = new AutoResponse({ trigger, response, createdBy });
@@ -13,7 +14,7 @@ exports.addResponse = async (req, res) => {
   }
 };
 
-exports.getAutoResponses = async (req, res) => {
+export const getAutoResponses = async (req, res) => {
   try {
     const responses = await AutoResponse.find().sort({ createdAt: -1 });
     res.status(200).json(responses);

@@ -1,7 +1,9 @@
+// backend/controllers/videoCall.controller.js
+
 import VideoCall from "../models/VideoCallmodel.js";
 import User from "../models/Usermodel.js";
 
-exports.startVideoCall = async (req, res) => {
+export const startVideoCall = async (req, res) => {
   try {
     const { callerId, receiverId, roomId, isGroupCall = false } = req.body;
 
@@ -20,7 +22,7 @@ exports.startVideoCall = async (req, res) => {
   }
 };
 
-exports.endVideoCall = async (req, res) => {
+export const endVideoCall = async (req, res) => {
   try {
     const { callId } = req.params;
 
@@ -38,7 +40,7 @@ exports.endVideoCall = async (req, res) => {
   }
 };
 
-exports.getUserVideoCalls = async (req, res) => {
+export const getUserVideoCalls = async (req, res) => {
   try {
     const { userId } = req.params;
 

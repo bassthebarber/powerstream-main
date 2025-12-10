@@ -1,9 +1,8 @@
-// ✅ FILE 4: SovereignBroadcastShield.js
-// 📁 Location: /backend/controllers/SovereignBroadcastShield.js
+// backend/controllers/SovereignBroadcastShield.js
 
 import SovereignStation from "../models/SovereignStationRegistry.js";
 
-exports.verifySovereignStation = async (req, res) => {
+export const verifySovereignStation = async (req, res) => {
   try {
     const { stationName, key } = req.body;
     const match = await SovereignStation.findOne({ stationName, key });

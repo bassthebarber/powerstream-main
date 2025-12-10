@@ -1,4 +1,5 @@
-// backend/analyticsEngine/trackStats.js
+// backend/analytics/trackStats.js
+
 const trackStats = (trackPlays) => {
   return trackPlays.reduce((acc, play) => {
     const { trackId } = play;
@@ -7,4 +8,4 @@ const trackStats = (trackPlays) => {
   }, {});
 };
 
-module.exports = trackStats;
+export default trackStats;

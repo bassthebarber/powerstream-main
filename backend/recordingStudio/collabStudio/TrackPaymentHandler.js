@@ -7,4 +7,4 @@ const handlePayment = (userId, beatId, price) => {
   };
 };
 
-module.exports = handlePayment;
+export default handlePayment;

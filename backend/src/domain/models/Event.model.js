@@ -265,3 +265,5 @@ EventSchema.statics = {
 
 export default mongoose.model("Event", EventSchema);
 
+
+

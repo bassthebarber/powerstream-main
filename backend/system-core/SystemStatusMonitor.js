@@ -1,4 +1,5 @@
-// /backend/system-core/SystemStatusMonitor.js
+// backend/system-core/SystemStatusMonitor.js
+
 class SystemStatusMonitor {
   start(modules) {
     console.log("📊 [SystemStatusMonitor] Monitoring backend AI module health...");
@@ -11,4 +12,5 @@ class SystemStatusMonitor {
   }
 }
 
-module.exports = new SystemStatusMonitor();
+const systemStatusMonitor = new SystemStatusMonitor();
+export default systemStatusMonitor;

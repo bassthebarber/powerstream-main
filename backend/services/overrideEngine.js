@@ -1,5 +1,5 @@
 // overrideEngine.js
-const { logStartupEvent } = require('../utils/logger');
+import { logStartupEvent } from "../utils/logger.js";
 
 const overrideEngine = {
   async activate() {
@@ -9,4 +9,4 @@ const overrideEngine = {
   }
 };
 
-module.exports = overrideEngine;
+export default overrideEngine;

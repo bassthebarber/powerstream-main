@@ -1,6 +1,7 @@
-// /backend/AI/Copilot/CopilotBridge.js
-const EventBus = require('../../system-core/EventBus');
-const MainCircuitBoard = require('../../system-core/MainCircuitBoard');
+// backend/AI/Copilot/CopilotBridge.js
+
+import EventBus from '../../system-core/EventBus.js';
+import MainCircuitBoard from '../../system-core/MainCircuitBoard.js';
 
 class CopilotBridge {
   constructor() {
@@ -27,4 +28,5 @@ class CopilotBridge {
   }
 }
 
-module.exports = new CopilotBridge();
+const copilotBridge = new CopilotBridge();
+export default copilotBridge;

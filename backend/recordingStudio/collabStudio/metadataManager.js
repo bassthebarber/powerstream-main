@@ -9,4 +9,4 @@ const applyMetadata = (filePath, metadata) => {
   };
 };
 
-module.exports = applyMetadata;
+export default applyMetadata;

@@ -5,8 +5,21 @@ import { requireAuth } from "../middleware/requireAuth.js";
 
 const router = express.Router();
 
+// Check if AI is configured
+const AI_CONFIGURED = !!process.env.OPENAI_API_KEY;
+
 // All routes require authentication
 router.use(requireAuth);
+
+// Health check
+router.get("/health", (_req, res) => {
+  res.json({
+    ok: true,
+    service: "AI Lyrics",
+    aiConfigured: AI_CONFIGURED,
+    fallbackMode: !AI_CONFIGURED,
+  });
+});
 
 /**
  * Generate lyrics with AI

@@ -49,15 +49,32 @@ export async function registerServices(app) {
   await mount(app, "/api/auth",           "../routes/authRoutes.js");
   await mount(app, "/api/users",          "../routes/userRoutes.js");
 
-  // --- Money ---
+  // --- Social Surfaces (Power*) ---
+  await mount(app, "/api/powerfeed",      "../routes/powerFeedRoutes.js");
+  await mount(app, "/api/powergram",      "../routes/powerGramRoutes.js");
+  await mount(app, "/api/powerreel",      "../routes/powerReelRoutes.js");
+  // PowerLine V5 API - Golden Implementation
+  await mount(app, "/api/powerline",      "../routes/powerlineRoutes.js");
+  await mount(app, "/api/stories",        "../routes/storyRoutes.js");
+  // Legacy chat routes (for backwards compatibility)
+  await mount(app, "/api/chat",           "../routes/chatRoutes.js");
+
+  // --- Money / Payments ---
   await mount(app, "/api/coins",          "../routes/coinRoutes.js");
+  await mount(app, "/api/stripe",         "../routes/stripe.js");
+  await mount(app, "/api/paypal",         "../routes/paypal.js");
+  await mount(app, "/api/payments",       "../routes/paymentRoutes.js");
   await mount(app, "/api/payouts",        "../routes/payoutRoutes.js");
   await mount(app, "/api/subscriptions",  "../routes/subscriptionRoutes.js");
   await mount(app, "/api/withdrawals",    "../routes/withdrawalRoutes.js");
 
-  // --- Stations / Streams / Uploads ---
-  await mount(app, "/api/stations",       "../routes/stationRoutes.js");
+  // --- Golden TV Subsystem ---
+  // /api/tv/stations is provided by tvRoutes.js
+  await mount(app, "/api/tv",             "../routes/tvRoutes.js");
+  await mount(app, "/api/vod",            "../routes/vodRoutes.js");
   await mount(app, "/api/stream",         "../routes/streamRoutes.js");
+  
+  // --- Uploads / Live ---
   await mount(app, "/api/upload",         "../routes/uploadRoutes.js");
   await mount(app, "/api/live",           "../routes/liveRoutes.js");
 
@@ -70,15 +87,29 @@ export async function registerServices(app) {
   await mount(app, "/api/intents",        "../routes/intentRoutes.js");
   await mount(app, "/api/admin",          "../routes/adminRoutes.js");
   await mount(app, "/api/commands",       "../routes/commandRoutes.js");
-  await mount(app, "/api/autopilot",      "../routes/autopilotRoutes.js"); // ✅ fixed quote
+  await mount(app, "/api/autopilot",      "../routes/autopilotRoutes.js");
   await mount(app, "/api/jobs",           "../routes/jobRoutes.js");
-
-  // ✅ fixed typo previously (copotilot → copilot)
   await mount(app, "/api/copilot",        "../routes/copilotRoutes.js");
 
-  // --- AI Coach (Performance Feedback) ---
+  // --- AI Services ---
+  await mount(app, "/api/ai",             "../routes/aiRoutes.js");
   await mount(app, "/api/aicoach",        "../routes/aiCoachRoutes.js");
-  await mount(app, "/api/aistudio",   "../routes/aiStudioProRoutes.js");
+
+  // --- Studio / PowerHarmony ---
+  await mount(app, "/api/studio",           "../routes/studioExportRoutes.js");
+  await mount(app, "/api/studio/sessions",  "../routes/studioSessionRoutes.js");
+  await mount(app, "/api/shows",            "../routes/showRoutes.js");
+
+  // --- Multistream ---
+  await mount(app, "/api/multistream",      "../routes/multistreamRoutes.js");
+
+  // --- Legacy TV / Seed ---
+  // Note: /api/tv-stations removed - use /api/tv/stations instead
+  await mount(app, "/api/ps-tv",            "../routes/powerStreamTVRoutes.js");
+  await mount(app, "/api/tgt",              "../routes/tgtRoutes.js");
+  await mount(app, "/api/seed",             "../routes/seedRoutes.js");
+  await mount(app, "/api/rtmp",             "../routes/rtmpRoutes.js");
+  await mount(app, "/api/livepeer",         "../routes/livepeerRoutes.js");
 
   console.log("✅ Master Circuit Board: done.");
   return true;

@@ -1,6 +1,7 @@
 // backend/src/tests/setup.js
 // Test setup and configuration
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import { jest } from "@jest/globals";
 
 // Increase timeout for async operations
@@ -80,7 +81,6 @@ export const createTestUser = async (overrides = {}) => {
  * Generate test JWT token
  */
 export const generateTestToken = (userId) => {
-  const jwt = require("jsonwebtoken");
   return jwt.sign(
     { id: userId, role: "user" },
     process.env.JWT_SECRET,
@@ -91,8 +91,8 @@ export const generateTestToken = (userId) => {
 /**
  * Create test request helper
  */
-export const createTestRequest = (app) => {
-  const supertest = require("supertest");
+export const createTestRequest = async (app) => {
+  const supertest = (await import("supertest")).default;
   return supertest(app);
 };
 
@@ -119,4 +119,3 @@ export default {
   generateTestToken,
   createTestRequest,
 };
-

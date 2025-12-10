@@ -1,31 +1,28 @@
-// backend/routes/streamRoutes.js (ESM-safe)
+// backend/routes/streamRoutes.js
+// Golden TV Subsystem - Stream Routes
 import { Router } from 'express';
+import {
+  startStream,
+  stopStream,
+  getCurrentStreamForStation,
+  getAllLiveStreams,
+  getStreamHistory
+} from '../controllers/streamController.js';
+import { requireAuth, requireRole } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-/**
- * Health check for this router
- * GET /api/stream/health
- */
-router.get('/health', (req, res) => {
-  res.json({ ok: true, route: '/api/stream' });
-});
+// Only station owners / admins can start/stop streams
+router.post('/start', requireAuth, requireRole(['admin', 'stationOwner']), startStream);
+router.post('/stop', requireAuth, requireRole(['admin', 'stationOwner']), stopStream);
 
-/**
- * (Optional) Example endpoints — keep or remove as you wire Livepeer
- * GET /api/stream/status
- */
-router.get('/status', (req, res) => {
-  res.json({ live: false, message: 'Stream service online (placeholder)' });
-});
+// Public: current stream info for a station
+router.get('/station/:slug/current', getCurrentStreamForStation);
 
-/**
- * POST /api/stream/webhook
- * (If you later add Livepeer webhooks, mount them here)
- */
-router.post('/webhook', (req, res) => {
-  // handle webhook payload here later
-  res.status(204).end();
-});
+// Public: all currently live streams
+router.get('/live', getAllLiveStreams);
+
+// Public: stream history for a station
+router.get('/history/:slug', getStreamHistory);
 
 export default router;

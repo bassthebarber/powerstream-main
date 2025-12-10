@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideInterfaceBridge.js
+// /backend/control-tower/override/overrideInterfaceBridge.js
 
-const bridgeInterface = (frontendSignal) => {
+export const bridgeInterface = (frontendSignal) => {
   console.log('🌉 Override Interface Bridge: Syncing frontend and backend signals');
 
   const actions = {
@@ -20,6 +20,4 @@ const bridgeInterface = (frontendSignal) => {
   }
 };
 
-module.exports = {
-  bridgeInterface,
-};
+export default { bridgeInterface };

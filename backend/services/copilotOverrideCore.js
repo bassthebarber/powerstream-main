@@ -1,7 +1,7 @@
 // CopilotOverrideCore.js
-const logicEngine = require('./logicEngine');
-const copilotService = require('./copilotService');
-const overrideEngine = require('./overrideEngine');
+import logicEngine from "./logicEngine.js";
+import copilotService from "./copilotService.js";
+import overrideEngine from "./overrideEngine.js";
 
 async function CopilotOverrideCore(transcript) {
   console.log('[🎯 CopilotOverrideCore] Triggered with:', transcript);
@@ -27,4 +27,4 @@ async function CopilotOverrideCore(transcript) {
   }
 }
 
-module.exports = CopilotOverrideCore;
+export default CopilotOverrideCore;

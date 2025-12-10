@@ -1,5 +1,6 @@
 // backend/tvDistribution/TVContentFeed.js
-const getTVContentFeed = (contentList) => {
+
+export const getTVContentFeed = (contentList) => {
   return contentList.map((item) => ({
     id: item._id,
     title: item.title,
@@ -11,4 +12,4 @@ const getTVContentFeed = (contentList) => {
   }));
 };
 
-module.exports = getTVContentFeed;
+export default getTVContentFeed;

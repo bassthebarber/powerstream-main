@@ -4,7 +4,7 @@ import User from "../models/Usermodel.js";
 import Tip from "../models/Tipmodel.js";
 import logUplink from "../logs/logUplink.js";
 
-exports.sendTip = async (req, res) => {
+export const sendTip = async (req, res) => {
   try {
     const { fromUserId, toUserId, amount, message } = req.body;
 

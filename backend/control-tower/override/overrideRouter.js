@@ -1,15 +1,15 @@
-// /backend/controlTower/override/overrideRouter.js
+// /backend/control-tower/override/overrideRouter.js
 
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+import copilotOverrideCore from './copilotOverrideCore.js';
+import { start } from './CommandTriggerBoot.js';
+import { runFamousScan } from './copilotPowerFamousScan.js';
+import { activate } from './defenseCore.js';
+import { engageFailsafe } from './failsafeOverride.js';
+import { link } from './sovereignModelLink.js';
+import { heal } from './overrideAIHealer.js';
 
-const copilotOverrideCore = require('./copilotOverrideCore');
-const { start } = require('./commandTrigger.boot');
-const { runFamousScan } = require('./copilotPowerFamousScan');
-const { activate } = require('./defenseCore');
-const { engageFailsafe } = require('./failsafeOverride');
-const { link } = require('./sovereignModelLink');
-const { heal } = require('./overrideAIHealer');
+const router = Router();
 
 router.post('/boot', (req, res) => {
   const result = start();
@@ -43,4 +43,4 @@ router.post('/healer', (req, res) => {
   res.json(result);
 });
 
-module.exports = router;
+export default router;

@@ -5,10 +5,13 @@ import mongoose from 'mongoose';
 
 const MixdownSchema = new mongoose.Schema({
   // Basic info
+  title: { 
+    type: String, 
+    default: 'Untitled Mix'
+  },
   trackTitle: { 
     type: String, 
-    required: true,
-    default: 'Untitled Mix'
+    default: function() { return this.title || 'Untitled Mix'; }
   },
   artistName: { 
     type: String, 
@@ -18,12 +21,23 @@ const MixdownSchema = new mongoose.Schema({
     type: String,
     default: 'unknown'
   },
+  
+  // User reference
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
 
   // File paths/URLs
   inputFilePath: { type: String },
   inputUrl: { type: String },
   outputFilePath: { type: String },
   outputUrl: { type: String }, // Cloudinary or public URL
+  cloudinaryId: { type: String }, // Cloudinary public_id for deletion
+  
+  // Mix/Master settings applied
+  settings: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: {},
+  },
 
   // Loudness metrics from FFmpeg
   loudnessIntegrated: { type: Number }, // LUFS
@@ -74,7 +88,7 @@ const MixdownSchema = new mongoose.Schema({
   // Status
   status: { 
     type: String, 
-    enum: ['pending', 'processing', 'completed', 'failed'],
+    enum: ['pending', 'processing', 'completed', 'complete', 'failed'],
     default: 'pending'
   },
   errorMessage: { type: String },
@@ -86,6 +100,7 @@ const MixdownSchema = new mongoose.Schema({
 
 // Index for efficient queries
 MixdownSchema.index({ ownerUserId: 1, createdAt: -1 });
+MixdownSchema.index({ userId: 1, createdAt: -1 });
 MixdownSchema.index({ status: 1 });
 
 export default mongoose.model('Mixdown', MixdownSchema);

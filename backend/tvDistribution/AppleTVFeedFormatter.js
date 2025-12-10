@@ -1,5 +1,6 @@
 // backend/tvDistribution/AppleTVFeedFormatter.js
-const buildAppleFeed = (contentList) => {
+
+export const buildAppleFeed = (contentList) => {
   return {
     app: "PowerStream",
     updated: new Date().toISOString(),
@@ -13,4 +14,4 @@ const buildAppleFeed = (contentList) => {
   };
 };
 
-module.exports = buildAppleFeed;
+export default buildAppleFeed;

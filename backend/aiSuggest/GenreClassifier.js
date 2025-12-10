@@ -1,4 +1,5 @@
 // backend/aiSuggest/GenreClassifier.js
+
 const classifyGenre = (lyrics) => {
   const tags = [];
   if (lyrics.includes("trap") || lyrics.includes("street")) tags.push("Trap");
@@ -7,4 +8,4 @@ const classifyGenre = (lyrics) => {
   return tags.length ? tags : ["Hip-Hop"];
 };
 
-module.exports = classifyGenre;
+export default classifyGenre;

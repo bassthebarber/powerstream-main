@@ -231,3 +231,5 @@ const coinsApi = {
 
 export default coinsApi;
 
+
+

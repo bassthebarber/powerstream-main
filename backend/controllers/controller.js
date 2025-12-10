@@ -1,4 +1,6 @@
-exports.runCommand = async (req, res) => {
+// backend/controllers/controller.js
+
+export const runCommand = async (req, res) => {
   const { input } = req.body;
 
   if (!input) return res.status(400).json({ error: "No input provided" });

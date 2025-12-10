@@ -1,8 +1,10 @@
-// ✅ /backend/copilot/patchEngine.js
+// backend/copilot/patchEngine.js
 
-module.exports = {
+const patchEngine = {
   applyPatch(type, data) {
     console.log(`[PatchEngine] Applying patch type: ${type}`);
     return { type, patched: true, data };
   },
 };
+
+export default patchEngine;

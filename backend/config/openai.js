@@ -1,5 +1,8 @@
 // backend/config/openai.js
-module.exports = {
-  apiKey: process.env.OPENAI_API_KEY,
-  model: 'gpt-4',
+export const apiKey = process.env.OPENAI_API_KEY;
+export const model = 'gpt-4';
+
+export default {
+  apiKey,
+  model,
 };

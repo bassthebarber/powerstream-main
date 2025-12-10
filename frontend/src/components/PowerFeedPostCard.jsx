@@ -1,9 +1,12 @@
 // frontend/src/components/PowerFeedPostCard.jsx
-// Production-ready post card with proper user data and media support
+// Production-ready post card with proper user data, media support, and share functionality
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function PostCard({ post, currentUserId, onReact, onComment }) {
+  const navigate = useNavigate();
   const [showComments, setShowComments] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
   const [commentText, setCommentText] = useState("");
   
   // Check if current user has liked this post
@@ -92,105 +95,91 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
     }
   };
 
+  const handleShareToLine = () => {
+    // Share to PowerLine (chat)
+    const postUrl = `${window.location.origin}/post/${post._id}`;
+    navigate("/powerline", { state: { sharePost: { url: postUrl, text: post.text, postId: post._id } } });
+    setShowShareMenu(false);
+  };
+
+  const handleShareToReel = () => {
+    // Share to PowerReel
+    if (post.mediaUrl && mediaType === "video") {
+      navigate("/powerreel", { state: { mode: "create", prefillMedia: post.mediaUrl } });
+    } else {
+      navigate("/powerreel", { state: { mode: "create" } });
+    }
+    setShowShareMenu(false);
+  };
+
+  const handleShareToGram = () => {
+    // Share to PowerGram
+    if (post.mediaUrl) {
+      navigate("/powergram", { state: { mode: "create", prefillMedia: post.mediaUrl, prefillCaption: post.text } });
+    } else {
+      navigate("/powergram");
+    }
+    setShowShareMenu(false);
+  };
+
+  const handleCopyLink = () => {
+    const postUrl = `${window.location.origin}/post/${post._id}`;
+    navigator.clipboard?.writeText(postUrl);
+    setShowShareMenu(false);
+    // TODO: Show toast notification
+  };
+
   return (
-    <div className="ps-card" style={{ marginBottom: 0 }}>
+    <div className="ps-card pf-post-card">
       {/* Post Header */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+      <div className="pf-post-header">
         {author.avatarUrl ? (
           <img
             src={author.avatarUrl}
             alt={author.name}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "2px solid var(--gold)",
-            }}
+            className="pf-post-avatar"
+            onClick={() => author.id && navigate(`/profile/${author.id}`)}
+            style={{ cursor: author.id ? "pointer" : "default" }}
           />
         ) : (
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--gold), #ffda5c)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              color: "#000",
-              fontSize: 16,
-              flexShrink: 0,
-            }}
+          <div 
+            className="pf-post-avatar pf-post-avatar--initials"
+            onClick={() => author.id && navigate(`/profile/${author.id}`)}
+            style={{ cursor: author.id ? "pointer" : "default" }}
           >
             {initials}
           </div>
         )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ 
-            fontWeight: 600, 
-            fontSize: 15,
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}>
+        <div className="pf-post-author">
+          <div 
+            className="pf-post-author-name"
+            onClick={() => author.id && navigate(`/profile/${author.id}`)}
+            style={{ cursor: author.id ? "pointer" : "default" }}
+          >
             {author.name}
             {post.isVerified && (
-              <span style={{ color: "var(--gold)", fontSize: 14 }}>✓</span>
+              <span className="pf-verified-badge">✓</span>
             )}
           </div>
-          <div style={{ fontSize: 12, color: "var(--muted)" }}>
-            {timeAgo}
-          </div>
+          <div className="pf-post-time">{timeAgo}</div>
         </div>
-        <button
-          style={{
-            background: "none",
-            border: "none",
-            color: "var(--muted)",
-            cursor: "pointer",
-            padding: 4,
-            fontSize: 18,
-          }}
-        >
-          ⋯
-        </button>
+        <button className="pf-post-menu-btn">⋯</button>
       </div>
 
       {/* Post Content */}
       {post.text && (
-        <p style={{ 
-          marginBottom: 12, 
-          whiteSpace: "pre-wrap",
-          fontSize: 15,
-          lineHeight: 1.5,
-          color: "#fff",
-        }}>
-          {post.text}
-        </p>
+        <p className="pf-post-text">{post.text}</p>
       )}
 
       {/* Post Media */}
       {post.mediaUrl && (
-        <div style={{
-          marginBottom: 12,
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "#0a0a0a",
-        }}>
+        <div className="pf-post-media">
           {mediaType === "video" ? (
             <video
               src={post.mediaUrl}
               controls
               playsInline
-              style={{
-                width: "100%",
-                maxHeight: 500,
-                objectFit: "contain",
-                display: "block",
-              }}
+              className="pf-post-video"
               poster={post.thumbnailUrl}
             />
           ) : (
@@ -198,12 +187,7 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
               src={post.mediaUrl}
               alt="Post media"
               loading="lazy"
-              style={{
-                width: "100%",
-                maxHeight: 500,
-                objectFit: "contain",
-                display: "block",
-              }}
+              className="pf-post-image"
               onError={(e) => {
                 e.target.style.display = "none";
               }}
@@ -213,17 +197,7 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
       )}
 
       {/* Engagement Stats */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "8px 0",
-        borderTop: "1px solid rgba(255,255,255,0.08)",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-        marginBottom: 8,
-        fontSize: 13,
-        color: "var(--muted)",
-      }}>
+      <div className="pf-post-stats">
         <span>
           {post.likes?.length || 0} {post.likes?.length === 1 ? "like" : "likes"}
         </span>
@@ -233,11 +207,7 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
       </div>
 
       {/* Action Buttons */}
-      <div style={{ 
-        display: "flex", 
-        gap: 8,
-        marginBottom: showComments ? 12 : 0,
-      }}>
+      <div className="pf-post-actions">
         <ActionButton
           onClick={onReact}
           active={liked}
@@ -249,10 +219,33 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
           icon="💬"
           label="Comment"
         />
-        <ActionButton
-          icon="↗️"
-          label="Share"
-        />
+        <div className="pf-share-container">
+          <ActionButton
+            onClick={() => setShowShareMenu(!showShareMenu)}
+            icon="↗️"
+            label="Share"
+          />
+          {showShareMenu && (
+            <div className="pf-share-menu">
+              <button onClick={handleShareToLine} className="pf-share-item">
+                <span>💬</span>
+                <span>Share to PowerLine</span>
+              </button>
+              <button onClick={handleShareToReel} className="pf-share-item">
+                <span>🎬</span>
+                <span>Share to PowerReel</span>
+              </button>
+              <button onClick={handleShareToGram} className="pf-share-item">
+                <span>📸</span>
+                <span>Share to PowerGram</span>
+              </button>
+              <button onClick={handleCopyLink} className="pf-share-item">
+                <span>🔗</span>
+                <span>Copy Link</span>
+              </button>
+            </div>
+          )}
+        </div>
         <ActionButton
           icon="📌"
           label="Save"
@@ -262,82 +255,34 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
 
       {/* Comments Section */}
       {showComments && (
-        <div style={{ 
-          paddingTop: 12, 
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-        }}>
+        <div className="pf-post-comments">
           {/* Existing Comments */}
           {post.comments?.length > 0 && (
-            <div style={{ marginBottom: 12 }}>
+            <div className="pf-comments-list">
               {post.comments.slice(-5).map((comment, idx) => {
                 const commentAuthor = getCommentAuthor(comment);
                 return (
-                  <div 
-                    key={comment._id || idx} 
-                    style={{ 
-                      display: "flex",
-                      gap: 10,
-                      marginBottom: 10,
-                      padding: 8,
-                      background: "rgba(255,255,255,0.03)",
-                      borderRadius: 10,
-                    }}
-                  >
+                  <div key={comment._id || idx} className="pf-comment">
                     {commentAuthor.avatarUrl ? (
                       <img
                         src={commentAuthor.avatarUrl}
                         alt={commentAuthor.name}
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                          flexShrink: 0,
-                        }}
+                        className="pf-comment-avatar"
                       />
                     ) : (
-                      <div style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: "var(--gold)",
-                        color: "#000",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 11,
-                        fontWeight: 700,
-                        flexShrink: 0,
-                      }}>
+                      <div className="pf-comment-avatar pf-comment-avatar--initials">
                         {commentAuthor.name[0]?.toUpperCase() || "U"}
                       </div>
                     )}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ 
-                        fontWeight: 600, 
-                        fontSize: 13,
-                        marginRight: 6,
-                      }}>
-                        {commentAuthor.name}
-                      </span>
-                      <span style={{ fontSize: 13, color: "#ddd" }}>
-                        {comment.text}
-                      </span>
+                    <div className="pf-comment-content">
+                      <span className="pf-comment-author">{commentAuthor.name}</span>
+                      <span className="pf-comment-text">{comment.text}</span>
                     </div>
                   </div>
                 );
               })}
               {post.comments.length > 5 && (
-                <button
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "var(--gold)",
-                    fontSize: 13,
-                    cursor: "pointer",
-                    padding: "4px 0",
-                  }}
-                >
+                <button className="pf-view-all-comments">
                   View all {post.comments.length} comments
                 </button>
               )}
@@ -345,22 +290,13 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
           )}
 
           {/* Comment Input */}
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div className="pf-comment-input-container">
             <input
               type="text"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="Write a comment..."
-              style={{
-                flex: 1,
-                padding: "10px 14px",
-                background: "rgba(15, 15, 16, 0.9)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 999,
-                color: "#fff",
-                fontSize: 14,
-                outline: "none",
-              }}
+              className="pf-comment-input"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   handleSubmitComment();
@@ -370,23 +306,251 @@ export default function PostCard({ post, currentUserId, onReact, onComment }) {
             <button
               onClick={handleSubmitComment}
               disabled={!commentText.trim()}
-              style={{
-                padding: "10px 18px",
-                background: commentText.trim() ? "var(--gold)" : "rgba(255,255,255,0.1)",
-                color: commentText.trim() ? "#000" : "var(--muted)",
-                border: "none",
-                borderRadius: 999,
-                fontWeight: 600,
-                fontSize: 13,
-                cursor: commentText.trim() ? "pointer" : "default",
-                transition: "all 0.2s ease",
-              }}
+              className={`pf-comment-submit ${commentText.trim() ? "pf-comment-submit--active" : ""}`}
             >
               Post
             </button>
           </div>
         </div>
       )}
+
+      <style>{`
+        .pf-post-card {
+          margin-bottom: 0;
+        }
+
+        .pf-post-header {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+
+        .pf-post-avatar {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid var(--gold);
+          flex-shrink: 0;
+        }
+
+        .pf-post-avatar--initials {
+          background: linear-gradient(135deg, var(--gold), #ffda5c);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          color: #000;
+          font-size: 16px;
+        }
+
+        .pf-post-author {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .pf-post-author-name {
+          font-weight: 600;
+          font-size: 15px;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .pf-verified-badge {
+          color: var(--gold);
+          font-size: 14px;
+        }
+
+        .pf-post-time {
+          font-size: 12px;
+          color: var(--muted);
+        }
+
+        .pf-post-menu-btn {
+          background: none;
+          border: none;
+          color: var(--muted);
+          cursor: pointer;
+          padding: 4px;
+          font-size: 18px;
+        }
+
+        .pf-post-text {
+          margin-bottom: 12px;
+          white-space: pre-wrap;
+          font-size: 15px;
+          line-height: 1.5;
+          color: #fff;
+        }
+
+        .pf-post-media {
+          margin-bottom: 12px;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #0a0a0a;
+        }
+
+        .pf-post-video,
+        .pf-post-image {
+          width: 100%;
+          max-height: 500px;
+          object-fit: contain;
+          display: block;
+        }
+
+        .pf-post-stats {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          margin-bottom: 8px;
+          font-size: 13px;
+          color: var(--muted);
+        }
+
+        .pf-post-actions {
+          display: flex;
+          gap: 8px;
+        }
+
+        .pf-share-container {
+          position: relative;
+        }
+
+        .pf-share-menu {
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          margin-bottom: 8px;
+          background: #1a1a1f;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 12px;
+          padding: 8px;
+          min-width: 180px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+          z-index: 50;
+        }
+
+        .pf-share-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          padding: 10px 12px;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 13px;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .pf-share-item:hover {
+          background: rgba(255,255,255,0.08);
+        }
+
+        .pf-post-comments {
+          padding-top: 12px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .pf-comments-list {
+          margin-bottom: 12px;
+        }
+
+        .pf-comment {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+          padding: 8px;
+          background: rgba(255,255,255,0.03);
+          border-radius: 10px;
+        }
+
+        .pf-comment-avatar {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          object-fit: cover;
+          flex-shrink: 0;
+        }
+
+        .pf-comment-avatar--initials {
+          background: var(--gold);
+          color: #000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 700;
+        }
+
+        .pf-comment-content {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .pf-comment-author {
+          font-weight: 600;
+          font-size: 13px;
+          margin-right: 6px;
+        }
+
+        .pf-comment-text {
+          font-size: 13px;
+          color: #ddd;
+        }
+
+        .pf-view-all-comments {
+          background: none;
+          border: none;
+          color: var(--gold);
+          font-size: 13px;
+          cursor: pointer;
+          padding: 4px 0;
+        }
+
+        .pf-comment-input-container {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .pf-comment-input {
+          flex: 1;
+          padding: 10px 14px;
+          background: rgba(15, 15, 16, 0.9);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 999px;
+          color: #fff;
+          font-size: 14px;
+          outline: none;
+        }
+
+        .pf-comment-submit {
+          padding: 10px 18px;
+          background: rgba(255,255,255,0.1);
+          color: var(--muted);
+          border: none;
+          border-radius: 999px;
+          font-weight: 600;
+          font-size: 13px;
+          cursor: default;
+          transition: all 0.2s ease;
+        }
+
+        .pf-comment-submit--active {
+          background: var(--gold);
+          color: #000;
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 }
@@ -395,24 +559,43 @@ function ActionButton({ onClick, active, icon, label, style }) {
   return (
     <button
       onClick={onClick}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "8px 16px",
-        background: active ? "rgba(230, 184, 0, 0.15)" : "transparent",
-        border: "none",
-        borderRadius: 8,
-        color: active ? "var(--gold)" : "var(--muted)",
-        cursor: "pointer",
-        fontSize: 14,
-        fontWeight: 500,
-        transition: "all 0.2s ease",
-        ...style,
-      }}
+      className={`pf-action-btn ${active ? "pf-action-btn--active" : ""}`}
+      style={style}
     >
       <span>{icon}</span>
       <span className="pf-action-label">{label}</span>
+
+      <style>{`
+        .pf-action-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 16px;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          color: var(--muted);
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+
+        .pf-action-btn:hover {
+          background: rgba(255,255,255,0.05);
+        }
+
+        .pf-action-btn--active {
+          background: rgba(230, 184, 0, 0.15);
+          color: var(--gold);
+        }
+
+        @media (max-width: 600px) {
+          .pf-action-label {
+            display: none;
+          }
+        }
+      `}</style>
     </button>
   );
 }

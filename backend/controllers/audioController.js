@@ -1,6 +1,8 @@
+// backend/controllers/audioController.js
+
 import Audio from "../models/Audio.js";
 
-exports.uploadAudio = async (req, res) => {
+export const uploadAudio = async (req, res) => {
   try {
     const { title, artist, url } = req.body;
     const newAudio = new Audio({ title, artist, url });
@@ -11,7 +13,7 @@ exports.uploadAudio = async (req, res) => {
   }
 };
 
-exports.getAllAudio = async (req, res) => {
+export const getAllAudio = async (req, res) => {
   try {
     const audioFiles = await Audio.find().sort({ createdAt: -1 });
     res.json(audioFiles);

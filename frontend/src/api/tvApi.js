@@ -20,7 +20,7 @@ const tvApi = {
     if (network) params.append("network", network);
     if (typeof isLive === "boolean") params.append("isLive", isLive);
     
-    const response = await httpClient.get(`/tv-stations?${params}`);
+    const response = await httpClient.get(`/tv/stations?${params}`);
     return response.data;
   },
 
@@ -28,7 +28,7 @@ const tvApi = {
    * Get a station by slug
    */
   async getStation(slug) {
-    const response = await httpClient.get(`/tv-stations/${slug}`);
+    const response = await httpClient.get(`/tv/stations/${slug}`);
     return response.data;
   },
 
@@ -49,7 +49,7 @@ const tvApi = {
     if (category) params.append("category", category);
     if (network) params.append("network", network);
     
-    const response = await httpClient.get(`/tv-stations?${params}`);
+    const response = await httpClient.get(`/tv/stations?${params}`);
     return response.data;
   },
 
@@ -57,7 +57,7 @@ const tvApi = {
    * Get featured stations
    */
   async getFeaturedStations(limit = 10) {
-    const response = await httpClient.get(`/tv-stations/featured?limit=${limit}`);
+    const response = await httpClient.get(`/tv/stations/featured?limit=${limit}`);
     return response.data;
   },
 
@@ -68,7 +68,7 @@ const tvApi = {
     const { limit = 20, skip = 0 } = options;
     const params = new URLSearchParams({ limit, skip, category });
     
-    const response = await httpClient.get(`/tv-stations?${params}`);
+    const response = await httpClient.get(`/tv/stations?${params}`);
     return response.data;
   },
 
@@ -79,7 +79,7 @@ const tvApi = {
     const { limit = 20, skip = 0 } = options;
     const params = new URLSearchParams({ limit, skip, network });
     
-    const response = await httpClient.get(`/tv-stations?${params}`);
+    const response = await httpClient.get(`/tv/stations?${params}`);
     return response.data;
   },
 
@@ -90,7 +90,7 @@ const tvApi = {
     const { limit = 20, skip = 0 } = options;
     const params = new URLSearchParams({ q: query, limit, skip });
     
-    const response = await httpClient.get(`/tv-stations/search?${params}`);
+    const response = await httpClient.get(`/tv/stations/search?${params}`);
     return response.data;
   },
 
@@ -98,7 +98,7 @@ const tvApi = {
    * Follow a station
    */
   async followStation(stationId) {
-    const response = await httpClient.post(`/tv-stations/${stationId}/follow`);
+    const response = await httpClient.post(`/tv/stations/${stationId}/follow`);
     return response.data;
   },
 
@@ -106,7 +106,7 @@ const tvApi = {
    * Unfollow a station
    */
   async unfollowStation(stationId) {
-    const response = await httpClient.delete(`/tv-stations/${stationId}/follow`);
+    const response = await httpClient.delete(`/tv/stations/${stationId}/follow`);
     return response.data;
   },
 
@@ -205,6 +205,57 @@ const tvApi = {
   // ============================================================
   // VOD (Video on Demand)
   // ============================================================
+
+  /**
+   * Get station videos (playlist)
+   */
+  async getStationVideos(slug) {
+    const response = await httpClient.get(`/tv/stations/${slug}/videos`);
+    return response.data;
+  },
+
+  /**
+   * Add video to station playlist
+   */
+  async addStationVideo(slug, payload) {
+    const response = await httpClient.post(`/tv/stations/${slug}/videos`, payload);
+    return response.data;
+  },
+
+  /**
+   * Upload video file to backend (Cloudinary handled server-side)
+   * NO signature, NO direct Cloudinary calls - backend handles everything
+   * Sends ONLY: video file, title, description, station slug
+   */
+  async uploadVideo(formData) {
+    const response = await httpClient.post("/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 180000, // 180 seconds for large videos
+    });
+    return response.data;
+  },
+
+  /**
+   * Update station live status
+   */
+  async updateStationStatus(slug, payload) {
+    const response = await httpClient.patch(`/tv/stations/${slug}/status`, payload);
+    return response.data;
+  },
+
+  /**
+   * Set station to LIVE
+   */
+  async setStationLive(slug, streamUrl = null) {
+    return this.updateStationStatus(slug, { isLive: true, streamUrl });
+  },
+
+  /**
+   * Set station to OFFLINE
+   */
+  async setStationOffline(slug) {
+    return this.updateStationStatus(slug, { isLive: false });
+  },
 
   /**
    * Get VOD content
@@ -306,4 +357,5 @@ const tvApi = {
 };
 
 export default tvApi;
+
 

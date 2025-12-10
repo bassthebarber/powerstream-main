@@ -1,80 +1,162 @@
-// backend/controllers/StreamController.js
-import Stream from "../models/StreamModel.js";
-import Station from "../models/StationModel.js";
+// backend/controllers/streamController.js
+// Golden TV Subsystem - Stream Controller
+import Stream from '../models/Stream.js';
+import Station from '../models/Station.js';
 
-export async function listStreams(req, res, next) {
-  try {
-    const { station, isLive } = req.query;
-    const q = {};
-    if (station) q.station = station;
-    if (typeof isLive !== "undefined") q.isLive = isLive === "true";
-    const items = await Stream.find(q).sort({ createdAt: -1 }).lean();
-    res.json(items);
-  } catch (err) { next(err); }
-}
+// Response helpers
+const ok = (data, message) => ({ success: true, data, message });
+const fail = (message, code) => ({ success: false, message, code });
 
-export async function getStream(req, res, next) {
+/**
+ * POST /api/stream/start
+ * Body: { stationSlug, streamKey, liveUrl }
+ */
+export const startStream = async (req, res, next) => {
   try {
-    const item = await Stream.findById(req.params.id).lean();
-    if (!item) return res.status(404).json({ message: "Stream not found" });
-    res.json(item);
-  } catch (err) { next(err); }
-}
+    const { stationSlug, streamKey, liveUrl } = req.body;
 
-export async function createStream(req, res, next) {
-  try {
-    const { station, title, ingestUrl, playbackUrl, streamKey } = req.body;
-    if (station) {
-      const s = await Station.findById(station).lean();
-      if (!s) return res.status(400).json({ message: "Invalid station" });
+    if (!stationSlug || !streamKey) {
+      return res.status(400).json(fail('stationSlug and streamKey are required', 'MISSING_FIELDS'));
     }
-    const created = await Stream.create({
-      station, title, ingestUrl, playbackUrl, streamKey, isLive: false
+
+    const station = await Station.findOne({ slug: stationSlug });
+    if (!station) {
+      return res.status(404).json(fail('Station not found', 'STATION_NOT_FOUND'));
+    }
+
+    // Mark any existing streams as not live
+    await Stream.updateMany(
+      { station: station._id, isLive: true },
+      { isLive: false, endedAt: new Date() }
+    );
+
+    const stream = await Stream.create({
+      station: station._id,
+      streamKey,
+      liveUrl,
+      isLive: true,
+      startedAt: new Date()
     });
-    res.status(201).json(created);
-  } catch (err) { next(err); }
-}
 
-export async function updateStream(req, res, next) {
-  try {
-    const updated = await Stream.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
-    if (!updated) return res.status(404).json({ message: "Stream not found" });
-    res.json(updated);
-  } catch (err) { next(err); }
-}
+    // Emit socket event for live stream start
+    const io = req.app.get('io');
+    if (io) {
+      io.of('/stations').to(`station:${stationSlug}`).emit('stream:started', {
+        stationSlug,
+        stream
+      });
+    }
 
-export async function deleteStream(req, res, next) {
-  try {
-    const deleted = await Stream.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Stream not found" });
-    res.json({ ok: true });
-  } catch (err) { next(err); }
-}
+    return res.status(201).json(ok(stream, 'Stream started'));
+  } catch (err) {
+    return next(err);
+  }
+};
 
-export async function startStream(req, res, next) {
+/**
+ * POST /api/stream/stop
+ * Body: { stationSlug }
+ */
+export const stopStream = async (req, res, next) => {
   try {
-    const updated = await Stream.findByIdAndUpdate(
-      req.params.id,
-      { $set: { isLive: true, startedAt: new Date(), endedAt: null } },
-      { new: true }
-    );
-    if (!updated) return res.status(404).json({ message: "Stream not found" });
-    res.json(updated);
-  } catch (err) { next(err); }
-}
+    const { stationSlug } = req.body;
 
-export async function endStream(req, res, next) {
+    if (!stationSlug) {
+      return res.status(400).json(fail('stationSlug is required', 'MISSING_FIELDS'));
+    }
+
+    const station = await Station.findOne({ slug: stationSlug });
+    if (!station) {
+      return res.status(404).json(fail('Station not found', 'STATION_NOT_FOUND'));
+    }
+
+    const stream = await Stream.findOne({ station: station._id, isLive: true }).sort({
+      startedAt: -1
+    });
+
+    if (!stream) {
+      return res.json(ok(null, 'No active stream'));
+    }
+
+    stream.isLive = false;
+    stream.endedAt = new Date();
+    await stream.save();
+
+    // Emit socket event for live stream stop
+    const io = req.app.get('io');
+    if (io) {
+      io.of('/stations').to(`station:${stationSlug}`).emit('stream:stopped', {
+        stationSlug,
+        stream
+      });
+    }
+
+    return res.json(ok(stream, 'Stream stopped'));
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * GET /api/stream/station/:slug/current
+ */
+export const getCurrentStreamForStation = async (req, res, next) => {
   try {
-    const updated = await Stream.findByIdAndUpdate(
-      req.params.id,
-      { $set: { isLive: false, endedAt: new Date() } },
-      { new: true }
-    );
-    if (!updated) return res.status(404).json({ message: "Stream not found" });
-    res.json(updated);
-  } catch (err) { next(err); }
-}
+    const { slug } = req.params;
+
+    const station = await Station.findOne({ slug });
+    if (!station) {
+      return res.status(404).json(fail('Station not found', 'STATION_NOT_FOUND'));
+    }
+
+    const stream = await Stream.findOne({ station: station._id, isLive: true })
+      .sort({ startedAt: -1 })
+      .lean();
+
+    return res.json(ok(stream || null));
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * GET /api/stream/live
+ * Get all currently live streams across all stations
+ */
+export const getAllLiveStreams = async (req, res, next) => {
+  try {
+    const streams = await Stream.find({ isLive: true })
+      .populate('station', 'name slug logoUrl')
+      .sort({ startedAt: -1 })
+      .lean();
+
+    return res.json(ok(streams));
+  } catch (err) {
+    return next(err);
+  }
+};
+
+/**
+ * GET /api/stream/history/:slug
+ * Get stream history for a station
+ */
+export const getStreamHistory = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const { limit = 20 } = req.query;
+
+    const station = await Station.findOne({ slug });
+    if (!station) {
+      return res.status(404).json(fail('Station not found', 'STATION_NOT_FOUND'));
+    }
+
+    const streams = await Stream.find({ station: station._id })
+      .sort({ startedAt: -1 })
+      .limit(Number(limit))
+      .lean();
+
+    return res.json(ok(streams));
+  } catch (err) {
+    return next(err);
+  }
+};

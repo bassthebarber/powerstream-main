@@ -1,5 +1,5 @@
 // CustomBeatUploader.js
-const fs = require("fs");
+import fs from "fs";
 
 const uploadCustomBeat = (req) => {
   const { artistId, projectName } = req.body;
@@ -13,4 +13,4 @@ const uploadCustomBeat = (req) => {
   };
 };
 
-module.exports = uploadCustomBeat;
+export default uploadCustomBeat;

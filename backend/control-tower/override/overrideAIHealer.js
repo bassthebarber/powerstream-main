@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideAIHealer.js
+// /backend/control-tower/override/overrideAIHealer.js
 
-const healSystem = () => {
+export const healSystem = () => {
   console.log('🩺 Override AI Healer: Scanning for corrupt modules...');
 
   const result = {
@@ -14,6 +14,6 @@ const healSystem = () => {
   return result;
 };
 
-module.exports = {
-  heal: healSystem,
-};
+export const heal = healSystem;
+
+export default { heal: healSystem };

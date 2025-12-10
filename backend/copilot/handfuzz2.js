@@ -1,6 +1,6 @@
 // backend/copilot/handfuzz2.js
 
-exports.fuzzyMatch = (input) => {
+export const fuzzyMatch = (input) => {
   const commands = {
     "reset server": () => "🛠 Restarting backend server...",
     "rebuild homepage": () => "🏗 Reconstructing homepage layout...",
@@ -20,3 +20,5 @@ exports.fuzzyMatch = (input) => {
 
   return "🤖 Sorry, command not recognized. Try again.";
 };
+
+export default { fuzzyMatch };

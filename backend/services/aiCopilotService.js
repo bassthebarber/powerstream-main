@@ -1,8 +1,7 @@
 // backend/services/aiCopilotService.js
-
-const CopilotTask = require('../models/copilotTask');
-const logUplink = require('../logs/logUplink');
-const overrideCore = require('../copilot/overrideCore');
+import CopilotTask from "../models/copilotTask.js";
+import logUplink from "../logs/logUplink.js";
+import overrideCore from "../copilot/overrideCore.js";
 
 /**
  * Executes a Copilot command from voice, typed input, or admin trigger
@@ -10,7 +9,7 @@ const overrideCore = require('../copilot/overrideCore');
  * @param {object} context - Context (userId, source, stationId, etc.)
  * @returns {Promise<object>} - Result of execution
  */
-exports.executeCopilotCommand = async (command, context = {}) => {
+export async function executeCopilotCommand(command, context = {}) {
   try {
     logUplink('AICopilotService', 'info', `Executing Copilot command: "${command}"`, context);
 
@@ -46,7 +45,7 @@ exports.executeCopilotCommand = async (command, context = {}) => {
       error: err.message,
     };
   }
-};
+}
 
 /**
  * Logs Copilot activity to history for audit
@@ -54,7 +53,7 @@ exports.executeCopilotCommand = async (command, context = {}) => {
  * @param {string} command
  * @param {string} outcome
  */
-exports.logCopilotHistory = async (userId, command, outcome) => {
+export async function logCopilotHistory(userId, command, outcome) {
   const entry = new CopilotTask({
     command,
     triggeredBy: userId,
@@ -64,4 +63,9 @@ exports.logCopilotHistory = async (userId, command, outcome) => {
 
   await entry.save();
   logUplink('AICopilotService', 'info', 'Manual copilot log entry saved', { userId, command });
+}
+
+export default {
+  executeCopilotCommand,
+  logCopilotHistory,
 };

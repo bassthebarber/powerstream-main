@@ -1,20 +1,23 @@
-// backend/models/Chatmessagemodel.js
-// DEPRECATED: Model moved to /src/domain/models/Message.model.js
-// This file remains for backward compatibility with existing imports.
-// TODO: Update all imports to use /src/domain/models/Message.model.js
+// backend/models/ChatMessageModel.js
+// Chat message model for PowerLine messaging
 import mongoose from "mongoose";
-const { Schema, model } = mongoose;
 
-const ChatMessageSchema = new Schema({
-  room: { type: Schema.Types.ObjectId, ref: "ChatRoom", required: true, index: true },
-  sender: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
-  type: { type: String, enum: ["text", "image", "audio", "video", "file", "system"], default: "text" },
-  text: String,
-  media: { type: Schema.Types.ObjectId, ref: "MediaFile" },
-  meta: Schema.Types.Mixed,
-  deliveredTo: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  readBy: [{ type: Schema.Types.ObjectId, ref: "User" }]
-}, { timestamps: true });
+const chatMessageSchema = new mongoose.Schema(
+  {
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat", required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    text: { type: String, default: "" },
+    media: [{ type: String }], // URLs or media IDs
+    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    deletedAt: { type: Date, default: null },
+  },
+  { timestamps: true }
+);
 
-ChatMessageSchema.index({ room: 1, createdAt: -1 });
-export default model("ChatMessage", ChatMessageSchema);
+// Indexes for efficient querying
+chatMessageSchema.index({ chat: 1, createdAt: -1 });
+chatMessageSchema.index({ author: 1 });
+
+const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema);
+export default ChatMessage;
+

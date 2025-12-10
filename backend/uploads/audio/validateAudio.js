@@ -1,6 +1,6 @@
 // backend/uploads/audio/validateAudio.js
 
-exports.validateAudio = (file) => {
+export const validateAudio = (file) => {
   const allowedTypes = ['audio/mpeg', 'audio/wav'];
   const maxSize = 20 * 1024 * 1024; // 20MB
 
@@ -14,3 +14,5 @@ exports.validateAudio = (file) => {
 
   return true;
 };
+
+export default { validateAudio };

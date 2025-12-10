@@ -1,21 +1,21 @@
 // backend/services/autoResponseService.js
-const AutoResponse = require('../models/AutoResponsemodel');
+import AutoResponse from "../models/AutoResponsemodel.js";
 
-async function addResponse(trigger, reply) {
+export async function addResponse(trigger, reply) {
   const response = new AutoResponse({ trigger, reply });
   return await response.save();
 }
 
-async function getAutoReplies() {
+export async function getAutoReplies() {
   return await AutoResponse.find({});
 }
 
-async function findReply(triggerText) {
+export async function findReply(triggerText) {
   const entry = await AutoResponse.findOne({ trigger: triggerText });
   return entry ? entry.reply : null;
 }
 
-module.exports = {
+export default {
   addResponse,
   getAutoReplies,
   findReply,

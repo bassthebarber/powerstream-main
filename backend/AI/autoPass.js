@@ -1,9 +1,10 @@
-// /backend/AI/Autopass.js
+// backend/AI/autoPass.js
+
 class Autopass {
-    static authorize(request) {
-        console.log("🔑 [Autopass] Authorizing AI-level request...");
-        return { authorized: true, level: 'system' };
-    }
+  static authorize(request) {
+    console.log("🔑 [Autopass] Authorizing AI-level request...");
+    return { authorized: true, level: 'system' };
+  }
 }
 
-module.exports = Autopass;
+export default Autopass;

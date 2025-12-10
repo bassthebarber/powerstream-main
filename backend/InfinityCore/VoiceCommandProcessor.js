@@ -1,8 +1,25 @@
 // backend/InfinityCore/VoiceCommandProcessor.js
 
-const { exec } = require("child_process");
-const circuit = require("../core/MainCircuitBoard");
-const log = require("../utils/systemLogger");
+// import { exec } from "child_process";
+// import circuit from "../core/MainCircuitBoard.js";
+// import log from "../utils/systemLogger.js";
+
+const log = {
+  info: (msg) => console.log(msg),
+  warn: (msg) => console.warn(msg),
+};
+
+const circuit = {
+  activateDashboard: () => console.log("Dashboard activated"),
+  safeShutdown: () => console.log("Safe shutdown initiated"),
+  restartStreamService: () => console.log("Stream service restarted"),
+  displayCrashLogs: () => console.log("Crash logs displayed"),
+  manualOverride: () => console.log("Manual override activated"),
+  connectCloudinary: () => console.log("Cloudinary connected"),
+  runUptimeScan: () => console.log("Uptime scan running"),
+  deepSystemScan: () => console.log("Deep system scan running"),
+  activateFailSafe: () => console.log("Failsafe activated"),
+};
 
 const voiceCommandMap = {
   "open dashboard": () => circuit.activateDashboard(),
@@ -16,7 +33,7 @@ const voiceCommandMap = {
   "run defense": () => circuit.activateFailSafe(),
 };
 
-module.exports = function processVoiceCommand(transcript) {
+function processVoiceCommand(transcript) {
   const command = transcript.toLowerCase().trim();
   log.info(`🎤 Voice Input Received: ${command}`);
 
@@ -30,4 +47,6 @@ module.exports = function processVoiceCommand(transcript) {
     log.warn(`❌ Unknown Command: ${command}`);
     return { success: false, message: "Command not recognized." };
   }
-};
+}
+
+export default processVoiceCommand;

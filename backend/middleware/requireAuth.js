@@ -102,5 +102,52 @@ export function requireAdmin(req, res, next) {
   next();
 }
 
+/**
+ * Optional authentication middleware
+ * Tries to authenticate user if token present, but doesn't fail if missing
+ * Useful for routes that can work with or without authentication
+ */
+export async function authOptional(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      // No token - continue without user
+      return next();
+    }
+
+    const token = authHeader.replace("Bearer ", "").trim();
+    if (!token) {
+      return next();
+    }
+
+    // Verify token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, env.JWT_SECRET);
+    } catch (jwtError) {
+      // Token invalid - continue without user (don't fail)
+      return next();
+    }
+
+    // Find user
+    const user = await User.findById(decoded.id).select("-password");
+    if (user && user.status === "active") {
+      req.user = {
+        id: user._id.toString(),
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isAdmin: user.isAdmin || user.role === "admin",
+        coinBalance: user.coinBalance || 0,
+      };
+    }
+
+    next();
+  } catch (error) {
+    // On any error, continue without user
+    next();
+  }
+}
+
 // Alias for backward compatibility
 export const authRequired = requireAuth;

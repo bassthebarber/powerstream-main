@@ -1,9 +1,8 @@
 // backend/copilot/overrideCore.js
-
-const logUplink = require('../logs/logUplink');
-const overrideHandler = require('./overrideHandler');
-const openaiBridge = require('./openaiBridge');
-const systemOverride = require('../utils/systemOverride');
+import logUplink from "../logs/logUplink.js";
+import overrideHandler from "./overrideHandler.js";
+import openaiBridge from "./openaiBridge.js";
+import systemOverride from "../utils/systemOverride.js";
 
 const overrideCore = {
   /**
@@ -42,4 +41,4 @@ const overrideCore = {
   },
 };
 
-module.exports = overrideCore;
+export default overrideCore;

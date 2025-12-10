@@ -31,13 +31,15 @@ export default function GlobalNav() {
     { path: "/", label: "🏠 Home", icon: "🏠" },
     { path: "/powerfeed", label: "📱 Feed", icon: "📱" },
     { path: "/powergram", label: "📸 Gram", icon: "📸" },
+    { path: "/music", label: "🎵 Music", icon: "🎵" },
     { path: "/powerreel", label: "🎬 Reel", icon: "🎬" },
     { path: "/powerline", label: "💬 Line", icon: "💬" },
-    { path: "/tv-stations", label: "📺 TV", icon: "📺" },
-    { path: "/southern-power", label: "🌐 SPS", icon: "🌐" },
-    { path: "/ps-tv", label: "🎥 PS TV", icon: "🎥" },
-    { path: "/powerharmony/master", label: "🎛️ Studio", icon: "🎛️" },
-    { path: "/multistream", label: "🌐 Multistream", icon: "🌐" },
+    { path: "/tvguide", label: "📺 TV Guide", icon: "📺" },
+    { path: "/powerstream-tv", label: "🎥 PS TV", icon: "🎥" },
+    { path: "/studio", label: "🎛️ Studio", icon: "🎛️" },
+    { path: "/school-network", label: "🏫 Schools", icon: "🏫" },
+    { path: "/church-network", label: "⛪ Churches", icon: "⛪" },
+    { path: "/network/no-limit-forever", label: "🔥 No Limit Forever", icon: "🔥" },
   ];
 
   const userInitials = user?.name

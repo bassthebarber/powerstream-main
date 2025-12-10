@@ -1,4 +1,4 @@
-const TOKEN_KEY = "powerstream_token";
+const TOKEN_KEY = "powerstreamToken";
 
 export function saveToken(token) {
   try {
@@ -27,6 +27,3 @@ export function clearToken() {
 export function isLoggedIn() {
   return !!getToken();
 }
-
-
-

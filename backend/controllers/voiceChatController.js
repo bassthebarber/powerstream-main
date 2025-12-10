@@ -2,7 +2,7 @@
 
 import VoiceChat from "../models/voiceChat.js";
 
-exports.startCall = async (req, res) => {
+export const startCall = async (req, res) => {
   try {
     const { callerId, receiverId, channelId } = req.body;
     const session = new VoiceChat({
@@ -19,7 +19,7 @@ exports.startCall = async (req, res) => {
   }
 };
 
-exports.endCall = async (req, res) => {
+export const endCall = async (req, res) => {
   try {
     const { sessionId } = req.params;
     const session = await VoiceChat.findById(sessionId);

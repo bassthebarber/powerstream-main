@@ -1,15 +1,13 @@
-/ ✅ Device-Level Sync Agent (backend/tvDistribution/deviceSyncAgent.js)
+// ✅ Device-Level Sync Agent (backend/tvDistribution/deviceSyncAgent.js)
 
-
-const syncDeviceStatus = (deviceId, status) => {
-const report = {
-deviceId,
-status,
-syncedAt: new Date().toISOString()
+export const syncDeviceStatus = (deviceId, status) => {
+  const report = {
+    deviceId,
+    status,
+    syncedAt: new Date().toISOString()
+  };
+  console.log('🔄 Device Synced:', report);
+  return report;
 };
-console.log('🔄 Device Synced:', report);
-return report;
-};
 
-
-module.exports = { syncDeviceStatus };
+export default { syncDeviceStatus };

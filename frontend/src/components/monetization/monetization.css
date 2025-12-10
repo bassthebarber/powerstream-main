@@ -1,0 +1,449 @@
+/* frontend/src/components/monetization/monetization.css */
+/* Monetization component styles per Overlord Spec */
+
+/* ===== Balance Display ===== */
+.ps-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(230, 184, 0, 0.15);
+  border-radius: 24px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ps-balance:hover {
+  background: rgba(230, 184, 0, 0.25);
+}
+
+.ps-balance-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ps-balance-icon {
+  font-size: 1rem;
+}
+
+.ps-balance-amount {
+  color: #e6b800;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.ps-balance-label {
+  color: rgba(230, 184, 0, 0.7);
+  font-size: 0.8rem;
+}
+
+.ps-balance-claim {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6b800;
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ps-balance-claim:hover {
+  transform: scale(1.1);
+}
+
+/* Size variants */
+.ps-balance--small {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.ps-balance--large {
+  padding: 10px 20px;
+  font-size: 1.1rem;
+}
+
+/* ===== Send Coins ===== */
+.ps-send-coins {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ps-send-balance {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.ps-send-balance strong {
+  color: #e6b800;
+}
+
+.ps-send-presets {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.ps-send-preset {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ps-send-preset:hover {
+  background: rgba(230, 184, 0, 0.15);
+}
+
+.ps-send-preset--active {
+  background: rgba(230, 184, 0, 0.2);
+  border-color: #e6b800;
+  color: #e6b800;
+}
+
+.ps-send-custom,
+.ps-send-memo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ps-send-custom label,
+.ps-send-memo label {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.ps-send-input {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ps-send-input:focus {
+  border-color: #e6b800;
+}
+
+.ps-send-error {
+  color: #ff4757;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ===== Buy Coins ===== */
+.ps-buy-coins {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ps-buy-packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.ps-buy-package {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ps-buy-package:hover {
+  background: rgba(230, 184, 0, 0.1);
+}
+
+.ps-buy-package--selected {
+  background: rgba(230, 184, 0, 0.15);
+  border-color: #e6b800;
+}
+
+.ps-buy-package--popular {
+  border-color: rgba(230, 184, 0, 0.4);
+}
+
+.ps-buy-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  background: #e6b800;
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.ps-buy-coins-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ps-buy-bonus {
+  display: block;
+  font-size: 0.75rem;
+  color: #2ecc71;
+  font-weight: 500;
+}
+
+.ps-buy-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e6b800;
+}
+
+.ps-buy-rate {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.ps-buy-error {
+  color: #ff4757;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.ps-buy-info {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ===== Withdrawal ===== */
+.ps-withdrawal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ps-withdrawal-balance {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.ps-withdrawal-balance strong {
+  color: #e6b800;
+}
+
+.ps-withdrawal-amount,
+.ps-withdrawal-method,
+.ps-withdrawal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ps-withdrawal-amount label,
+.ps-withdrawal-method label,
+.ps-withdrawal-details label {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.ps-withdrawal-input {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ps-withdrawal-input:focus {
+  border-color: #e6b800;
+}
+
+.ps-withdrawal-usd {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.ps-withdrawal-methods {
+  display: flex;
+  gap: 10px;
+}
+
+.ps-withdrawal-method-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  color: #ccc;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ps-withdrawal-method-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ps-withdrawal-method-btn--active {
+  background: rgba(230, 184, 0, 0.15);
+  border-color: #e6b800;
+  color: #e6b800;
+}
+
+.ps-withdrawal-error {
+  color: #ff4757;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.ps-withdrawal-info {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ===== History ===== */
+.ps-history {
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-history-loading,
+.ps-history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #888;
+}
+
+.ps-history-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.ps-history-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ps-history-item:last-child {
+  border-bottom: none;
+}
+
+.ps-history-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  font-size: 1rem;
+}
+
+.ps-history-details {
+  flex: 1;
+}
+
+.ps-history-type {
+  font-weight: 500;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.ps-history-desc {
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.ps-history-amount-col {
+  text-align: right;
+}
+
+.ps-history-amount {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.ps-history-amount--positive {
+  color: #2ecc71;
+}
+
+.ps-history-amount--negative {
+  color: #ff4757;
+}
+
+.ps-history-time {
+  color: #888;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+.ps-history-load-more {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 8px;
+  color: #e6b800;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+
+.ps-history-load-more:hover {
+  background: rgba(230, 184, 0, 0.15);
+}
+
+.ps-history-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+

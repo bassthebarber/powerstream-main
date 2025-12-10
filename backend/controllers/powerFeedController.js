@@ -27,18 +27,24 @@ export async function getPosts(req, res) {
 
 export async function createPost(req, res) {
   try {
-    const { userId, username, text, mediaUrl, mediaType } = req.body;
+    // Use authenticated user from middleware, fallback to body for backwards compatibility
+    const userId = req.user?.id || req.body.userId;
+    const username = req.user?.name || req.body.username || "guest";
 
     if (!userId) {
-      return res.status(400).json({ ok: false, message: "userId required" });
+      return res.status(401).json({ ok: false, message: "Authentication required" });
     }
 
+    const { text, mediaUrl, mediaType } = req.body;
+
     const post = await SocialPost.create({
-      userId,
-      username: username || "guest",
+      userId: String(userId),
+      username,
       text: text || "",
       mediaUrl: mediaUrl || "",
       mediaType: mediaType || "none",
+      likes: [],
+      comments: [],
     });
 
     res.status(201).json({ ok: true, post });
@@ -51,10 +57,11 @@ export async function createPost(req, res) {
 export async function reactToPost(req, res) {
   try {
     const { id } = req.params;
-    const { userId } = req.body;
+    // Use authenticated user from middleware
+    const userId = req.user?.id || req.body.userId;
 
     if (!userId) {
-      return res.status(400).json({ ok: false, message: "userId required" });
+      return res.status(401).json({ ok: false, message: "Authentication required" });
     }
 
     const post = await SocialPost.findById(id);
@@ -62,15 +69,17 @@ export async function reactToPost(req, res) {
       return res.status(404).json({ ok: false, message: "Post not found" });
     }
 
-    const liked = post.likes.includes(userId);
+    const userIdStr = String(userId);
+    const liked = post.likes.some(likeId => String(likeId) === userIdStr);
+    
     if (liked) {
-      post.likes = post.likes.filter((id) => id !== userId);
+      post.likes = post.likes.filter((likeId) => String(likeId) !== userIdStr);
     } else {
-      post.likes.push(userId);
+      post.likes.push(userIdStr);
     }
 
     await post.save();
-    res.json({ ok: true, post, liked: !liked });
+    res.json({ ok: true, post, liked: !liked, likesCount: post.likes.length });
   } catch (err) {
     console.error("Error reacting to post:", err);
     res.status(500).json({ ok: false, message: "Failed to react to post" });
@@ -80,10 +89,17 @@ export async function reactToPost(req, res) {
 export async function commentOnPost(req, res) {
   try {
     const { id } = req.params;
-    const { userId, text } = req.body;
+    const { text } = req.body;
+    // Use authenticated user from middleware
+    const userId = req.user?.id || req.body.userId;
+    const authorName = req.user?.name || req.body.username || "Guest";
 
-    if (!userId || !text) {
-      return res.status(400).json({ ok: false, message: "userId and text required" });
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: "Authentication required" });
+    }
+
+    if (!text || !text.trim()) {
+      return res.status(400).json({ ok: false, message: "Comment text is required" });
     }
 
     const post = await SocialPost.findById(id);
@@ -91,15 +107,21 @@ export async function commentOnPost(req, res) {
       return res.status(404).json({ ok: false, message: "Post not found" });
     }
 
-    post.comments.push({ userId, text });
+    post.comments.push({ 
+      userId: String(userId), 
+      text: text.trim(),
+      authorName,
+      createdAt: new Date(),
+    });
     await post.save();
 
-    res.json({ ok: true, post });
+    res.json({ ok: true, post, comments: post.comments });
   } catch (err) {
     console.error("Error commenting on post:", err);
     res.status(500).json({ ok: false, message: "Failed to comment on post" });
   }
 }
+
 
 
 

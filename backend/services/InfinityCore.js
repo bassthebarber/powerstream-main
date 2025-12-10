@@ -5,7 +5,7 @@
  * Handles core decision logic, override protocols, and intelligent behavior.
  */
 
-const handleVoiceCommand = async (transcript, context) => {
+export const handleVoiceCommand = async (transcript, context) => {
   try {
     // Simple command router example
     if (transcript.includes("status")) {
@@ -21,4 +21,4 @@ const handleVoiceCommand = async (transcript, context) => {
   }
 };
 
-module.exports = { handleVoiceCommand };
+export default { handleVoiceCommand };

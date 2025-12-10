@@ -68,7 +68,7 @@ export const startStream = async (req, res) => {
           stationId,
           profileId,
           selectedEndpoints,
-          enableRecording: enableRecording,
+          enableRecording: recordingEnabled,
         });
         console.log(`[Live] Multistream started:`, multistreamResult);
       } catch (msError) {

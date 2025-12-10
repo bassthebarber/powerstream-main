@@ -108,7 +108,57 @@ app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 app.use(morgan("dev"));
 
-// --- Healthcheck
+// --- Static file serving for audio files (beats, mixes, masters)
+// This allows direct access to generated audio files
+import fsExtra from "fs-extra";
+
+const OUTPUT_BEATS_DIR = process.env.BEAT_OUTPUT_DIR || path.join(__dirname, "output/beats");
+const OUTPUT_MIXES_DIR = process.env.MIX_OUTPUT_DIR || path.join(__dirname, "output/mixes");
+const OUTPUT_MASTERS_DIR = process.env.MASTER_OUTPUT_DIR || path.join(__dirname, "output/masters");
+const OUTPUT_RECORDINGS_DIR = process.env.RECORDINGS_OUTPUT_DIR || path.join(__dirname, "output/recordings");
+
+// Ensure all output directories exist
+await fsExtra.ensureDir(OUTPUT_BEATS_DIR);
+await fsExtra.ensureDir(OUTPUT_MIXES_DIR);
+await fsExtra.ensureDir(OUTPUT_MASTERS_DIR);
+await fsExtra.ensureDir(OUTPUT_RECORDINGS_DIR);
+
+// Serve static audio files with proper CORS headers
+app.use("/api/beats/download", express.static(OUTPUT_BEATS_DIR, {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "audio/mpeg");
+  }
+}));
+
+app.use("/api/mix/download", express.static(OUTPUT_MIXES_DIR, {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "audio/mpeg");
+  }
+}));
+
+app.use("/api/studio/master/download", express.static(OUTPUT_MASTERS_DIR, {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "audio/mpeg");
+  }
+}));
+
+app.use("/api/recordings/download", express.static(OUTPUT_RECORDINGS_DIR, {
+  setHeaders: (res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "audio/webm");
+  }
+}));
+
+console.log("📁 Static audio directories mounted:");
+console.log(`   • Beats: ${OUTPUT_BEATS_DIR}`);
+console.log(`   • Mixes: ${OUTPUT_MIXES_DIR}`);
+console.log(`   • Masters: ${OUTPUT_MASTERS_DIR}`);
+console.log(`   • Recordings: ${OUTPUT_RECORDINGS_DIR}`);
+
+// --- Healthcheck endpoints
 app.get("/studio-health", (_req, res) => res.send("🎙️ Recording Studio Backend Live"));
 app.get("/studio-env-check", (_req, res) =>
   res.json({
@@ -118,9 +168,29 @@ app.get("/studio-env-check", (_req, res) =>
     mongo: Boolean(STUDIO_MONGO_URI),
   })
 );
+// Standard health endpoint for consistency with main backend
+app.get(["/api/health", "/health"], (_req, res) =>
+  res.status(200).json({
+    status: "ok",
+    service: "powerstream-studio",
+    port: Number(process.env.STUDIO_PORT) || 5100,
+    env: process.env.NODE_ENV || "development",
+    time: new Date().toISOString(),
+  })
+);
 
 // --- API Routes
 app.use("/api/studio", studioRoutes);
+
+// Studio-specific health endpoint (frontend expects this)
+app.get("/api/studio/health", (_req, res) =>
+  res.status(200).json({
+    status: "ok",
+    service: "powerstream-recording-studio",
+    version: "2.0.0",
+    time: new Date().toISOString(),
+  })
+);
 
 // Session & Project Management
 try {

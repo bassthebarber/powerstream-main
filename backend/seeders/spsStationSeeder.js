@@ -22,7 +22,7 @@ export async function seedSPSStations() {
       {
         owner: new mongoose.Types.ObjectId(),
         name: "No Limit East Houston",
-        slug: "no-limit-east-houston",
+        slug: "NoLimitEastHouston",
         logoUrl: "/logos/nolimiteasthoustonlogo.png",
         description: "Music videos & local shows celebrating the culture and talent of East Houston.",
         category: "Music & Culture",

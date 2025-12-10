@@ -1,9 +1,8 @@
 // backend/uploads/images/resizeImage.js
 
-const sharp = require('sharp');
-const path = require('path');
+import sharp from 'sharp';
 
-exports.resizeImage = async (filePath, width = 800, height = 800) => {
+export const resizeImage = async (filePath, width = 800, height = 800) => {
   const outputPath = filePath.replace(/(\.\w+)$/, '_resized$1');
 
   await sharp(filePath)
@@ -12,3 +11,5 @@ exports.resizeImage = async (filePath, width = 800, height = 800) => {
 
   return outputPath;
 };
+
+export default { resizeImage };

@@ -231,3 +231,5 @@ InterestProfileSchema.statics = {
 
 export default mongoose.model("InterestProfile", InterestProfileSchema);
 
+
+

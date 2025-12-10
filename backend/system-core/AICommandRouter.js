@@ -1,6 +1,7 @@
-// /backend/system-core/AICommandRouter.js
-const EventBus = require('./EventBus');
-const InfinityCoreBridge = require('./InfinityCoreBridge');
+// backend/system-core/AICommandRouter.js
+
+import EventBus from './EventBus.js';
+import InfinityCoreBridge from './InfinityCoreBridge.js';
 
 class AICommandRouter {
   route(command, payload = {}) {
@@ -28,4 +29,5 @@ class AICommandRouter {
   }
 }
 
-module.exports = new AICommandRouter();
+const aiCommandRouter = new AICommandRouter();
+export default aiCommandRouter;

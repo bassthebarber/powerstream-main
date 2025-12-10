@@ -1,6 +1,10 @@
 // backend/config/defaultSettings.js
-module.exports = {
-  defaultCoinAmount: 100,
-  streamLimitMinutes: 180,
-  storyExpireHours: 24,
+export const defaultCoinAmount = 100;
+export const streamLimitMinutes = 180;
+export const storyExpireHours = 24;
+
+export default {
+  defaultCoinAmount,
+  streamLimitMinutes,
+  storyExpireHours,
 };

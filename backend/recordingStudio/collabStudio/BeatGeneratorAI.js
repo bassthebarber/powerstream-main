@@ -7,4 +7,4 @@ const generateBeat = (genre = "trap") => {
   };
 };
 
-module.exports = generateBeat;
+export default generateBeat;

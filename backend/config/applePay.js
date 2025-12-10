@@ -1,6 +1,10 @@
 // backend/config/applePay.js
-module.exports = {
-  merchantId: process.env.APPLE_PAY_MERCHANT_ID,
-  domainName: process.env.APPLE_PAY_DOMAIN,
-  displayName: 'PowerStream Platform',
+export const merchantId = process.env.APPLE_PAY_MERCHANT_ID;
+export const domainName = process.env.APPLE_PAY_DOMAIN;
+export const displayName = 'PowerStream Platform';
+
+export default {
+  merchantId,
+  domainName,
+  displayName,
 };

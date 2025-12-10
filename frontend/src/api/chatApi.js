@@ -1,74 +1,100 @@
 // frontend/src/api/chatApi.js
-// Chat/Messaging API client
+// PowerLine V5 Chat/Messaging API client
 import httpClient from "./httpClient.js";
 
 /**
- * Chat API
+ * PowerLine V5 Chat API
+ * All endpoints use /api/powerline/threads structure
  */
 const chatApi = {
+  // ============================================================
+  // POWERLINE V5 ENDPOINTS (PRIMARY)
+  // ============================================================
+
   /**
-   * Get user's conversations/threads
+   * Get user's threads (conversations)
+   * GET /api/powerline/threads
    */
-  async getConversations(options = {}) {
+  async getThreads(options = {}) {
     const { limit = 20, skip = 0 } = options;
     const params = new URLSearchParams({ limit, skip });
     
-    const response = await httpClient.get(`/powerline/conversations?${params}`);
+    const response = await httpClient.get(`/powerline/threads?${params}`);
     return response.data;
   },
 
   /**
-   * Get a single conversation
+   * Get a single thread
+   * GET /api/powerline/threads/:threadId
    */
-  async getConversation(conversationId) {
-    const response = await httpClient.get(`/powerline/conversations/${conversationId}`);
+  async getThread(threadId) {
+    const response = await httpClient.get(`/powerline/threads/${threadId}`);
     return response.data;
   },
 
   /**
-   * Get messages for a conversation
+   * Get messages for a thread
+   * GET /api/powerline/threads/:threadId/messages
    */
-  async getMessages(conversationId, options = {}) {
+  async getMessages(threadId, options = {}) {
     const { limit = 50, before, after } = options;
     const params = new URLSearchParams({ limit });
     if (before) params.append("before", before);
     if (after) params.append("after", after);
     
-    const response = await httpClient.get(`/powerline/conversations/${conversationId}/messages?${params}`);
+    const response = await httpClient.get(`/powerline/threads/${threadId}/messages?${params}`);
     return response.data;
   },
 
   /**
-   * Send a message
+   * Send a message to a thread
+   * POST /api/powerline/threads/:threadId/messages
    */
-  async sendMessage(conversationId, data) {
-    const response = await httpClient.post(`/powerline/conversations/${conversationId}/messages`, {
+  async sendMessage(threadId, data) {
+    const response = await httpClient.post(`/powerline/threads/${threadId}/messages`, {
       text: data.text,
       type: data.type || "text",
-      mediaUrl: data.mediaUrl,
+      media: data.media || data.mediaUrl ? [{ url: data.mediaUrl, type: "image" }] : [],
       replyTo: data.replyTo,
     });
     return response.data;
   },
 
   /**
-   * Create or get direct conversation with a user
+   * Create a new thread (1:1 or group)
+   * POST /api/powerline/threads
+   * - For 1:1: { participantId }
+   * - For group: { participantIds: [...], title, isGroup: true }
    */
-  async getOrCreateDM(userId) {
-    const response = await httpClient.post("/powerline/conversations/dm", { userId });
+  async createThread(data) {
+    const response = await httpClient.post("/powerline/threads", data);
     return response.data;
   },
 
   /**
-   * Mark messages as read
+   * Get or create direct message thread with a user
+   * POST /api/powerline/threads
    */
-  async markAsRead(conversationId) {
-    const response = await httpClient.post(`/powerline/conversations/${conversationId}/read`);
+  async getOrCreateDM(userId) {
+    const response = await httpClient.post("/powerline/threads", { 
+      participantId: userId,
+      isGroup: false 
+    });
+    return response.data;
+  },
+
+  /**
+   * Mark thread as read
+   * POST /api/powerline/threads/:threadId/read
+   */
+  async markAsRead(threadId) {
+    const response = await httpClient.post(`/powerline/threads/${threadId}/read`);
     return response.data;
   },
 
   /**
    * Get unread count
+   * GET /api/powerline/unread
    */
   async getUnreadCount() {
     const response = await httpClient.get("/powerline/unread");
@@ -76,106 +102,65 @@ const chatApi = {
   },
 
   /**
-   * Delete a message
-   */
-  async deleteMessage(conversationId, messageId) {
-    const response = await httpClient.delete(`/powerline/conversations/${conversationId}/messages/${messageId}`);
-    return response.data;
-  },
-
-  /**
-   * Edit a message
-   */
-  async editMessage(conversationId, messageId, text) {
-    const response = await httpClient.put(`/powerline/conversations/${conversationId}/messages/${messageId}`, { text });
-    return response.data;
-  },
-
-  /**
    * React to a message
+   * POST /api/powerline/threads/:threadId/messages/:messageId/reactions
    */
-  async addReaction(conversationId, messageId, emoji) {
-    const response = await httpClient.post(`/powerline/conversations/${conversationId}/messages/${messageId}/reactions`, { emoji });
+  async addReaction(threadId, messageId, emoji) {
+    const response = await httpClient.post(
+      `/powerline/threads/${threadId}/messages/${messageId}/reactions`, 
+      { emoji }
+    );
     return response.data;
   },
 
   /**
    * Remove reaction from a message
+   * DELETE /api/powerline/threads/:threadId/messages/:messageId/reactions
    */
-  async removeReaction(conversationId, messageId) {
-    const response = await httpClient.delete(`/powerline/conversations/${conversationId}/messages/${messageId}/reactions`);
+  async removeReaction(threadId, messageId) {
+    const response = await httpClient.delete(
+      `/powerline/threads/${threadId}/messages/${messageId}/reactions`
+    );
     return response.data;
   },
 
   /**
-   * Search messages
+   * Seed demo thread (dev only)
+   * POST /api/powerline/dev/seed
    */
-  async searchMessages(query, options = {}) {
-    const { limit = 20, skip = 0 } = options;
-    const params = new URLSearchParams({ q: query, limit, skip });
-    
-    const response = await httpClient.get(`/powerline/search?${params}`);
-    return response.data;
-  },
-
-  /**
-   * Mute a conversation
-   */
-  async muteConversation(conversationId, duration) {
-    const response = await httpClient.post(`/powerline/conversations/${conversationId}/mute`, { duration });
-    return response.data;
-  },
-
-  /**
-   * Unmute a conversation
-   */
-  async unmuteConversation(conversationId) {
-    const response = await httpClient.delete(`/powerline/conversations/${conversationId}/mute`);
-    return response.data;
-  },
-
-  /**
-   * Leave a group conversation
-   */
-  async leaveConversation(conversationId) {
-    const response = await httpClient.post(`/powerline/conversations/${conversationId}/leave`);
+  async seedDemoThread() {
+    const response = await httpClient.post("/powerline/dev/seed");
     return response.data;
   },
 
   // ============================================================
-  // LEGACY ENDPOINTS (for backwards compatibility)
+  // ALIAS METHODS (for backwards compatibility)
   // ============================================================
 
-  /**
-   * Get chats (legacy)
-   */
+  /** Alias for getThreads */
+  async getConversations(options = {}) {
+    return this.getThreads(options);
+  },
+
+  /** Alias for getThread */
+  async getConversation(conversationId) {
+    return this.getThread(conversationId);
+  },
+
+  /** Alias for getChats - legacy */
   async getChats(options = {}) {
-    const { limit = 20, skip = 0 } = options;
-    const params = new URLSearchParams({ limit, skip });
-    
-    const response = await httpClient.get(`/chat?${params}`);
-    return response.data;
+    return this.getThreads(options);
   },
 
-  /**
-   * Get chat messages (legacy)
-   */
+  /** Alias for getChatMessages - legacy */
   async getChatMessages(chatId, options = {}) {
-    const { limit = 50 } = options;
-    const params = new URLSearchParams({ limit });
-    
-    const response = await httpClient.get(`/chat/${chatId}/messages?${params}`);
-    return response.data;
+    return this.getMessages(chatId, options);
   },
 
-  /**
-   * Send chat message (legacy)
-   */
+  /** Alias for sendChatMessage - legacy */
   async sendChatMessage(chatId, text) {
-    const response = await httpClient.post(`/chat/${chatId}/messages`, { text });
-    return response.data;
+    return this.sendMessage(chatId, { text });
   },
 };
 
 export default chatApi;
-

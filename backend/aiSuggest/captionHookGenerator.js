@@ -1,4 +1,5 @@
 // backend/aiSuggest/captionHookGenerator.js
+
 const generateCaptions = (content) => {
   const title = `🔥 ${content.topic} | ${content.genre} Drop`;
   const hashtags = [`#${content.genre}`, '#PowerStream', '#NowPlaying', '#ViralTrack'];
@@ -11,4 +12,4 @@ const generateCaptions = (content) => {
   };
 };
 
-module.exports = generateCaptions;
+export default generateCaptions;

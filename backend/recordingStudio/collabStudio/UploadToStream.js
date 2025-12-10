@@ -7,4 +7,4 @@ const uploadToPlatform = (trackURL, artistId, title) => {
   };
 };
 
-module.exports = uploadToPlatform;
+export default uploadToPlatform;

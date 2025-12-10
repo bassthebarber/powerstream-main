@@ -1,7 +1,9 @@
+// backend/controllers/audioCall.controll.js
+
 import AudioCall from "../models/audioCallmodel.js";
 import User from "../models/Usermodel.js";
 
-exports.startAudioCall = async (req, res) => {
+export const startAudioCall = async (req, res) => {
   try {
     const { callerId, receiverId, roomId, isGroupCall = false } = req.body;
 
@@ -20,7 +22,7 @@ exports.startAudioCall = async (req, res) => {
   }
 };
 
-exports.endAudioCall = async (req, res) => {
+export const endAudioCall = async (req, res) => {
   try {
     const { callId } = req.params;
 
@@ -38,7 +40,7 @@ exports.endAudioCall = async (req, res) => {
   }
 };
 
-exports.getUserAudioCalls = async (req, res) => {
+export const getUserAudioCalls = async (req, res) => {
   try {
     const { userId } = req.params;
 

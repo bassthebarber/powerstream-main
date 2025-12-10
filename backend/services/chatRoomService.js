@@ -1,16 +1,16 @@
 // backend/services/chatRoomService.js
-const ChatRoom = require('../models/ChatRoommodel.js');
+import ChatRoom from "../models/ChatRoommodel.js";
 
-async function createRoom(users) {
+export async function createRoom(users) {
   const room = new ChatRoom({ users });
   return await room.save();
 }
 
-async function getRoomsByUser(userId) {
+export async function getRoomsByUser(userId) {
   return await ChatRoom.find({ users: userId });
 }
 
-module.exports = {
+export default {
   createRoom,
   getRoomsByUser,
 };

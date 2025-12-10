@@ -7,4 +7,4 @@ const calculateSplit = (totalAmount, percentages) => {
   return splits;
 };
 
-module.exports = calculateSplit;
+export default calculateSplit;

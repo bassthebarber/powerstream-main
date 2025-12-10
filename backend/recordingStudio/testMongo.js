@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 const uri = "mongodb+srv://powerstream:Powerstream1234@cluster0.ldmtan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 

@@ -3,7 +3,7 @@
 import CopilotTask from "../models/copilotTask.js";
 import brainOrchestrator from "../AI/brainOrchestrator.js";
 
-exports.runCopilotTask = async (req, res) => {
+export const runCopilotTask = async (req, res) => {
   try {
     const { command, userId, intent, payload } = req.body;
 

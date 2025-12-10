@@ -17,10 +17,33 @@ export async function listChats(req, res, next) {
     const items = await Chat.find(q)
       .sort({ updatedAt: -1, _id: -1 })
       .limit(Number(limit))
+      .populate("participants", "name displayName avatarUrl email")
       .lean();
 
+    // Transform for frontend - add computed fields
+    const userId = user;
+    const transformedItems = items.map((chat) => {
+      // For 1:1 chats, get the "other" participant
+      const otherParticipants = chat.participants.filter(
+        (p) => String(p._id) !== String(userId)
+      );
+      const otherUser = otherParticipants[0] || null;
+
+      return {
+        ...chat,
+        // Add display-friendly fields
+        name: chat.isGroup
+          ? chat.title || "Group Chat"
+          : otherUser?.displayName || otherUser?.name || "Unknown",
+        avatarUrl: chat.isGroup
+          ? null
+          : otherUser?.avatarUrl || null,
+        otherUser: otherUser || null,
+      };
+    });
+
     const nextCursor = items.length ? items[items.length - 1]._id : null;
-    res.json({ items, nextCursor });
+    res.json({ items: transformedItems, nextCursor });
   } catch (err) { next(err); }
 }
 
@@ -30,7 +53,9 @@ export async function listChats(req, res, next) {
  */
 export async function getChat(req, res, next) {
   try {
-    const doc = await Chat.findById(req.params.id).lean();
+    const doc = await Chat.findById(req.params.id)
+      .populate("participants", "name displayName avatarUrl email")
+      .lean();
     if (!doc) return res.status(404).json({ message: "Chat not found" });
     res.json(doc);
   } catch (err) { next(err); }

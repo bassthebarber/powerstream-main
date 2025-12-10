@@ -1,4 +1,6 @@
 // backend/config/stripe.js
-module.exports = {
-  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+export const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+export default {
+  stripeSecretKey,
 };

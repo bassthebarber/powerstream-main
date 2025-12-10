@@ -12,7 +12,9 @@ import {
 import {
   listMessages,
   sendMessage,
-} from "../controllers/ChatMessageController.js";
+  addReaction,
+  removeReaction,
+} from "../controllers/chatmessageController.js";
 // import { protect } from "../middleware/authMiddleware.js";
 
 const router = Router();
@@ -32,5 +34,11 @@ router.delete("/:id/participants/:userId", removeParticipant);
 router.get("/:chatId/messages", listMessages);
 // POST /api/chat/:chatId/messages
 router.post("/:chatId/messages", sendMessage);
+
+// Reactions API
+// POST /api/chat/:chatId/messages/:messageId/reactions
+router.post("/:chatId/messages/:messageId/reactions", addReaction);
+// DELETE /api/chat/:chatId/messages/:messageId/reactions
+router.delete("/:chatId/messages/:messageId/reactions", removeReaction);
 
 export default router;

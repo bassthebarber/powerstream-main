@@ -1,7 +1,12 @@
 // /backend/configs/aiSettings.js
-module.exports = {
-    aiName: "PowerStream AI",
-    coreModules: ["Infinity", "Matrix", "Sovereign", "Copilot", "BlackOps"],
-    awarenessLevel: "FULL",
-    overrideEnabled: true
+export const aiName = "PowerStream AI";
+export const coreModules = ["Infinity", "Matrix", "Sovereign", "Copilot", "BlackOps"];
+export const awarenessLevel = "FULL";
+export const overrideEnabled = true;
+
+export default {
+  aiName,
+  coreModules,
+  awarenessLevel,
+  overrideEnabled,
 };

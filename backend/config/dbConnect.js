@@ -1,5 +1,5 @@
 // dbConnect.js
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 const uri = process.env.MONGO_URI;
 
@@ -21,4 +21,4 @@ async function connectToMongo() {
   }
 }
 
-module.exports = connectToMongo;
+export default connectToMongo;

@@ -1,5 +1,5 @@
 // VoiceRecorder.js
-const fs = require("fs");
+import fs from "fs";
 
 const saveVoiceRecording = (userId, audioBuffer) => {
   const filename = `recording_${userId}_${Date.now()}.wav`;
@@ -7,4 +7,4 @@ const saveVoiceRecording = (userId, audioBuffer) => {
   return filename;
 };
 
-module.exports = saveVoiceRecording;
+export default saveVoiceRecording;

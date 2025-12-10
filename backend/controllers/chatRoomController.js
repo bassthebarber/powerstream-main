@@ -1,7 +1,8 @@
 // backend/controllers/chatRoomController.js
-import ChatRoom from "../models/ChatRoommodel.js.js";
 
-exports.createRoom = async (req, res) => {
+import ChatRoom from "../models/ChatRoommodel.js";
+
+export const createRoom = async (req, res) => {
   try {
     const { members, isPrivate } = req.body;
     const newRoom = new ChatRoom({ members, isPrivate });
@@ -13,7 +14,7 @@ exports.createRoom = async (req, res) => {
   }
 };
 
-exports.getUserRooms = async (req, res) => {
+export const getUserRooms = async (req, res) => {
   try {
     const { userId } = req.params;
     const rooms = await ChatRoom.find({ members: userId }).populate('members');

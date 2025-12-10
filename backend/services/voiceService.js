@@ -1,8 +1,7 @@
 // backend/services/voiceService.js
-
-const VoiceCommand = require('../models/VoiceCommandmodel');
-const logUplink = require('../logs/logUplink');
-const overrideCore = require('../copilot/overrideCore');
+import VoiceCommand from "../models/VoiceCommandmodel.js";
+import logUplink from "../logs/logUplink.js";
+import overrideCore from "../copilot/overrideCore.js";
 
 /**
  * Process a voice command issued by user or system.
@@ -10,7 +9,7 @@ const overrideCore = require('../copilot/overrideCore');
  * @param {object} context - { userId, source, device }
  * @returns {Promise<object>} - Result of override or AI execution
  */
-exports.handleVoiceCommand = async (transcript, context = {}) => {
+export async function handleVoiceCommand(transcript, context = {}) {
   try {
     const command = transcript.trim().toLowerCase();
     logUplink('VoiceService', 'info', `Voice received: "${command}"`, context);
@@ -38,13 +37,13 @@ exports.handleVoiceCommand = async (transcript, context = {}) => {
     logUplink('VoiceService', 'error', 'Voice processing failed', { error: err.message });
     return { success: false, error: err.message };
   }
-};
+}
 
 /**
  * Register a voice command manually to the database.
  * Useful for admin or training the system.
  */
-exports.registerVoiceCommand = async (data) => {
+export async function registerVoiceCommand(data) {
   const { command, actionKey, description, owner } = data;
 
   const exists = await VoiceCommand.findOne({ command: command.toLowerCase() });
@@ -61,4 +60,9 @@ exports.registerVoiceCommand = async (data) => {
 
   await cmd.save();
   return { success: true, message: 'Voice command registered', cmd };
+}
+
+export default {
+  handleVoiceCommand,
+  registerVoiceCommand,
 };

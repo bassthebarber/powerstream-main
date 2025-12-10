@@ -6,12 +6,17 @@ import { generateBeat, listBeats, getAvailableStyles, getAvailableMoods } from '
 
 const router = express.Router();
 
+// Check if AI is configured
+const MUSICGEN_CONFIGURED = !!(process.env.MUSICGEN_API_BASE || process.env.MUSICGEN_API_KEY);
+
 // Health check
 router.get('/health', (_req, res) => {
   res.json({ 
     ok: true, 
     service: 'Beat Lab API',
-    engine: 'MusicGen (configurable)',
+    engine: MUSICGEN_CONFIGURED ? 'MusicGen (active)' : 'Pattern Fallback (demo)',
+    aiConfigured: MUSICGEN_CONFIGURED,
+    fallbackMode: !MUSICGEN_CONFIGURED,
     timestamp: new Date().toISOString(),
   });
 });

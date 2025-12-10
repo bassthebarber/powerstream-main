@@ -21,9 +21,9 @@ export const STATIONS = [
     streamUrl: null, // Will be fetched from backend or set via env
   },
   {
-    id: 'no-limit-east-houston',
+    id: 'NoLimitEastHouston',
     name: 'No Limit East Houston',
-    slug: 'no-limit-east-houston',
+    slug: 'NoLimitEastHouston',
     logo: '/logos/nolimiteasthoustonlogo.png',
     description: 'Live music, studio sessions, and exclusive artist interviews.',
     category: 'Music',

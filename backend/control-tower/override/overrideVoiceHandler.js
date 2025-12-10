@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideVoiceHandler.js
+// /backend/control-tower/override/overrideVoiceHandler.js
 
-const handleVoiceCommand = (transcript) => {
+export const handleVoiceCommand = (transcript) => {
   console.log(`🎙️ Voice Handler: Received transcript → "${transcript}"`);
 
   const knownCommands = {
@@ -22,6 +22,6 @@ const handleVoiceCommand = (transcript) => {
   }
 };
 
-module.exports = {
-  handle: handleVoiceCommand,
-};
+export const handle = handleVoiceCommand;
+
+export default { handle: handleVoiceCommand };

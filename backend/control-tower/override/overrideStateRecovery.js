@@ -2,19 +2,19 @@
 
 let lastKnownState = {};
 
-const saveOverrideState = (state) => {
+export const saveOverrideState = (state) => {
   lastKnownState = { ...state, timestamp: Date.now() };
 };
 
-const getOverrideState = () => {
+export const getOverrideState = () => {
   return lastKnownState;
 };
 
-const restoreOverrideState = () => {
+export const restoreOverrideState = () => {
   return lastKnownState || {};
 };
 
-module.exports = {
+export default {
   saveOverrideState,
   getOverrideState,
   restoreOverrideState

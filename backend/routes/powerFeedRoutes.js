@@ -6,15 +6,20 @@ import {
   reactToPost,
   commentOnPost,
 } from "../controllers/powerFeedController.js";
+import { authRequired } from "../middleware/requireAuth.js";
 
 const router = Router();
 
+// Public routes
 router.get("/posts", getPosts);
-router.post("/posts", createPost);
-router.post("/posts/:id/react", reactToPost);
-router.post("/posts/:id/comment", commentOnPost);
+
+// Protected routes (require auth)
+router.post("/posts", authRequired, createPost);
+router.post("/posts/:id/react", authRequired, reactToPost);
+router.post("/posts/:id/comment", authRequired, commentOnPost);
 
 export default router;
+
 
 
 

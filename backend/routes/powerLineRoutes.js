@@ -9,8 +9,12 @@ import {
   listMessages,
   sendMessage,
 } from "../controllers/chatmessageController.js";
+import { authRequired } from "../middleware/requireAuth.js";
 
 const router = Router();
+
+// All PowerLine routes require auth
+router.use(authRequired);
 
 // Conversations
 router.get("/conversations", listChats);
@@ -22,6 +26,7 @@ router.get("/messages/:conversationId", listMessages);
 router.post("/messages/:conversationId", sendMessage);
 
 export default router;
+
 
 
 

@@ -1,5 +1,6 @@
-// Web3PayoutHook.js
-const connectWallet = async (req, res) => {
+// backend/Web3PayoutHook.js
+
+export const connectWallet = async (req, res) => {
   const { walletAddress } = req.body;
 
   // Simulate success
@@ -10,4 +11,4 @@ const connectWallet = async (req, res) => {
   });
 };
 
-module.exports = { connectWallet };
+export default { connectWallet };

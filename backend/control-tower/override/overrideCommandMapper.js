@@ -7,8 +7,8 @@ const commandMap = {
   ping: () => 'Override Ping Acknowledged',
 };
 
-const runOverrideCommand = (cmd) => {
+export const runOverrideCommand = (cmd) => {
   return commandMap[cmd] ? commandMap[cmd]() : 'Unknown Command';
 };
 
-module.exports = { runOverrideCommand };
+export default { runOverrideCommand };

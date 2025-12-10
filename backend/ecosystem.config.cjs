@@ -1,12 +1,16 @@
 module.exports = {
-  apps: [{
-    name: "powerstream-backend",
-    script: "server.js",
-    env: { PORT: 5001, NODE_ENV: "production" },
-    watch: false,
-    autorestart: true,
-    max_restarts: 10,
-    min_uptime: "10s",
-    restart_delay: 2000,
-  }]
+  apps: [
+    {
+      name: "powerstream-api",
+      script: "server.js",
+      cwd: "/path/to/backend",
+      env: { NODE_ENV: "production" }
+    },
+    {
+      name: "powerstream-media",
+      script: "mediaServer.js",
+      cwd: "/path/to/backend",
+      env: { NODE_ENV: "production" }
+    }
+  ]
 };

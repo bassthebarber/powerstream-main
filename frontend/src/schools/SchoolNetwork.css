@@ -1,0 +1,805 @@
+/* frontend/src/schools/SchoolNetwork.css */
+/* PowerStream School Network Styles */
+
+.school-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0a0a 0%, #0f1524 100%);
+  padding: 30px 40px;
+  color: #f9f9f9;
+}
+
+/* Page Header */
+.school-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(0, 195, 255, 0.15);
+}
+
+.school-branding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.school-logo-icon {
+  font-size: 48px;
+}
+
+.school-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #00c3ff 0%, #0099ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.school-subtitle {
+  font-size: 14px;
+  opacity: 0.7;
+  margin: 4px 0 0;
+  max-width: 500px;
+}
+
+.school-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-item.live {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #00c3ff;
+}
+
+.stat-item.live .stat-value {
+  color: #ef4444;
+}
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+}
+
+/* Filters */
+.school-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.filter-btn.active {
+  background: rgba(0, 195, 255, 0.15);
+  border-color: rgba(0, 195, 255, 0.4);
+  color: #00c3ff;
+}
+
+.district-filter {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 13px;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.district-filter:focus {
+  outline: none;
+  border-color: #00c3ff;
+}
+
+/* Loading & Error */
+.school-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  gap: 16px;
+  color: #888;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 195, 255, 0.2);
+  border-top-color: #00c3ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.school-error {
+  text-align: center;
+  padding: 60px;
+  color: #ef4444;
+}
+
+.school-error button {
+  margin-top: 16px;
+  padding: 8px 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+/* School Grid */
+.school-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.school-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(17, 17, 30, 0.9) 0%, rgba(15, 21, 36, 0.9) 100%);
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(0, 195, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.school-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 195, 255, 0.15);
+  border-color: rgba(0, 195, 255, 0.4);
+}
+
+.live-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  background: rgba(239, 68, 68, 0.9);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.school-logo-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(0, 195, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(0, 195, 255, 0.3);
+}
+
+.school-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.school-logo-placeholder {
+  font-size: 28px;
+  font-weight: 700;
+  color: #00c3ff;
+}
+
+.school-info h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.school-district,
+.school-mascot,
+.school-location,
+.school-colors {
+  margin: 4px 0 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.school-classification {
+  margin-top: auto;
+}
+
+.classification-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(0, 195, 255, 0.15);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #00c3ff;
+}
+
+/* Empty State */
+.school-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  opacity: 0.3;
+}
+
+.school-empty p {
+  margin: 12px 0 0;
+  color: #888;
+}
+
+.empty-hint {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* Station Page */
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #00c3ff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.school-station-header {
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.station-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.station-logo-large,
+.station-logo-placeholder-lg {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(0, 195, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 700;
+  color: #00c3ff;
+  border: 3px solid rgba(0, 195, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.station-info h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.live-indicator {
+  display: inline-block;
+  padding: 4px 12px;
+  margin-left: 12px;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ef4444;
+  animation: pulse 2s ease infinite;
+}
+
+.station-mascot {
+  font-size: 16px;
+  font-weight: 600;
+  color: #00c3ff;
+  margin: 4px 0;
+}
+
+.station-district,
+.station-location {
+  margin: 4px 0 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.station-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.colors-badge,
+.class-badge,
+.conf-badge {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  font-size: 11px;
+  color: #ccc;
+}
+
+.class-badge {
+  background: rgba(0, 195, 255, 0.15);
+  color: #00c3ff;
+  font-weight: 600;
+}
+
+.station-description {
+  max-width: 700px;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.station-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.station-link {
+  padding: 8px 16px;
+  background: rgba(0, 195, 255, 0.1);
+  border-radius: 8px;
+  color: #00c3ff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.station-link:hover {
+  background: rgba(0, 195, 255, 0.2);
+}
+
+/* Live Stream Section */
+.live-stream-section {
+  margin-bottom: 40px;
+}
+
+.live-stream-section h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.school-video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.offline-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: #888;
+}
+
+.offline-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.offline-overlay p {
+  margin: 4px 0;
+}
+
+.offline-hint {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.live-info {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(0, 195, 255, 0.05);
+  border: 1px solid rgba(0, 195, 255, 0.2);
+  border-radius: 10px;
+  max-width: 960px;
+}
+
+.live-info h3 {
+  margin: 0 0 8px;
+  color: #00c3ff;
+}
+
+.live-info .opponent {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.live-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Content Section */
+.content-section {
+  margin-top: 40px;
+}
+
+.content-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #888;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: #fff;
+}
+
+.tab-btn.active {
+  background: rgba(0, 195, 255, 0.1);
+  border-color: rgba(0, 195, 255, 0.3);
+  color: #00c3ff;
+}
+
+.sport-filter {
+  margin-bottom: 16px;
+}
+
+.sport-filter select {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.no-content {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Content Card */
+.content-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.content-card.live {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.card-live-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.card-sport-badge,
+.card-event-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  background: rgba(0, 195, 255, 0.1);
+  border-radius: 10px;
+  min-width: 70px;
+}
+
+.card-sport-badge span:first-child,
+.card-event-badge span:first-child {
+  font-size: 24px;
+}
+
+.card-sport-badge span:nth-child(2),
+.card-event-badge span:nth-child(2) {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00c3ff;
+  text-transform: capitalize;
+  margin-top: 4px;
+}
+
+.level-tag {
+  margin-top: 4px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 9px;
+  color: #aaa;
+}
+
+.card-main {
+  flex: 1;
+}
+
+.card-main h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.opponent-mascot {
+  font-size: 13px;
+  color: #888;
+  margin-left: 8px;
+}
+
+.card-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.card-date {
+  font-size: 13px;
+  color: #00c3ff;
+}
+
+.card-location {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.card-location.home {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.card-location.away {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.card-venue,
+.card-season {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.card-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.result-badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.result-badge.win {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.result-badge.loss {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.result-badge.tie {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.result-badge.pending {
+  background: rgba(107, 114, 128, 0.2);
+  color: #6b7280;
+}
+
+.score-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.card-desc {
+  margin: 8px 0 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: center;
+}
+
+.replay-button,
+.highlight-button {
+  padding: 10px 20px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.replay-button {
+  background: rgba(0, 195, 255, 0.15);
+  color: #00c3ff;
+}
+
+.replay-button:hover {
+  background: rgba(0, 195, 255, 0.25);
+}
+
+.highlight-button {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.highlight-button:hover {
+  background: rgba(251, 191, 36, 0.25);
+}
+
+.event-card .card-event-badge {
+  background: rgba(167, 139, 250, 0.1);
+}
+
+.event-card .card-event-badge span:nth-child(2) {
+  color: #a78bfa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .school-wrapper {
+    padding: 20px;
+  }
+  
+  .school-page-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .school-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .station-header-left {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .station-info {
+    text-align: center;
+  }
+  
+  .station-badges {
+    justify-content: center;
+  }
+  
+  .content-card {
+    flex-direction: column;
+  }
+  
+  .card-actions {
+    width: 100%;
+  }
+  
+  .replay-button,
+  .highlight-button {
+    width: 100%;
+  }
+}
+
+

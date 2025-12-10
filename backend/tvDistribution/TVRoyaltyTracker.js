@@ -1,16 +1,14 @@
-// ✅ TV Royalty Tracker (backend/tvDistribution/tvRoyaltyTracker.js)
+// ✅ TV Royalty Tracker (backend/tvDistribution/TVRoyaltyTracker.js)
 
-
-const trackViewing = (userId, contentId, deviceType) => {
-const log = {
-user: userId,
-content: contentId,
-device: deviceType,
-timestamp: Date.now()
+export const trackViewing = (userId, contentId, deviceType) => {
+  const log = {
+    user: userId,
+    content: contentId,
+    device: deviceType,
+    timestamp: Date.now()
+  };
+  console.log('📺 TV View Logged:', log);
+  return log;
 };
-console.log('📺 TV View Logged:', log);
-return log;
-};
 
-
-module.exports = { trackViewing };
+export default { trackViewing };

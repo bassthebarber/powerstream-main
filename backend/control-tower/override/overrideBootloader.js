@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideBootloader.js
+// /backend/control-tower/override/overrideBootloader.js
 
-const bootAllOverrideModules = () => {
+export const bootAllOverrideModules = () => {
   console.log('🚀 Bootloader: Initializing all override modules...');
 
   const modules = [
@@ -26,6 +26,4 @@ const bootAllOverrideModules = () => {
   };
 };
 
-module.exports = {
-  bootAllOverrideModules,
-};
+export default { bootAllOverrideModules };

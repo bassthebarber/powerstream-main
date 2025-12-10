@@ -27,18 +27,40 @@ export async function getGrams(req, res) {
 
 export async function createGram(req, res) {
   try {
-    const { userId, username, imageUrl, caption, tags } = req.body;
+    // Use authenticated user from middleware, fallback to body for backwards compatibility
+    const userId = req.user?.id || req.body.userId;
+    const username = req.user?.name || req.body.username || "guest";
 
-    if (!userId || !imageUrl) {
-      return res.status(400).json({ ok: false, message: "userId and imageUrl required" });
+    if (!userId) {
+      return res.status(401).json({ ok: false, message: "Authentication required" });
+    }
+
+    const { imageUrl, mediaUrl, caption, tags, hashtags, location, mediaType } = req.body;
+    
+    // Accept either imageUrl or mediaUrl for flexibility
+    const finalImageUrl = imageUrl || mediaUrl;
+    
+    if (!finalImageUrl) {
+      return res.status(400).json({ ok: false, message: "imageUrl or mediaUrl is required" });
+    }
+
+    // Parse hashtags from string if provided
+    let parsedTags = tags || [];
+    if (typeof hashtags === "string" && hashtags.trim()) {
+      parsedTags = hashtags.split(/\s+/).filter(t => t.startsWith("#")).map(t => t.replace("#", ""));
     }
 
     const gram = await GramPost.create({
-      userId,
-      username: username || "guest",
-      imageUrl,
+      userId: String(userId),
+      username,
+      imageUrl: finalImageUrl,
+      mediaUrl: finalImageUrl,
+      mediaType: mediaType || "image",
       caption: caption || "",
-      tags: tags || [],
+      tags: parsedTags,
+      location: location || "",
+      likes: [],
+      comments: [],
     });
 
     res.status(201).json({ ok: true, gram });

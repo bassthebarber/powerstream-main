@@ -1,10 +1,12 @@
 // frontend/src/components/StoryBar.jsx
 // Modern social stories bar component
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { fetchStories, createStory } from "../lib/api.js";
 
 export default function StoryBar() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -106,19 +108,21 @@ export default function StoryBar() {
             />
           ))}
 
-          {/* Fallback when no stories */}
+          {/* Fallback when no stories - Clickable station badges */}
           {!loading && stories.length === 0 && (
             <>
               {[
-                { name: "Southern Power", initials: "SP" },
-                { name: "No Limit", initials: "NL" },
-                { name: "Studio Pro", initials: "SP" },
+                { name: "Southern Power", initials: "SP", slug: "southern-power-network" },
+                { name: "No Limit", initials: "NL", slug: "nolimit-east-houston" },
+                { name: "Civic Connect", initials: "CC", slug: "civic-connect" },
+                { name: "TGT", initials: "TG", slug: "texas-got-talent" },
               ].map((mock, i) => (
                 <StoryPill
                   key={`mock-${i}`}
                   label={mock.name}
                   initials={mock.initials}
-                  hasStory={false}
+                  hasStory={true}
+                  onClick={() => navigate(`/tv/${mock.slug}/catalog`)}
                 />
               ))}
             </>

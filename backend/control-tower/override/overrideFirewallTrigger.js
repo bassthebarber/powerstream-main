@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideFirewallTrigger.js
+// /backend/control-tower/override/overrideFirewallTrigger.js
 
-const triggerFirewall = () => {
+export const triggerFirewall = () => {
   console.log('🧱 Override Firewall: Custom firewall sequence triggered...');
 
   const firewallStatus = {
@@ -13,6 +13,6 @@ const triggerFirewall = () => {
   return firewallStatus;
 };
 
-module.exports = {
-  trigger: triggerFirewall,
-};
+export const trigger = triggerFirewall;
+
+export default { trigger: triggerFirewall };

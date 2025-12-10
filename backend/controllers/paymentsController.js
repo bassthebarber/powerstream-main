@@ -3,7 +3,7 @@
 import Payment from "../models/Payment.js";
 import logUplink from "../logs/logUplink.js";
 
-exports.recordPayment = async (req, res) => {
+export const recordPayment = async (req, res) => {
   try {
     const { userId, amount, method, transactionId } = req.body;
 
@@ -23,7 +23,7 @@ exports.recordPayment = async (req, res) => {
   }
 };
 
-exports.getUserPayments = async (req, res) => {
+export const getUserPayments = async (req, res) => {
   try {
     const { userId } = req.params;
     const payments = await Payment.find({ user: userId });

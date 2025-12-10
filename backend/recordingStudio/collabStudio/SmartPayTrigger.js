@@ -8,4 +8,4 @@ const triggerSmartPay = (splits, trackId) => {
   };
 };
 
-module.exports = triggerSmartPay;
+export default triggerSmartPay;

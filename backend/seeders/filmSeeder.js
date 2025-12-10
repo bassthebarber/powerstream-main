@@ -24,7 +24,7 @@ export async function seedFilms() {
           priceUSD: 4.99,
         },
         isPublished: true,
-        stationSlug: "no-limit-east-houston",
+        stationSlug: "NoLimitEastHouston",
         network: "Southern Power Syndicate",
         views: 0,
       },
@@ -47,7 +47,7 @@ export async function seedFilms() {
           priceUSD: 0,
         },
         isPublished: true,
-        stationSlug: "no-limit-east-houston",
+        stationSlug: "NoLimitEastHouston",
         network: "Southern Power Syndicate",
         views: 0,
       },
@@ -137,6 +137,7 @@ export async function seedFilms() {
     throw err;
   }
 }
+
 
 
 

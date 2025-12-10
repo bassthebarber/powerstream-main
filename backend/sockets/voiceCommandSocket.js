@@ -1,9 +1,9 @@
 // backend/sockets/voiceCommandSocket.js
 
-const voiceService = require('../services/voiceService');
-const logUplink = require('../logs/logUplink');
+import voiceService from '../services/voiceService.js';
+import logUplink from '../logs/logUplink.js';
 
-module.exports = (io, socket) => {
+const voiceCommandSocket = (io, socket) => {
   socket.on('voice-command', async (data) => {
     const { transcript, userId } = data;
 
@@ -24,3 +24,5 @@ module.exports = (io, socket) => {
     }
   });
 };
+
+export default voiceCommandSocket;

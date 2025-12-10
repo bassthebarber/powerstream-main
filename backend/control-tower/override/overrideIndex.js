@@ -1,22 +1,31 @@
-// overrideIndex.js
+// backend/control-tower/override/overrideIndex.js
+
+import * as defenseCore from './defenseCore.js';
+import * as failsafeOverride from './failsafeOverride.js';
+import * as commandTriggerBoot from './CommandTriggerBoot.js';
+import * as overrideAIHealer from './overrideAIHealer.js';
+import * as overrideFirewallTrigger from './overrideFirewallTrigger.js';
+import * as overrideInterfaceBridge from './overrideInterfaceBridge.js';
+import * as sovereignModelLink from './sovereignModelLink.js';
+import * as copilotPowerFamousScan from './copilotPowerFamousScan.js';
 
 const modules = {
-  defenseCore: require('./defenseCore'),
-  failsafe: require('./failsafeOverride'),
-  boot: require('./commandTrigger.boot'),
-  healer: require('./overrideAIHealer'),
-  firewall: require('./overrideFirewallTrigger'),
-  interface: require('./overrideInterfaceBridge'),
-  model: require('./sovereignModelLink'),
-  famousScan: require('./copilotPowerFamousScan'),
+  defenseCore,
+  failsafe: failsafeOverride,
+  boot: commandTriggerBoot,
+  healer: overrideAIHealer,
+  firewall: overrideFirewallTrigger,
+  interface: overrideInterfaceBridge,
+  model: sovereignModelLink,
+  famousScan: copilotPowerFamousScan,
 };
 
-const triggerModule = async (module, action) => {
-  if (modules[module] && typeof modules[module][action] === 'function') {
-    return await modules[module][action]();
+export const triggerModule = async (moduleName, action) => {
+  if (modules[moduleName] && typeof modules[moduleName][action] === 'function') {
+    return await modules[moduleName][action]();
   } else {
-    return `Module/action not found: ${module}/${action}`;
+    return `Module/action not found: ${moduleName}/${action}`;
   }
 };
 
-module.exports = { triggerModule };
+export default { triggerModule };

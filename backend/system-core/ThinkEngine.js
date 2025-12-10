@@ -1,4 +1,5 @@
-// /backend/system-core/ThinkEngine.js
+// backend/system-core/ThinkEngine.js
+
 class ThinkEngine {
   start(onDecision) {
     console.log("🧠 [ThinkEngine] Starting AI decision-making loop...");
@@ -19,4 +20,5 @@ class ThinkEngine {
   }
 }
 
-module.exports = new ThinkEngine();
+const thinkEngine = new ThinkEngine();
+export default thinkEngine;

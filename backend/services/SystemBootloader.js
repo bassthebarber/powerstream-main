@@ -1,5 +1,5 @@
 // SystemBootloader.js
-const InfinityCore = require('../Infinity/InfinityCore');
+import InfinityCore from "../Infinity/InfinityCore.js";
 
 async function bootSystem() {
   console.log('[🧠 SystemBootloader] PowerStream system boot initiated...');
@@ -7,3 +7,5 @@ async function bootSystem() {
 }
 
 bootSystem();
+
+export default bootSystem;

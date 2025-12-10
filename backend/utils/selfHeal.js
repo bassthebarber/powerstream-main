@@ -1,11 +1,14 @@
-import fs from 'fs';
+import fs from "fs";
+import path from "path";
 
 export function ensureFiles(files = []) {
-  for (const {path, content} of files) {
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(require('path').dirname(path), { recursive: true });
-      fs.writeFileSync(path, content, 'utf8');
-      console.log(`🩹 Self-Heal: created ${path}`);
+  for (const {path: filePath, content} of files) {
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.writeFileSync(filePath, content, 'utf8');
+      console.log(`🩹 Self-Heal: created ${filePath}`);
     }
   }
 }
+
+export default { ensureFiles };

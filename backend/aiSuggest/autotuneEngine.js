@@ -1,6 +1,7 @@
-// backend/aiSuggest/AutoTuneEngine.js
+// backend/aiSuggest/autotuneEngine.js
+
 const applyAutoTune = (audioPath) => {
   return audioPath.replace("raw/", "autotuned/");
 };
 
-module.exports = applyAutoTune;
+export default applyAutoTune;

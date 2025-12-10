@@ -1,5 +1,6 @@
 // backend/tvDistribution/FireTVConfig.js
-const buildFireConfig = (contentList) => {
+
+export const buildFireConfig = (contentList) => {
   return {
     appTitle: "PowerStream TV",
     language: "en",
@@ -14,4 +15,4 @@ const buildFireConfig = (contentList) => {
   };
 };
 
-module.exports = buildFireConfig;
+export default buildFireConfig;

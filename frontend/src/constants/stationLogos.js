@@ -10,7 +10,7 @@ export const SOUTHERN_POWER_NETWORK = {
 };
 
 export const NO_LIMIT_EAST_HOUSTON = {
-  slug: "no-limit-east-houston",
+  slug: "NoLimitEastHouston",
   name: "No Limit East Houston",
   logoUrl: "/logos/nolimiteasthoustonlogo.png",
   tagline: "Music & culture from East Houston",
@@ -39,6 +39,7 @@ export const SPS_STATIONS = [
   TEXAS_GOT_TALENT,
   CIVIC_CONNECT,
 ];
+
 
 
 

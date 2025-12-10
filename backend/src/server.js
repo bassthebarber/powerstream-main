@@ -65,18 +65,21 @@ const bootstrap = async () => {
       logger.warn("Owner seed skipped:", err.message);
     }
     
-    // Auto-seed data if enabled
-    if (env.AUTO_SEED_DATA) {
-      try {
-        const { seedSPSStations } = await import("../seeders/spsStationSeeder.js");
-        const { seedTGTContestants } = await import("../seeders/tgtContestantSeeder.js");
-        await seedSPSStations();
-        await seedTGTContestants();
-        logger.info("✅ Auto-seeded data");
-      } catch (err) {
-        logger.warn("Auto-seed skipped:", err.message);
-      }
-    }
+    // ========================================================
+    // AUTO-SEED DISABLED - TV stations should never be wiped
+    // To manually seed, use POST /api/tv/seed
+    // ========================================================
+    // if (env.AUTO_SEED_DATA) {
+    //   try {
+    //     const { seedSPSStations } = await import("../seeders/spsStationSeeder.js");
+    //     const { seedTGTContestants } = await import("../seeders/tgtContestantSeeder.js");
+    //     await seedSPSStations();
+    //     await seedTGTContestants();
+    //     logger.info("✅ Auto-seeded data");
+    //   } catch (err) {
+    //     logger.warn("Auto-seed skipped:", err.message);
+    //   }
+    // }
   }
   
   // ============================================================
@@ -189,4 +192,5 @@ bootstrap().catch((err) => {
   logger.error("Fatal startup error:", err);
   process.exit(1);
 });
+
 

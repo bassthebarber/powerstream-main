@@ -9,7 +9,7 @@ import logUplink from "../logs/logUplink.js";
  * @desc Get currently playing content for a station
  * @route GET /api/station/theater/now/:stationId
  */
-exports.getNowPlaying = async (req, res) => {
+export const getNowPlaying = async (req, res) => {
   try {
     const { stationId } = req.params;
 
@@ -35,7 +35,7 @@ exports.getNowPlaying = async (req, res) => {
  * @desc Get upcoming content for a station
  * @route GET /api/station/theater/upcoming/:stationId
  */
-exports.getUpcomingShows = async (req, res) => {
+export const getUpcomingShows = async (req, res) => {
   try {
     const { stationId } = req.params;
     const now = new Date();
@@ -55,7 +55,7 @@ exports.getUpcomingShows = async (req, res) => {
  * @desc Get full media catalog for a station (recorded library)
  * @route GET /api/station/theater/catalog/:stationId
  */
-exports.getMediaCatalog = async (req, res) => {
+export const getMediaCatalog = async (req, res) => {
   try {
     const { stationId } = req.params;
 

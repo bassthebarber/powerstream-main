@@ -39,8 +39,7 @@ export function AuthProvider({ children }) {
           clearToken();
         }
       } catch (err) {
-        // Token invalid or expired
-        console.warn("Token validation failed:", err.message);
+        // Token invalid or expired - silently clear (this is normal for logged out users)
         clearToken();
       } finally {
         setLoading(false);
@@ -52,11 +51,6 @@ export function AuthProvider({ children }) {
 
   const signIn = async (email, password) => {
     try {
-      // Log API URL in development for verification
-      if (import.meta.env.DEV) {
-        console.log("🔧 [Auth] Attempting login to:", api.defaults.baseURL + "/auth/login");
-      }
-      
       const res = await api.post("/auth/login", { email, password });
       const { token, user: userData } = res.data;
 
@@ -65,6 +59,10 @@ export function AuthProvider({ children }) {
       }
 
       saveToken(token);
+      // Also save as ps_token for PowerLine API compatibility
+      localStorage.setItem("ps_token", token);
+      localStorage.setItem("ps_user_id", userData._id || userData.id || "");
+      
       // Ensure coinBalance is included
       const userWithCoins = {
         ...userData,
@@ -74,6 +72,17 @@ export function AuthProvider({ children }) {
       return { token, user: userWithCoins };
     } catch (error) {
       console.error("Sign in error:", error);
+      
+      // Enhance error message for network errors
+      if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+        const enhancedError = new Error(
+          "Unable to connect to PowerStream server. Please check that the backend is running on port 5001."
+        );
+        enhancedError.originalError = error;
+        enhancedError.isNetworkError = true;
+        throw enhancedError;
+      }
+      
       throw error;
     }
   };
@@ -88,6 +97,10 @@ export function AuthProvider({ children }) {
       }
 
       saveToken(token);
+      // Also save as ps_token for PowerLine API compatibility
+      localStorage.setItem("ps_token", token);
+      localStorage.setItem("ps_user_id", userData._id || userData.id || "");
+      
       // Ensure coinBalance is included
       const userWithCoins = {
         ...userData,
@@ -104,6 +117,9 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     try {
       clearToken();
+      // Also clear PowerLine tokens
+      localStorage.removeItem("ps_token");
+      localStorage.removeItem("ps_user_id");
       setUser(null);
     } catch (error) {
       console.error("Sign out error:", error);

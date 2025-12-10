@@ -1,9 +1,8 @@
 // backend/utils/speechRecognizer.js
-
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const logUplink = require('../logs/logUplink');
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import logUplink from "../logs/logUplink.js";
 
 const WHISPER_API = 'https://api.openai.com/v1/audio/transcriptions';
 const WHISPER_KEY = process.env.OPENAI_API_KEY;
@@ -13,7 +12,7 @@ const WHISPER_KEY = process.env.OPENAI_API_KEY;
  * @param {string} filePath - Path to the audio file (.wav, .mp3)
  * @returns {Promise<string>} - Transcribed text
  */
-exports.transcribeSpeech = async (filePath) => {
+export async function transcribeSpeech(filePath) {
   try {
     const fileStream = fs.createReadStream(filePath);
 
@@ -37,4 +36,6 @@ exports.transcribeSpeech = async (filePath) => {
     logUplink('SpeechRecognizer', 'error', '❌ Transcription failed', { error: err.message });
     throw new Error('Speech recognition failed');
   }
-};
+}
+
+export default { transcribeSpeech };

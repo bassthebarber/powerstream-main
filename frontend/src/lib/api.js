@@ -7,17 +7,9 @@ import { API_BASE_URL } from "../config/apiConfig.js";
  */
 const API_URL = API_BASE_URL;
 
-// Log in development to verify which URL is being used
+// Single log for API configuration (dev only)
 if (import.meta.env.DEV) {
-  console.log("🔧 [API Client] Development mode detected");
-  console.log("🔧 [API Client] baseURL:", API_URL);
-  console.log("🔧 [API Client] VITE_API_URL env:", import.meta.env.VITE_API_URL || "(not set)");
-  console.log("🔧 [API Client] MODE:", import.meta.env.MODE);
-}
-
-// Also log in production for debugging (can be removed later)
-if (import.meta.env.PROD) {
-  console.log("🔧 [API Client] Production mode - baseURL:", API_URL);
+  console.log(`🔧 [API] ${API_URL}`);
 }
 
 const api = axios.create({
@@ -27,18 +19,11 @@ const api = axios.create({
 });
 
 // Automatically attach JWT token to all requests
-api.interceptors.request.use(
-  (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('powerstreamToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 // Handle 401 errors (token expired/invalid)
 api.interceptors.response.use(
@@ -146,21 +131,99 @@ export async function createReelComment(reelId, payload) {
   return res.data;
 }
 
-// Chat / PowerLine REST helpers
-export async function fetchChats(userId, limit = 50) {
-  const res = await api.get(`/chat?user=${encodeURIComponent(userId)}&limit=${limit}`);
+// ============================================================
+// PowerLine V5 REST helpers
+// ============================================================
+
+/**
+ * Fetch threads (conversations) for current user
+ * GET /api/powerline/threads
+ */
+export async function fetchThreads(options = {}) {
+  const { limit = 20, skip = 0 } = options;
+  const params = new URLSearchParams({ limit, skip });
+  const res = await api.get(`/powerline/threads?${params}`);
   return res.data;
 }
 
-export async function fetchChatMessages(chatId, limit = 50) {
-  const res = await api.get(`/chat/${encodeURIComponent(chatId)}/messages?limit=${limit}`);
+/**
+ * Fetch messages for a thread
+ * GET /api/powerline/threads/:threadId/messages
+ */
+export async function fetchMessages(threadId, options = {}) {
+  const { limit = 50, before, after } = options;
+  const params = new URLSearchParams({ limit });
+  if (before) params.append("before", before);
+  if (after) params.append("after", after);
+  const res = await api.get(`/powerline/threads/${encodeURIComponent(threadId)}/messages?${params}`);
   return res.data;
 }
 
-export async function sendChatMessage(chatId, payload) {
-  const res = await api.post(`/chat/${encodeURIComponent(chatId)}/messages`, payload);
+/**
+ * Send a message to a thread
+ * POST /api/powerline/threads/:threadId/messages
+ */
+export async function sendMessage(threadId, text, options = {}) {
+  const res = await api.post(`/powerline/threads/${encodeURIComponent(threadId)}/messages`, {
+    text,
+    type: options.type || "text",
+    media: options.media || [],
+  });
   return res.data;
 }
+
+/**
+ * Create a new thread
+ * POST /api/powerline/threads
+ */
+export async function createThread(data) {
+  const res = await api.post("/powerline/threads", data);
+  return res.data;
+}
+
+/**
+ * Mark thread as read
+ * POST /api/powerline/threads/:threadId/read
+ */
+export async function markThreadRead(threadId) {
+  const res = await api.post(`/powerline/threads/${encodeURIComponent(threadId)}/read`);
+  return res.data;
+}
+
+/**
+ * Get unread count
+ * GET /api/powerline/unread
+ */
+export async function getUnreadCount() {
+  const res = await api.get("/powerline/unread");
+  return res.data;
+}
+
+/**
+ * Add reaction to message
+ * POST /api/powerline/threads/:threadId/messages/:messageId/reactions
+ */
+export async function addMessageReaction(threadId, messageId, emoji) {
+  const res = await api.post(
+    `/powerline/threads/${encodeURIComponent(threadId)}/messages/${encodeURIComponent(messageId)}/reactions`,
+    { emoji }
+  );
+  return res.data;
+}
+
+/**
+ * Seed demo thread (dev only)
+ * POST /api/powerline/dev/seed
+ */
+export async function seedDemoThread() {
+  const res = await api.post("/powerline/dev/seed");
+  return res.data;
+}
+
+// Legacy aliases for backwards compatibility
+export const fetchChats = fetchThreads;
+export const fetchChatMessages = fetchMessages;
+export const sendChatMessage = sendMessage;
 
 // Stories (PowerFeed)
 export async function fetchStories() {
@@ -184,6 +247,17 @@ export async function uploadAvatar(formData) {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
+}
+
+export async function fetchSuggestedUsers(limit = 10) {
+  try {
+    const res = await api.get(`/users/suggested?limit=${limit}`);
+    return res.data;
+  } catch (err) {
+    // Silently fail if endpoint doesn't exist or user not logged in
+    console.warn("Suggested users not available");
+    return { ok: false, users: [] };
+  }
 }
 
 // TV Guide / Shows helpers

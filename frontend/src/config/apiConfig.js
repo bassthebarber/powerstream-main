@@ -2,15 +2,31 @@
 // Centralized API configuration
 
 /**
- * API Base URL
- * Reads from environment variable or defaults to local development
+ * Determine if we're running in local development
+ * This detects localhost/127.0.0.1 regardless of what the env var says
  */
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const isLocalDev = () => {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.');
+};
+
+/**
+ * API Base URL
+ * - In local development (localhost), always use local backend at port 5001
+ * - Otherwise, use environment variable or fallback to local
+ */
+export const API_BASE_URL = isLocalDev() 
+  ? 'http://localhost:5001/api'
+  : (import.meta.env.VITE_API_URL || 'http://localhost:5001/api');
 
 /**
  * Socket.IO URL
+ * - In local development (localhost), always use local backend at port 5001
  */
-export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5001';
+export const SOCKET_URL = isLocalDev()
+  ? 'http://localhost:5001'
+  : (import.meta.env.VITE_SOCKET_URL || 'http://localhost:5001');
 
 /**
  * API Version
@@ -106,19 +122,24 @@ export const ENDPOINTS = {
     VIEW: (id) => `/powerreel/${id}/view`,
   },
   
-  // Chat
+  // Chat / PowerLine V5
   CHAT: {
-    CONVERSATIONS: '/powerline',
-    MESSAGES: (id) => `/powerline/${id}/messages`,
-    SEND: (id) => `/powerline/${id}/messages`,
-    CREATE: '/powerline',
+    THREADS: '/powerline/threads',
+    THREAD: (id) => `/powerline/threads/${id}`,
+    MESSAGES: (id) => `/powerline/threads/${id}/messages`,
+    SEND: (id) => `/powerline/threads/${id}/messages`,
+    CREATE: '/powerline/threads',
+    MARK_READ: (id) => `/powerline/threads/${id}/read`,
+    UNREAD: '/powerline/unread',
+    REACTIONS: (threadId, msgId) => `/powerline/threads/${threadId}/messages/${msgId}/reactions`,
+    DEV_SEED: '/powerline/dev/seed',
   },
   
   // TV
   TV: {
-    STATIONS: '/tv-stations',
-    STATION: (id) => `/tv-stations/${id}`,
-    LIVE: '/ps-tv/live',
+    STATIONS: '/tv/stations',
+    STATION: (id) => `/tv/stations/${id}`,
+    LIVE: '/tv/guide',
     SHOWS: '/shows',
     VOD: '/vod',
   },
@@ -156,4 +177,5 @@ export default {
   LIMITS,
   ENDPOINTS,
 };
+
 

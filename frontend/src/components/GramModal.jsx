@@ -1,12 +1,14 @@
 // frontend/src/components/GramModal.jsx
 // Instagram-style photo modal/lightbox
 import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import api from "../lib/api.js";
 
 const gold = "#ffb84d";
 
-export default function GramModal({ gram, onClose, onUpdate }) {
+export default function GramModal({ gram, onClose, onUpdate, onLike }) {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -22,15 +24,25 @@ export default function GramModal({ gram, onClose, onUpdate }) {
   const author = useMemo(() => {
     if (gram.user && typeof gram.user === "object") {
       return {
+        id: gram.user._id || gram.user.id,
         name: gram.user.name || gram.user.displayName || gram.user.email?.split("@")[0] || "User",
         avatarUrl: gram.user.avatarUrl || gram.user.avatar,
       };
     }
     return {
+      id: gram.userId || gram.authorId,
       name: gram.username || gram.authorName || "User",
       avatarUrl: gram.avatarUrl || gram.authorAvatarUrl,
     };
   }, [gram]);
+
+  // Navigate to profile
+  const goToProfile = () => {
+    if (author.id) {
+      onClose();
+      navigate(`/profile/${author.id}`);
+    }
+  };
 
   const authorInitials = useMemo(() => {
     return author.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "U";
@@ -77,8 +89,16 @@ export default function GramModal({ gram, onClose, onUpdate }) {
     if (!gram._id && !gram.id) return;
     if (!userId) return;
 
+    // Use external onLike if provided
+    if (onLike) {
+      onLike();
+      setLiked(!liked);
+      setLikesCount(prev => liked ? prev - 1 : prev + 1);
+      return;
+    }
+
     try {
-      const res = await api.post(`/gram/${gram._id || gram.id}/like`);
+      const res = await api.post(`/powergram/${gram._id || gram.id}/like`);
       if (res.data?.ok) {
         setLiked(!!res.data.liked);
         if (typeof res.data.likesCount === "number") {
@@ -135,7 +155,7 @@ export default function GramModal({ gram, onClose, onUpdate }) {
         <div className="gm-details">
           {/* Header with author */}
           <div className="gm-header">
-            <div className="gm-author">
+            <div className="gm-author" onClick={goToProfile} style={{ cursor: author.id ? "pointer" : "default" }}>
               {author.avatarUrl ? (
                 <img src={author.avatarUrl} alt={author.name} className="gm-avatar" />
               ) : (

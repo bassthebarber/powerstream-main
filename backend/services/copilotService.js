@@ -1,5 +1,5 @@
 // copilotService.js
-const { logStartupEvent } = require('../utils/logger');
+import { logStartupEvent } from "../utils/logger.js";
 
 const copilotService = {
   async wake() {
@@ -9,4 +9,4 @@ const copilotService = {
   }
 };
 
-module.exports = copilotService;
+export default copilotService;

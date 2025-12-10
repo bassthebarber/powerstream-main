@@ -1,7 +1,8 @@
 // backend/controllers/presenceController.js
+
 import ChatPresence from "../models/ChatPresencemodel.js";
 
-exports.updatePresence = async (req, res) => {
+export const updatePresence = async (req, res) => {
   try {
     const { userId, isOnline } = req.body;
 
@@ -18,7 +19,7 @@ exports.updatePresence = async (req, res) => {
   }
 };
 
-exports.getPresence = async (req, res) => {
+export const getPresence = async (req, res) => {
   try {
     const { userId } = req.params;
     const presence = await ChatPresence.findOne({ user: userId });

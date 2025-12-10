@@ -1,8 +1,8 @@
 // backend/control-tower/override/overrideHealthMonitor.js
 
-const os = require('os');
+import os from 'os';
 
-const getOverrideHealth = () => {
+export const getOverrideHealth = () => {
   return {
     uptime: process.uptime(),
     load: os.loadavg(),
@@ -15,4 +15,4 @@ const getOverrideHealth = () => {
   };
 };
 
-module.exports = { getOverrideHealth };
+export default { getOverrideHealth };

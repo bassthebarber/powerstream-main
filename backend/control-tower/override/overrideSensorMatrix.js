@@ -1,6 +1,6 @@
-// /backend/controlTower/override/overrideSensorMatrix.js
+// /backend/control-tower/override/overrideSensorMatrix.js
 
-const activateSensorMatrix = () => {
+export const activateSensorMatrix = () => {
   console.log('🧠 Sensor Matrix: Monitoring system behavior and thermal load...');
 
   const sensors = {
@@ -14,6 +14,6 @@ const activateSensorMatrix = () => {
   return sensors;
 };
 
-module.exports = {
-  activate: activateSensorMatrix,
-};
+export const activate = activateSensorMatrix;
+
+export default { activate: activateSensorMatrix };

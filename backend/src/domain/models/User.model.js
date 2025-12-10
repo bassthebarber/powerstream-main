@@ -104,6 +104,12 @@ const UserSchema = new mongoose.Schema(
     totalSpent: { type: Number, default: 0, min: 0 },
 
     // ============================================================
+    // SOCIAL GRAPH
+    // ============================================================
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    
+    // ============================================================
     // SOCIAL METRICS (denormalized for performance)
     // ============================================================
     followersCount: { type: Number, default: 0, min: 0 },

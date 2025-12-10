@@ -43,7 +43,7 @@
 .mixMasterSliderValue{text-align:center;color:#ffb84d;font-weight:600;font-size:0.9rem}
 .mixMasterCompLimiter{display:flex;gap:32px;margin:24px 0;justify-content:center}
 .mixMasterFaderContainer{display:flex;flex-direction:column;align-items:center;gap:8px}
-.mixMasterFader{width:60px;height:200px;writing-mode:bt-lr;-webkit-appearance:slider-vertical;appearance:slider-vertical;background:rgba(255,255,255,0.2);border-radius:3px;outline:none}
+.mixMasterFader{width:60px;height:200px;writing-mode:vertical-lr;direction:rtl;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.2);border-radius:3px;outline:none}
 .mixMasterFader::-webkit-slider-thumb{width:24px;height:24px;background:#ffb84d;border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(255,184,77,0.5)}
 .mixMasterAIRecipe{display:flex;gap:12px;margin:24px 0}
 .mixMasterAIRecipeInput{flex:1;padding:12px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;font-size:1rem}

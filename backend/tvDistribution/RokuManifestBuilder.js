@@ -1,5 +1,6 @@
 // backend/tvDistribution/RokuManifestBuilder.js
-const buildRokuManifest = (contentList) => {
+
+export const buildRokuManifest = (contentList) => {
   return {
     providerName: "PowerStream",
     lastUpdated: new Date().toISOString(),
@@ -22,4 +23,4 @@ const buildRokuManifest = (contentList) => {
   };
 };
 
-module.exports = buildRokuManifest;
+export default buildRokuManifest;

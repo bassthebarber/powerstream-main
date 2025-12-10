@@ -1,17 +1,26 @@
-import { Router } from "express";
+// backend/routes/stationRoutes.js
+// Golden TV Subsystem - Station Routes
+import { Router } from 'express';
+import {
+  getStation,
+  getStationVideos,
+  getStationLive,
+  uploadStationVideo
+} from '../controllers/stationController.js';
+import { requireAuth, requireRole } from '../middleware/authMiddleware.js';
+
 const router = Router();
 
-let stations = [];
+// GET /api/stations/:slug - Get basic station info
+router.get('/:slug', getStation);
 
-router.get('/', (req, res) => {
-    res.json(stations);
-});
+// GET /api/stations/:slug/videos - VOD shelf for station
+router.get('/:slug/videos', getStationVideos);
 
-router.post('/', (req, res) => {
-    const { name, streamKey } = req.body;
-    const newStation = { id: Date.now(), name, streamKey };
-    stations.push(newStation);
-    res.json(newStation);
-});
+// GET /api/stations/:slug/live - Current live stream for station
+router.get('/:slug/live', getStationLive);
+
+// POST /api/stations/:slug/videos - Upload video to station (auth required)
+router.post('/:slug/videos', requireAuth, requireRole(['admin', 'stationOwner']), uploadStationVideo);
 
 export default router;

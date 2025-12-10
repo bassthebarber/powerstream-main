@@ -1,11 +1,12 @@
-// /backend/AI/SignalRecovery.js
-const EventBus = require('../system-core/EventBus');
+// backend/AI/signalRecovery.js
+
+import EventBus from '../system-core/EventBus.js';
 
 class SignalRecovery {
-    static recover() {
-        console.log("📡 [SignalRecovery] Attempting signal recovery...");
-        EventBus.emit('system:reconnect');
-    }
+  static recover() {
+    console.log("📡 [SignalRecovery] Attempting signal recovery...");
+    EventBus.emit('system:reconnect');
+  }
 }
 
-module.exports = SignalRecovery;
+export default SignalRecovery;

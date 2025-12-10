@@ -1,54 +1,63 @@
 // controllers/collabController.js
-const generateBeat = require("../BeatGeneratorAI");
-const saveVoiceRecording = require("../VoiceRecorder");
-const masterAudioTrack = require("../AITrackMastering");
-const uploadToPlatform = require("../UploadToStream");
-const handlePayment = require("../TrackPaymentHandler");
-const uploadCustomBeat = require("../CustomBeatUploader");
-const calculateSplit = require("../SmartRoyaltySplitter");
-const triggerSmartPay = require("../SmartPayTrigger");
-const enhanceVideoVisual = require("../VideoVisualStudio");
+import generateBeat from "../collabStudio/BeatGeneratorAI.js";
+import saveVoiceRecording from "../collabStudio/VoiceRecorder.js";
+import masterAudioTrack from "../collabStudio/AITrackMastering.js";
+import uploadToPlatform from "../collabStudio/UploadToStream.js";
+import handlePayment from "../collabStudio/TrackPaymentHandler.js";
+import uploadCustomBeat from "../collabStudio/CustomBeatUploader.js";
+import calculateSplit from "../collabStudio/SmartRoyaltySplitter.js";
+import triggerSmartPay from "../collabStudio/SmartPayTrigger.js";
+import enhanceVideoVisual from "../collabStudio/VideoVisualStudio.js";
 
-module.exports = {
-  generateBeat: (req, res) => {
-    const result = generateBeat(req.body.genre);
-    res.json(result);
-  },
+export const generateBeatHandler = (req, res) => {
+  const result = generateBeat(req.body.genre);
+  res.json(result);
+};
 
-  saveVoiceRecording: (req, res) => {
-    const result = saveVoiceRecording(req.body.userId, req.body.audioBuffer);
-    res.json({ status: "saved", file: result });
-  },
+export const saveVoiceRecordingHandler = (req, res) => {
+  const result = saveVoiceRecording(req.body.userId, req.body.audioBuffer);
+  res.json({ status: "saved", file: result });
+};
 
-  masterTrack: (req, res) => {
-    const result = masterAudioTrack(req.body.rawTrackPath);
-    res.json({ status: "mastered", finalTrackPath: result });
-  },
+export const masterTrack = (req, res) => {
+  const result = masterAudioTrack(req.body.rawTrackPath);
+  res.json({ status: "mastered", finalTrackPath: result });
+};
 
-  uploadToStream: (req, res) => {
-    const result = uploadToPlatform(req.body.trackURL, req.body.artistId, req.body.title);
-    res.json(result);
-  },
+export const uploadToStream = (req, res) => {
+  const result = uploadToPlatform(req.body.trackURL, req.body.artistId, req.body.title);
+  res.json(result);
+};
 
-  handlePayment: (req, res) => {
-    const result = handlePayment(req.body.userId, req.body.beatId, req.body.price);
-    res.json(result);
-  },
+export const handlePaymentHandler = (req, res) => {
+  const result = handlePayment(req.body.userId, req.body.beatId, req.body.price);
+  res.json(result);
+};
 
-  uploadCustomBeat: (req, res) => {
-    const result = uploadCustomBeat(req);
-    res.json(result);
-  },
+export const uploadCustomBeatHandler = (req, res) => {
+  const result = uploadCustomBeat(req);
+  res.json(result);
+};
 
-  processRoyalty: (req, res) => {
-    const { total, percentages } = req.body;
-    const splits = calculateSplit(total, percentages);
-    const payout = triggerSmartPay(splits, req.body.trackId);
-    res.json(payout);
-  },
+export const processRoyalty = (req, res) => {
+  const { total, percentages } = req.body;
+  const splits = calculateSplit(total, percentages);
+  const payout = triggerSmartPay(splits, req.body.trackId);
+  res.json(payout);
+};
 
-  visualEnhance: (req, res) => {
-    const enhancedPath = enhanceVideoVisual(req.body.videoPath);
-    res.json({ status: "visual-enhanced", path: enhancedPath });
-  }
+export const visualEnhance = (req, res) => {
+  const enhancedPath = enhanceVideoVisual(req.body.videoPath);
+  res.json({ status: "visual-enhanced", path: enhancedPath });
+};
+
+export default {
+  generateBeat: generateBeatHandler,
+  saveVoiceRecording: saveVoiceRecordingHandler,
+  masterTrack,
+  uploadToStream,
+  handlePayment: handlePaymentHandler,
+  uploadCustomBeat: uploadCustomBeatHandler,
+  processRoyalty,
+  visualEnhance,
 };

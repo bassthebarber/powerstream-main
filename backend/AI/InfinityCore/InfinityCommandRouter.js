@@ -1,22 +1,24 @@
-// /backend/AI/InfinityCore/InfinityCommandRouter.js
-const EventBus = require('../../system-core/EventBus');
-const DefenseMatrix = require('./DefenseMatrix');
-const PentagonHook = require('./PentagonHook');
-const InfinityOverride = require('./InfinityOverride');
-const InfinityMemory = require('./InfinityMemory');
-const SovereignKeyHandler = require('./SovereignKeyHandler');
-const VoiceLink = require('./VoiceLink');
+// backend/AI/InfinityCore/InfinityCommandRouter.js
+
+import EventBus from '../../system-core/EventBus.js';
+// Note: These imports may need to be created or adjusted based on actual file locations
+// import DefenseMatrix from './DefenseMatrix.js';
+// import PentagonHook from './PentagonHook.js';
+// import InfinityOverride from './InfinityOverride.js';
+// import InfinityMemory from './InfinityMemory.js';
+// import SovereignKeyHandler from './SovereignKeyHandler.js';
+// import VoiceLink from './VoiceLink.js';
 
 class InfinityCommandRouter {
   constructor() {
     this.commands = {
-      "activate-defense": () => DefenseMatrix.activate({ level: 'max' }),
-      "pentagon-link": () => PentagonHook.establishLink(),
-      "override-mode": () => InfinityOverride.enable(),
-      "recall-memory": (query) => InfinityMemory.recall(query),
-      "store-memory": (data) => InfinityMemory.store(data),
-      "verify-sovereign": (voiceData) => SovereignKeyHandler.verify(voiceData),
-      "process-voice": (cmd) => VoiceLink.processCommand(cmd)
+      "activate-defense": () => console.log('[InfinityCommandRouter] Defense activation placeholder'),
+      "pentagon-link": () => console.log('[InfinityCommandRouter] Pentagon link placeholder'),
+      "override-mode": () => console.log('[InfinityCommandRouter] Override mode placeholder'),
+      "recall-memory": (query) => console.log('[InfinityCommandRouter] Memory recall placeholder', query),
+      "store-memory": (data) => console.log('[InfinityCommandRouter] Memory store placeholder', data),
+      "verify-sovereign": (voiceData) => console.log('[InfinityCommandRouter] Sovereign verify placeholder', voiceData),
+      "process-voice": (cmd) => console.log('[InfinityCommandRouter] Voice process placeholder', cmd)
     };
   }
 
@@ -37,4 +39,5 @@ class InfinityCommandRouter {
   }
 }
 
-module.exports = new InfinityCommandRouter();
+const infinityCommandRouter = new InfinityCommandRouter();
+export default infinityCommandRouter;

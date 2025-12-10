@@ -3,7 +3,7 @@
 import HelpRequest from "../models/HelpRequest.js";
 import logUplink from "../logs/logUplink.js";
 
-exports.submitHelpRequest = async (req, res) => {
+export const submitHelpRequest = async (req, res) => {
   try {
     const { userId, subject, message } = req.body;
 
@@ -22,7 +22,7 @@ exports.submitHelpRequest = async (req, res) => {
   }
 };
 
-exports.getAllHelpRequests = async (req, res) => {
+export const getAllHelpRequests = async (req, res) => {
   try {
     const requests = await HelpRequest.find().populate('user');
     res.status(200).json(requests);

@@ -18,3 +18,5 @@ router.get("/stats", requireAuth, eventsController.getStats);
 
 export default router;
 
+
+

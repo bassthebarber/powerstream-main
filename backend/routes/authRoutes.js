@@ -9,6 +9,11 @@ import env from "../src/config/env.js";
 
 const router = express.Router();
 
+// Health check endpoint
+router.get("/health", (_req, res) => {
+  res.json({ ok: true, service: "auth" });
+});
+
 function buildUserPayload(user) {
   return {
     id: user._id.toString(),
@@ -39,34 +44,53 @@ function signToken(user) {
  * Returns JWT token and user data
  */
 router.post("/login", async (req, res) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[LOGIN] ${timestamp} - Request received from ${req.ip || req.connection?.remoteAddress || 'unknown'}`);
+  console.log(`[LOGIN] ${timestamp} - Content-Type: ${req.headers['content-type']}`);
+  
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
+    
+    console.log(`[LOGIN] ${timestamp} - Body parsed, email present: ${!!email}, password present: ${!!password}`);
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      console.log(`[LOGIN] ${timestamp} - FAIL: Missing credentials`);
+      return res.status(400).json({ 
+        message: "Email and password are required",
+        error: "MISSING_CREDENTIALS"
+      });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    console.log("[LOGIN] attempt", normalizedEmail);
+    console.log(`[LOGIN] ${timestamp} - Attempting login for: ${normalizedEmail}`);
 
     const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
-      console.log(`[LOGIN] User not found: ${normalizedEmail}`);
-      return res.status(401).json({ message: "Invalid email or password" });
+      console.log(`[LOGIN] ${timestamp} - FAIL: User not found: ${normalizedEmail}`);
+      return res.status(401).json({ 
+        message: "Invalid email or password",
+        error: "INVALID_CREDENTIALS" 
+      });
     }
 
     if (user.status !== "active") {
-      console.log(`[LOGIN] Account not active: ${normalizedEmail}, status: ${user.status}`);
-      return res.status(401).json({ message: "Account is suspended or banned" });
+      console.log(`[LOGIN] ${timestamp} - FAIL: Account not active: ${normalizedEmail}, status: ${user.status}`);
+      return res.status(401).json({ 
+        message: "Account is suspended or banned",
+        error: "ACCOUNT_INACTIVE"
+      });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      console.log(`[LOGIN] Password mismatch for: ${normalizedEmail}`);
-      return res.status(401).json({ message: "Invalid email or password" });
+      console.log(`[LOGIN] ${timestamp} - FAIL: Password mismatch for: ${normalizedEmail}`);
+      return res.status(401).json({ 
+        message: "Invalid email or password",
+        error: "INVALID_CREDENTIALS"
+      });
     }
 
-    console.log(`[LOGIN] Success: ${normalizedEmail}`);
+    console.log(`[LOGIN] ${timestamp} - SUCCESS: ${normalizedEmail} (user ID: ${user._id})`);
 
     const token = signToken(user);
 
@@ -75,8 +99,14 @@ router.post("/login", async (req, res) => {
       user: buildUserPayload(user),
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(`[LOGIN] ${timestamp} - ERROR:`, error?.message || error);
+    console.error(`[LOGIN] ${timestamp} - Stack:`, error?.stack);
+    
+    // Return a user-friendly error message
+    return res.status(500).json({ 
+      message: "Login failed. Please try again.",
+      error: "SERVER_ERROR"
+    });
   }
 });
 
@@ -86,21 +116,37 @@ router.post("/login", async (req, res) => {
  * Returns JWT token and user data
  */
 router.post("/register", async (req, res) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[REGISTER] ${timestamp} - Request received`);
+  
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name } = req.body || {};
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      console.log(`[REGISTER] ${timestamp} - FAIL: Missing email or password`);
+      return res.status(400).json({ 
+        message: "Email and password are required",
+        error: "MISSING_CREDENTIALS"
+      });
     }
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      console.log(`[REGISTER] ${timestamp} - FAIL: Password too short`);
+      return res.status(400).json({ 
+        message: "Password must be at least 6 characters",
+        error: "WEAK_PASSWORD"
+      });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    console.log(`[REGISTER] ${timestamp} - Attempting registration for: ${normalizedEmail}`);
 
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
+      console.log(`[REGISTER] ${timestamp} - FAIL: Email already exists: ${normalizedEmail}`);
+      return res.status(400).json({ 
+        message: "Email already registered",
+        error: "EMAIL_EXISTS"
+      });
     }
 
     const user = new User({
@@ -112,6 +158,7 @@ router.post("/register", async (req, res) => {
     });
 
     await user.save();
+    console.log(`[REGISTER] ${timestamp} - SUCCESS: User created: ${normalizedEmail} (ID: ${user._id})`);
 
     const token = signToken(user);
 
@@ -120,11 +167,19 @@ router.post("/register", async (req, res) => {
       user: buildUserPayload(user),
     });
   } catch (error) {
-    console.error("Register error:", error);
+    console.error(`[REGISTER] ${timestamp} - ERROR:`, error?.message || error);
+    console.error(`[REGISTER] ${timestamp} - Stack:`, error?.stack);
+    
     if (error.code === 11000) {
-      return res.status(400).json({ message: "Email already registered" });
+      return res.status(400).json({ 
+        message: "Email already registered",
+        error: "EMAIL_EXISTS"
+      });
     }
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Registration failed. Please try again.",
+      error: "SERVER_ERROR"
+    });
   }
 });
 
@@ -194,9 +249,27 @@ router.post("/refresh", async (req, res) => {
  * Health check for auth routes
  */
 router.get("/", (req, res) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[AUTH HEALTH] ${timestamp} - Health check requested`);
   res.json({
     status: "ok",
     message: "Auth routes working.",
+    timestamp,
+    endpoints: ["/login", "/register", "/me", "/refresh"]
+  });
+});
+
+/**
+ * GET /health
+ * Alias health check for auth routes
+ */
+router.get("/health", (req, res) => {
+  const timestamp = new Date().toISOString();
+  console.log(`[AUTH HEALTH] ${timestamp} - Health check (alias) requested`);
+  res.json({
+    status: "ok",
+    message: "Auth routes healthy.",
+    timestamp
   });
 });
 

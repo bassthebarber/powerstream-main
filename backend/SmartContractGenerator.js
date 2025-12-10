@@ -1,4 +1,5 @@
-// SmartContractGenerator.js
+// backend/SmartContractGenerator.js
+
 const generateSmartContract = ({ artistAddress, platformAddress, percentages }) => {
   return `
     contract RoyaltySplit {
@@ -16,4 +17,4 @@ const generateSmartContract = ({ artistAddress, platformAddress, percentages }) 
   `;
 };
 
-module.exports = generateSmartContract;
+export default generateSmartContract;

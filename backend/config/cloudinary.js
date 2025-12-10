@@ -1,11 +1,12 @@
-import { routeCommand } from './CommandRouter.js';
-import { recoverFromCrash } from './RecoveryDaemon.js';
+// backend/config/cloudinary.js
+// SINGLE SOURCE OF TRUTH for Cloudinary configuration
+import { v2 as cloudinary } from "cloudinary";
 
-export const bootAI = () => {
-  console.log('🚀 PowerStream AI Bootloader initialized...');
-  recoverFromCrash();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
-  setTimeout(() => {
-    routeCommand('initialize AI core');
-  }, 1000);
-};
+export default cloudinary;
