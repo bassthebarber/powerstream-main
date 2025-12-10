@@ -1,0 +1,235 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #000000;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #fbbf24; /* gold */
+}
+
+.home-root {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #111111 0%, #000000 65%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 16px 32px;
+  box-sizing: border-box;
+}
+
+.home-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.home-logo-wrapper {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.home-logo-spin {
+  width: 200px;
+  height: auto;
+  animation: spinLogo 6s linear infinite;
+}
+
+@keyframes spinLogo {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.home-title {
+  font-size: 1.8rem;
+  margin: 0;
+  text-align: center;
+}
+
+.home-subtitle {
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: center;
+  color: #fef3c7;
+}
+
+.home-audio-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #d1d5db;
+  cursor: pointer;
+  text-align: center;
+}
+
+.home-audio-hint:hover {
+  text-decoration: underline;
+}
+
+.home-button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 40px;
+}
+
+.home-nav-button {
+  background: transparent;
+  border-radius: 999px;
+  border: 2px solid #fbbf24;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: #fbbf24;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home-nav-button:hover {
+  background: rgba(251, 191, 36, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.35);
+}
+
+.home-nav-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.home-nav-label {
+  white-space: nowrap;
+}
+
+  text-align: center;
+}
+
+.home-audio-hint:hover {
+  text-decoration: underline;
+}
+
+.home-button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 40px;
+}
+
+.home-nav-button {
+  background: transparent;
+  border-radius: 999px;
+  border: 2px solid #fbbf24;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: #fbbf24;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home-nav-button:hover {
+  background: rgba(251, 191, 36, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.35);
+}
+
+.home-nav-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.home-nav-label {
+  white-space: nowrap;
+}
+
+  background: #000;
+  color: #f7d26a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 24px;
+}
+
+.ps-home-header {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.ps-home-logo {
+  width: 200px;   /* <- logo size you asked for */
+  height: 200px;
+  object-fit: contain;
+  animation: ps-spin 10s linear infinite; /* slow, smooth spin */
+}
+
+@keyframes ps-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ps-home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+  margin: 32px auto;
+}
+
+.ps-home-tile {
+  background: #111;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: #f7d26a;
+  border: 1px solid #f7d26a;
+  box-shadow: 0 0 10px rgba(247, 210, 106, 0.3);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.ps-home-tile:hover {
+  transform: translateY(-3px);
+  background: #f7d26a;
+  color: #000;
+  box-shadow: 0 0 18px rgba(247, 210, 106, 0.6);
+}
+
+.ps-home-footer {
+  align-self: flex-end;
+  font-size: 12px;
+  opacity: 0.8;
+}
+

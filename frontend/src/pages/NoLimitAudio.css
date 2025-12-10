@@ -1,0 +1,211 @@
+/* No Limit East Houston Audio Station */
+
+.nle-audio-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 24px;
+}
+
+/* Header */
+.nle-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  margin-bottom: 32px;
+}
+
+.nle-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+}
+
+.nle-header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nle-header p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Layout */
+.nle-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .nle-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Track List Section */
+.nle-list {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.nle-list h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  color: #D4AF37;
+}
+
+.nle-loading,
+.nle-empty {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 15px;
+}
+
+.nle-error {
+  text-align: center;
+  padding: 20px;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+/* Table */
+.nle-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.nle-table thead th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nle-table tbody tr {
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.nle-table tbody tr:hover {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.nle-table tbody tr.nle-active {
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.nle-table tbody td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.nle-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  background: transparent;
+  color: #D4AF37;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nle-play-btn:hover {
+  background: #D4AF37;
+  color: #000;
+  border-color: #D4AF37;
+  transform: scale(1.1);
+}
+
+/* Player Section */
+.nle-player {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  position: sticky;
+  top: 24px;
+  height: fit-content;
+}
+
+.nle-player h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  color: #D4AF37;
+}
+
+.nle-now-playing {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nle-now-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nle-player audio {
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.nle-no-track {
+  color: #666;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .nle-audio-page {
+    padding: 16px;
+  }
+
+  .nle-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nle-header h1 {
+    font-size: 22px;
+  }
+
+  .nle-table thead th:nth-child(3),
+  .nle-table tbody td:nth-child(3) {
+    display: none;
+  }
+}
+
+

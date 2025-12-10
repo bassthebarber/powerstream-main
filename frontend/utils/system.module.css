@@ -1,0 +1,22 @@
+/* frontend/src/utils/system.module.css */
+/* Styles for system status indicators, debugging panels, and AI system UI */
+
+.systemStatus {
+  background: #111;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.statusOnline {
+  color: #0f0;
+}
+
+.statusOffline {
+  color: #f00;
+}
+
+.statusWarning {
+  color: #ff0;
+}

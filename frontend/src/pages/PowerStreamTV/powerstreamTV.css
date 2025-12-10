@@ -1,0 +1,553 @@
+/* PowerStream TV - Netflix Style UI */
+
+.ps-tv-page {
+  padding: 24px;
+  color: #f8f7ff;
+  background: radial-gradient(circle at top, #1a2040 0, #050712 55%, #000000 100%);
+  min-height: 100vh;
+}
+
+.ps-tv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.ps-tv-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ps-tv-logo {
+  font-size: 42px;
+}
+
+.ps-tv-brand h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 0;
+}
+
+.ps-tv-brand p {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 4px 0 0 0;
+}
+
+.ps-tv-upload-btn {
+  background: linear-gradient(135deg, #ffc400, #ff9a00);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ps-tv-upload-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 196, 0, 0.4);
+}
+
+.ps-tv-section {
+  margin-top: 32px;
+}
+
+.ps-tv-section-title {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.ps-tv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .ps-tv-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ps-tv-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ps-tv-card {
+  background: rgba(5, 10, 30, 0.9);
+  border-radius: 12px;
+  padding: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ps-tv-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 25px rgba(255, 200, 0, 0.2);
+}
+
+.ps-tv-poster-wrapper {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.ps-tv-poster,
+.ps-tv-poster.placeholder {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  background: #101322;
+  display: block;
+}
+
+.ps-tv-poster.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.ps-tv-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #222;
+}
+
+.ps-tv-badge.paid {
+  background: linear-gradient(135deg, #ff8a00, #ffdd33);
+  color: #000;
+}
+
+.ps-tv-badge.trending {
+  right: 8px;
+  left: auto;
+  background: linear-gradient(135deg, #ff367f, #ff9a9e);
+  color: #000;
+}
+
+.ps-tv-card-body h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.ps-tv-card-body p {
+  font-size: 0.8rem;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+/* Categories */
+.ps-tv-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.ps-tv-category {
+  background: #121528;
+  border-radius: 999px;
+  border: 1px solid #262a4a;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  color: #eee;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ps-tv-category:hover {
+  background: #1a1e38;
+}
+
+.ps-tv-category.active {
+  background: linear-gradient(135deg, #ffc400, #ff9a00);
+  color: #000;
+  border-color: transparent;
+}
+
+/* Loading & Error States */
+.ps-tv-loading,
+.ps-tv-empty,
+.ps-tv-error {
+  margin-top: 48px;
+  text-align: center;
+  padding: 40px;
+}
+
+.ps-tv-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #333;
+  border-top-color: #ffd700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ps-tv-error {
+  color: #ff7373;
+}
+
+.ps-tv-empty {
+  color: #888;
+}
+
+/* Trending Section */
+.ps-tv-section.trending {
+  margin-top: 16px;
+}
+
+.ps-tv-trending-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.ps-tv-trending-featured {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.ps-tv-trending-poster,
+.ps-tv-trending-poster.placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  background: #050712;
+  display: block;
+}
+
+.ps-tv-trending-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+}
+
+.ps-tv-trending-overlay h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.ps-tv-trending-overlay p {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.ps-tv-trending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.ps-tv-trending-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(4, 8, 22, 0.8);
+  transition: background 0.2s;
+}
+
+.ps-tv-trending-item:hover {
+  background: rgba(20, 30, 60, 0.8);
+}
+
+.ps-tv-trending-thumb,
+.ps-tv-trending-thumb.placeholder {
+  width: 80px;
+  height: 45px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #101322;
+  flex-shrink: 0;
+}
+
+/* Detail Page */
+.ps-tv-detail-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1a2040 0, #050712 55%, #000000 100%);
+  color: #f8f7ff;
+}
+
+.ps-tv-back {
+  background: none;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd66b;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.ps-tv-back:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.ps-tv-detail-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ps-tv-detail-player video,
+.ps-tv-video-placeholder {
+  width: 100%;
+  border-radius: 14px;
+  background: #050712;
+  min-height: 300px;
+}
+
+.ps-tv-video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.ps-tv-detail-meta h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.ps-tv-tagline {
+  font-style: italic;
+  color: #f3e2aa;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.ps-tv-detail-description {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.ps-tv-detail-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ps-tv-chip {
+  background: #151931;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  color: #ccc;
+}
+
+.ps-tv-chip.genre {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+}
+
+/* Pay-Per-View Box */
+.ps-tv-ppv-box {
+  border-radius: 14px;
+  border: 2px solid #ffdd66;
+  padding: 20px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 221, 102, 0.05);
+  margin-top: 20px;
+}
+
+.ps-tv-ppv-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.ps-tv-cta-button {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #ffdd33, #ff9a00);
+  color: #000;
+  border-radius: 999px;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ps-tv-cta-button:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ps-tv-detail-layout,
+  .ps-tv-trending-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ps-tv-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .ps-tv-brand {
+    flex-direction: column;
+  }
+
+  .ps-tv-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Upload Film Page */
+.ps-tv-upload-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1a2040 0, #050712 55%, #000000 100%);
+  color: #f8f7ff;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.ps-tv-upload-subtitle {
+  color: #aaa;
+  margin-bottom: 24px;
+}
+
+.ps-tv-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ps-tv-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ps-tv-form-group label {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.ps-tv-form-group input,
+.ps-tv-form-group textarea,
+.ps-tv-form-group select {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #121528;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.ps-tv-form-group input:focus,
+.ps-tv-form-group textarea:focus,
+.ps-tv-form-group select:focus {
+  outline: none;
+  border-color: #ffd700;
+}
+
+.ps-tv-form-group input[type="file"] {
+  padding: 10px;
+}
+
+.ps-tv-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ps-tv-ppv-toggle {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.ps-tv-ppv-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.ps-tv-ppv-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #ffd700;
+}
+
+.ps-tv-price-input {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ps-tv-price-input input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ffd700;
+  background: #121528;
+  color: #fff;
+  width: 120px;
+}
+
+.ps-tv-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 10px;
+}
+
+@media (max-width: 600px) {
+  .ps-tv-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+

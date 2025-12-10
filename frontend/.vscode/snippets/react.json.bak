@@ -1,0 +1,13 @@
+{
+  "RF Component": {
+    "prefix": "rfc",
+    "body": [
+      "export default function ${1:ComponentName}(${2:props}) {",
+      "  return (",
+      "    <div className=\"${1:component}\">$0</div>",
+      "  );",
+      "}"
+    ],
+    "description": "React function component"
+  }
+}

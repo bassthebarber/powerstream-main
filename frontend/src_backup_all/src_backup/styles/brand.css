@@ -1,0 +1,5 @@
+:root { --bg:#000; --fg:#fff; --gold:#ffd700; --muted:#aaa; --card:#0f0f0f; }
+*{box-sizing:border-box} html,body,#root{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui, Segoe UI, Roboto, sans-serif}
+a{color:var(--gold);text-decoration:none}
+

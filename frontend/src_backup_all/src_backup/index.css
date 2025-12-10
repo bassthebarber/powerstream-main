@@ -1,0 +1,46 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sovereign Theme */
+:root {
+  --ps-bg: #000;         /* Background */
+  --ps-gold: #facc15;    /* Gold accent */
+  --ps-gold-hover: #fde047;
+  --ps-muted: #a3a3a3;   /* Muted text */
+}
+
+/* Base Styles */
+body {
+  background: var(--ps-bg);
+  color: var(--ps-gold);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: var(--ps-gold);
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--ps-gold-hover);
+}
+
+/* Animation */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Card Styling */
+.nav-card {
+  @apply bg-black border border-yellow-400/40 rounded-xl p-6 flex flex-col items-center gap-4 transition transform hover:scale-105 hover:border-yellow-300;
+}
+.nav-card h2 {
+  @apply text-xl font-bold;
+}
+.nav-card p {
+  @apply text-sm text-yellow-200/70;
+}

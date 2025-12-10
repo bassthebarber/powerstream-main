@@ -1,0 +1,25 @@
+.chat-window {
+  padding: 10px;
+  border: 1px solid #333;
+  background-color: #111;
+  color: #fff;
+}
+
+.message-bubble {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 70%;
+}
+
+.message-bubble.me {
+  background-color: gold;
+  color: black;
+  align-self: flex-end;
+}
+
+.message-bubble.them {
+  background-color: #333;
+  color: white;
+}
+

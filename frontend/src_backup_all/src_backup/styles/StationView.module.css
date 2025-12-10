@@ -1,0 +1,10 @@
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.logo{width:56px;height:56px;object-fit:contain}
+.sub{color:#c9b07a}
+.sections{display:grid;grid-template-columns:1fr;gap:12px}
+.card{background:#0b0b0b;border:1px solid #2a2a2a;border-radius:12px;padding:12px}
+.playerBox{background:#000;border-radius:10px;min-height:320px;display:flex;align-items:center;justify-content:center}
+.playerPlaceholder{color:#888}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+

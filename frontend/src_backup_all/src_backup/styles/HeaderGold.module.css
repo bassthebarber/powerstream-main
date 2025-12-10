@@ -1,0 +1,13 @@
+:root{ --gold:#ffb84a; }
+.wrap{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;align-items:center;
+  background:#000;border-bottom:1px solid #2a2a2a;padding:10px 14px}
+.brand{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logoMark{font-size:18px;color:var(--gold)}
+.brandText{font-weight:800;letter-spacing:.4px}
+.nav{display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;border-radius:12px;
+  border:2px solid rgba(255,184,74,.6); color:#fff; transition:.15s background,border;
+  box-shadow:0 0 0 1px rgba(255,184,74,.12) inset;}
+.pill:hover{border-color:var(--gold)}
+.active{background:rgba(255,184,74,.12)}
+

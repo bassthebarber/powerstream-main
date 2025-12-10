@@ -1,0 +1,199 @@
+/* Artist Audio Upload - Spotify-style upload form */
+
+.artist-upload-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
+  color: #fff;
+  padding: 32px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Header */
+.artist-upload-header {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.artist-upload-header h1 {
+  font-size: 32px;
+  margin: 0 0 12px;
+  background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.artist-upload-header p {
+  color: #888;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Form */
+.artist-upload-form {
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+/* Sections */
+.artist-upload-section {
+  margin-bottom: 32px;
+}
+
+.artist-upload-section h2 {
+  font-size: 18px;
+  color: #D4AF37;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* File input */
+.artist-upload-section input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.artist-upload-section input[type="file"]:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.file-name {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #D4AF37;
+}
+
+/* Labels */
+.artist-upload-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #aaa;
+}
+
+.artist-upload-form label input[type="text"],
+.artist-upload-form label input[type="date"],
+.artist-upload-form label select {
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.artist-upload-form label input:focus,
+.artist-upload-form label select:focus {
+  border-color: #D4AF37;
+}
+
+.artist-upload-form label input::placeholder {
+  color: #555;
+}
+
+/* Checkbox */
+.checkbox-label {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #D4AF37;
+  cursor: pointer;
+}
+
+/* Select */
+.artist-upload-form select {
+  cursor: pointer;
+}
+
+.artist-upload-form select option {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* Error / Success */
+.artist-upload-error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.artist-upload-success {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Submit button */
+.artist-upload-button {
+  width: 100%;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.artist-upload-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+}
+
+.artist-upload-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .artist-upload-page {
+    padding: 20px;
+  }
+
+  .artist-upload-form {
+    padding: 24px;
+  }
+
+  .artist-upload-header h1 {
+    font-size: 26px;
+  }
+}
+
+

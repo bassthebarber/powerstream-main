@@ -1,0 +1,103 @@
+/* frontend/src/studio/ui/RecordingPanel.css */
+
+.recording-panel {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transport-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: #0a0a0a;
+  border-radius: 4px;
+}
+
+.time-display {
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem;
+  color: #f5b342;
+  font-weight: bold;
+}
+
+.recording-indicator {
+  color: #ff4444;
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+
+.playing-indicator {
+  color: #44ff44;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+.recording-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.record-btn {
+  background: #333;
+  color: #ff4444;
+}
+
+.record-btn:hover:not(:disabled) {
+  background: #444;
+}
+
+.record-btn.active {
+  background: #ff4444;
+  color: #fff;
+}
+
+.stop-btn {
+  background: #333;
+  color: #fff;
+}
+
+.stop-btn:hover:not(:disabled) {
+  background: #444;
+}
+
+.play-btn {
+  background: #333;
+  color: #44ff44;
+}
+
+.play-btn:hover:not(:disabled) {
+  background: #444;
+}
+
+.play-btn.active {
+  background: #44ff44;
+  color: #000;
+}
+
+
+

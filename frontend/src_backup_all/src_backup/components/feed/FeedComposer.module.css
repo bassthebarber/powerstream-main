@@ -1,0 +1,28 @@
+/* minimal safe defaults */
+.composer {
+  background: #0b0b0b;
+  color: #f6d365;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #222;
+}
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #111;
+  color: #f6d365;
+}
+.button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #111;
+  color: #f6d365;
+  cursor: pointer;
+}
+.button:disabled { opacity: 0.5; cursor: not-allowed; }
+

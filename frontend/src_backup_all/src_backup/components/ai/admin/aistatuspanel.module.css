@@ -1,0 +1,61 @@
+/* frontend/src/components/ai/admin/AIStatusPanel.module.css */
+
+.statusPanelContainer {
+  background-color: #000; /* PowerStream Black */
+  color: #ffd700;         /* Gold Text */
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ffd700;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.statusTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #ffd700;
+  border-bottom: 2px solid #ffd700;
+  padding-bottom: 6px;
+}
+
+.statusItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statusLabel {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.statusValue {
+  font-weight: 400;
+  color: #90ee90; /* light green for active / good status */
+}
+
+.statusOffline {
+  color: #ff4d4d; /* red for offline/error */
+}
+
+.statusWarning {
+  color: #ffa500; /* orange for warnings */
+}
+
+@media screen and (max-width: 768px) {
+  .statusPanelContainer {
+    padding: 15px;
+  }
+  .statusTitle {
+    font-size: 1.2rem;
+  }
+  .statusItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

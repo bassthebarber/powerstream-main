@@ -1,0 +1,226 @@
+/* frontend/studio-app/src/components/CompareTakes.css */
+/* Compare Takes Card */
+
+.compare-takes-card {
+  background: rgba(15, 15, 18, 0.9);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.compare-takes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.compare-takes-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #f4f4f7;
+  margin: 0;
+}
+
+.compare-takes-refresh {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.compare-takes-refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(180deg);
+}
+
+.compare-takes-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.compare-takes-subtitle {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0 0 16px;
+}
+
+.compare-takes-hint {
+  font-size: 0.88rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.compare-takes-error {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff8888;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.compare-takes-loading,
+.compare-takes-empty {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+  font-size: 0.88rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+/* Takes List */
+.compare-takes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Take Item */
+.compare-takes-item {
+  position: relative;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.compare-takes-item:hover {
+  border-color: rgba(230, 184, 0, 0.3);
+  transform: translateX(4px);
+}
+
+.compare-takes-item--best {
+  border: 2px solid rgba(230, 184, 0, 0.5);
+  background: linear-gradient(135deg, rgba(230, 184, 0, 0.08) 0%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.compare-takes-best-badge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: linear-gradient(135deg, #e6b800 0%, #c9a000 100%);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.compare-takes-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.compare-takes-take-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ccc;
+}
+
+.compare-takes-date {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Overall Score */
+.compare-takes-overall {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.compare-takes-overall-score {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.compare-takes-overall-label {
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Mini Scores Grid */
+.compare-takes-scores-mini {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.compare-takes-score-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.compare-takes-score-label {
+  font-size: 0.65rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.compare-takes-score-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #aaa;
+}
+
+.compare-takes-coach-mode {
+  font-size: 0.75rem;
+  color: #555;
+  text-transform: capitalize;
+}
+
+/* Summary */
+.compare-takes-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px;
+  background: rgba(230, 184, 0, 0.08);
+  border-radius: 10px;
+  border: 1px solid rgba(230, 184, 0, 0.15);
+}
+
+.compare-takes-summary-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.compare-takes-summary-text {
+  font-size: 0.88rem;
+  color: #aaa;
+  line-height: 1.5;
+}
+
+
+
+
+
+
+
+

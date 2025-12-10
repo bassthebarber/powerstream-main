@@ -1,0 +1,36 @@
+.container {
+  padding: 20px;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #FFD700;
+}
+
+.empty {
+  text-align: center;
+  color: #aaa;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #111;
+  padding: 16px;
+  border: 1px solid #FFD700;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.filename {
+  margin-top: 8px;
+  font-size: 14px;
+}

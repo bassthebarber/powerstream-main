@@ -1,0 +1,19 @@
+.shell { display:grid; grid-template-columns:280px minmax(580px,1fr) 340px; gap:16px; padding:16px; max-width:1400px; margin:0 auto; }
+.left,.center,.right { min-height:100vh; }
+.card { background:#111418; border:1px solid #2a2f36; border-radius:14px; padding:14px; box-shadow:0 0 0 1px rgba(249,164,76,.08) inset,0 8px 20px rgba(0,0,0,.35); }
+.title { font-weight:700; margin-bottom:10px; }
+.center { display:grid; gap:16px; }
+.composer { background:#0c0f13; border:1px dashed rgba(249,164,76,.4); border-radius:14px; padding:12px; }
+.composer input { width:100%; background:#0c0f13; color:#eee; border:1px solid #2a2f36; border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+.composerRow { display:flex; gap:8px; }
+.composerRow button { background:transparent; border:1px solid rgba(249,164,76,.45); border-radius:10px; padding:6px 10px; color:#f9a44c; }
+.post { background:#0c0f13; border:1px solid #2a2f36; border-radius:14px; overflow:hidden; }
+.postHeader { display:flex; gap:10px; padding:12px; align-items:center; }
+.avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(145deg,#2a2f36,#0c0f13); border:1px solid #2a2f36; }
+.name { font-weight:700; }
+.meta { font-size:12px; color:#9aa4b2; }
+.postBody { padding:0 12px 12px; line-height:1.5; color:#e7ebf0; }
+.postFooter { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #2a2f36; }
+.postFooter button { flex:1; background:transparent; border:1px solid #2a2f36; border-radius:10px; padding:8px; color:#d2d8df; }
+.right .sponsorBox { height:120px; border:1px dashed rgba(249,164,76,.35); border-radius:10px; display:grid; place-items:center; color:#f9a44c; }
+

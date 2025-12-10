@@ -1,0 +1,17 @@
+.call-card {
+  background-color: #000;
+  color: gold;
+  padding: 20px;
+  border: 2px solid gold;
+  text-align: center;
+  border-radius: 8px;
+}
+.call-card button {
+  margin: 10px;
+  padding: 10px 20px;
+  background: gold;
+  border: none;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}

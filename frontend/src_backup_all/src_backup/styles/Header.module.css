@@ -1,0 +1,27 @@
+/* Header.module.css */
+.bar {
+  background-color: black;
+  color: gold;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: gold;
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+}
+
+nav a:hover {
+  color: gold;
+}
+

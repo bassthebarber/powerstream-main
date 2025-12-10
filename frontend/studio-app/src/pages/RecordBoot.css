@@ -1,0 +1,578 @@
+/* frontend/studio-app/src/pages/RecordBoot.css */
+/* PowerHarmony Studio - Record Boot Gold Room */
+
+.record-boot-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0c 0%, #121218 50%, #0d0d12 100%);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.record-boot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(230, 184, 0, 0.15);
+}
+
+.record-boot-title-block {
+  flex: 1;
+}
+
+.record-boot-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  margin: 0 0 6px;
+  background: linear-gradient(90deg, #e6b800 0%, #ffdd66 50%, #e6b800 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.record-boot-subtitle {
+  font-size: 0.95rem;
+  color: #888;
+  margin: 0;
+}
+
+.record-boot-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.record-boot-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.06);
+  color: #aaa;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.record-boot-pill--gold {
+  background: linear-gradient(90deg, #e6b800 0%, #c9a000 100%);
+  color: #000;
+  border: none;
+}
+
+/* Layout */
+.record-boot-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .record-boot-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.record-boot-card {
+  background: rgba(15, 15, 18, 0.9);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  padding: 24px;
+}
+
+.record-boot-card--controls {
+  /* extra styling for the control card */
+}
+
+.record-boot-card--takes {
+  /* extra styling for takes card */
+}
+
+.record-boot-section-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: #f4f4f7;
+}
+
+.record-boot-section-text {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0 0 18px;
+  line-height: 1.5;
+}
+
+/* Warning/Error */
+.record-boot-warning {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: #ff8888;
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+
+/* Record Box */
+.record-boot-record-box {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.record-boot-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.record-boot-led {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #333;
+  border: 2px solid #222;
+  transition: all 0.2s ease;
+}
+
+.record-boot-led--on {
+  background: #ff3333;
+  box-shadow: 0 0 16px rgba(255, 50, 50, 0.8), 0 0 32px rgba(255, 50, 50, 0.5);
+  animation: pulse-led 1s infinite;
+}
+
+@keyframes pulse-led {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.record-boot-status-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ccc;
+}
+
+/* Controls Row */
+.record-boot-controls-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.record-boot-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f4f7;
+  transition: all 0.15s ease;
+}
+
+.record-boot-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.record-boot-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.record-boot-btn--primary {
+  background: linear-gradient(135deg, #e6b800 0%, #c9a000 100%);
+  color: #000;
+  border: none;
+}
+
+.record-boot-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
+}
+
+.record-boot-btn--danger {
+  background: linear-gradient(135deg, #ff4444 0%, #cc2222 100%);
+  color: #fff;
+  border: none;
+}
+
+.record-boot-btn--danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff5555 0%, #ff4444 100%);
+}
+
+.record-boot-btn--gold {
+  background: linear-gradient(135deg, #e6b800 0%, #c9a000 100%);
+  color: #000;
+  border: none;
+}
+
+/* Audio Preview */
+.record-boot-audio-preview {
+  margin-bottom: 20px;
+}
+
+.record-boot-field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.record-boot-audio {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  background: #1a1a1e;
+}
+
+.record-boot-placeholder {
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.record-boot-placeholder--box {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Upload Row */
+.record-boot-upload-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.record-boot-upload-left {
+  flex: 1;
+  min-width: 200px;
+}
+
+.record-boot-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  color: #f4f4f7;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.record-boot-input:focus {
+  outline: none;
+  border-color: #e6b800;
+}
+
+.record-boot-input::placeholder {
+  color: #555;
+}
+
+.record-boot-help {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.record-boot-upload-actions {
+  flex-shrink: 0;
+}
+
+/* Status Message */
+.record-boot-status-message {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: rgba(230, 184, 0, 0.1);
+  border: 1px solid rgba(230, 184, 0, 0.25);
+  color: #e6b800;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Take List */
+.record-boot-take-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.record-boot-take-item {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.record-boot-take-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.record-boot-take-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f4f4f7;
+  word-break: break-all;
+}
+
+.record-boot-take-status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(0, 200, 100, 0.2);
+  color: #00c864;
+}
+
+.record-boot-take-meta {
+  font-size: 0.78rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.record-boot-audio-small {
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+}
+
+/* Scrollbar styling */
+.record-boot-take-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.record-boot-take-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+
+.record-boot-take-list::-webkit-scrollbar-thumb {
+  background: rgba(230, 184, 0, 0.3);
+  border-radius: 3px;
+}
+
+.record-boot-take-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(230, 184, 0, 0.5);
+}
+
+/* ===============================================
+   AI COACH PANEL
+   =============================================== */
+
+.record-boot-coach-panel {
+  margin-top: 28px;
+  background: rgba(15, 15, 18, 0.9);
+  border-radius: 18px;
+  border: 1px solid rgba(230, 184, 0, 0.15);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(230, 184, 0, 0.1);
+  padding: 28px;
+}
+
+.record-boot-coach-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .record-boot-coach-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.record-boot-field {
+  margin-bottom: 16px;
+}
+
+.record-boot-select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  color: #f4f4f7;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.record-boot-select:focus {
+  outline: none;
+  border-color: #e6b800;
+}
+
+.record-boot-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  color: #f4f4f7;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.record-boot-textarea:focus {
+  outline: none;
+  border-color: #e6b800;
+}
+
+.record-boot-textarea::placeholder {
+  color: #555;
+}
+
+/* Coach Result */
+.record-boot-coach-result {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(230, 184, 0, 0.08) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 1px solid rgba(230, 184, 0, 0.2);
+}
+
+.record-boot-coach-result-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 16px;
+  color: #e6b800;
+}
+
+.record-boot-coach-feedback {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #ccc;
+  margin: 0 0 20px;
+}
+
+.record-boot-coach-suggestions {
+  margin-bottom: 20px;
+}
+
+.record-boot-coach-suggestions h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #aaa;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.record-boot-coach-suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.record-boot-coach-suggestions li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid #e6b800;
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+.record-boot-coach-scores h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #aaa;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.record-boot-scores-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 700px) {
+  .record-boot-scores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.record-boot-score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.record-boot-score-item--overall {
+  background: linear-gradient(135deg, rgba(230, 184, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 1px solid rgba(230, 184, 0, 0.3);
+}
+
+.record-boot-score-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.record-boot-score-item--overall .record-boot-score-label {
+  color: #e6b800;
+}
+
+.record-boot-score-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #f4f4f7;
+}
+
+.record-boot-score-item--overall .record-boot-score-value {
+  background: linear-gradient(90deg, #e6b800 0%, #ffdd66 50%, #e6b800 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+

@@ -1,0 +1,369 @@
+/* frontend/src/studio/ui/AICoachPanel.css */
+/* AI Coach / Producer Mode Panel Styles */
+
+.ai-coach-panel {
+  background: #0a0a0a;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coach-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.coach-icon {
+  font-size: 20px;
+}
+
+.coach-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #d4af37;
+  flex: 1;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.mode-toggle button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-toggle button.active {
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+}
+
+/* Selected Take */
+.selected-take {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+}
+
+.take-badge {
+  padding: 4px 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.take-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  flex: 1;
+}
+
+.take-number {
+  font-size: 12px;
+  color: #888;
+}
+
+.take-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.take-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-btn {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+}
+
+.play-btn:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.analyze-btn {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+}
+
+.analyze-btn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+.analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* No Take */
+.no-take {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.no-take p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.no-take .hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Feedback Results */
+.feedback-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.overall-score {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.score-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    #10b981 0%,
+    #10b981 calc(var(--score, 0) * 1%),
+    rgba(255, 255, 255, 0.1) calc(var(--score, 0) * 1%),
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.score-circle::before {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: #0a0a0a;
+  border-radius: 50%;
+}
+
+.score-value {
+  position: relative;
+  font-size: 28px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.score-label {
+  position: relative;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.metric-item {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.metric-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaa;
+  text-transform: capitalize;
+}
+
+.metric-score {
+  font-size: 12px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.metric-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.metric-fill {
+  height: 100%;
+  background: #10b981;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.metric-note {
+  margin: 0;
+  font-size: 10px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Suggestions & Highlights */
+.suggestions,
+.highlights {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.suggestions h4,
+.highlights h4 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #d4af37;
+}
+
+.suggestions ul,
+.highlights ul {
+  margin: 0;
+  padding: 0 0 0 16px;
+}
+
+.suggestions li,
+.highlights li {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+/* Feedback Error */
+.feedback-error {
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+/* Tips Section */
+.tips-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+}
+
+.tips-section h4 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.tips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.tip-card {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+/* Session Notes */
+.session-notes {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+}
+
+.session-notes h4 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.session-notes textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.session-notes textarea::placeholder {
+  color: #666;
+}
+
+.session-notes textarea:focus {
+  outline: none;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+
+

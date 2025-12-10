@@ -1,0 +1,14 @@
+.private-chat-entry {
+  padding: 8px;
+  background-color: #111;
+  border-bottom: 1px solid #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+.private-chat-ui {
+  padding: 15px;
+  background-color: black;
+  color: gold;
+}
+

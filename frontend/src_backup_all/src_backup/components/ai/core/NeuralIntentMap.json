@@ -1,0 +1,11 @@
+{
+  "navigate_home": ["go home", "main"],
+  "open_feed": ["open feed", "social"],
+  "open_chat": ["open chat", "messages"],
+  "upload_audio": ["upload audio"],
+  "upload_video": ["upload video"],
+  "run_override": ["run override"],
+  "build_station": ["build station"],
+  "ai_help": ["help me", "assistant"]
+}
+

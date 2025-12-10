@@ -1,0 +1,43 @@
+Deploy-Studio.ps1
+# === PowerStream Studio Auto-Deploy Script ===
+# Location: C:\Users\bassb\OneDrive\Documents\PowerStreamMain\frontend\studio-app
+
+Write-Host "🚀 Starting PowerStream Studio Build + Deploy..." -ForegroundColor Cyan
+Set-Location "C:\Users\bassb\OneDrive\Documents\PowerStreamMain\frontend\studio-app"
+
+# STEP 1: Make sure correct source folder
+if (Test-Path .\src_backup) {
+    if (Test-Path .\src) { Rename-Item .\src src_empty_OLD -ErrorAction SilentlyContinue }
+    Rename-Item .\src_backup src -ErrorAction SilentlyContinue
+}
+
+# STEP 2: Install & build
+Write-Host "📦 Installing packages..." -ForegroundColor Yellow
+npm install
+
+Write-Host "🏗️  Building production files..." -ForegroundColor Yellow
+npm run build
+
+# Verify build
+if (-Not (Test-Path ".\dist\index.html")) {
+    Write-Host "❌ Build failed: dist/index.html not found!" -ForegroundColor Red
+    exit
+}
+
+# STEP 3: Upload build to droplet
+$serverIP = "104.248.73.68"
+$uploadPath = "/root/upload/studio_dist/"
+Write-Host "📤 Uploading files to $serverIP ..." -ForegroundColor Yellow
+scp -r ".\dist\*" "root@$serverIP:$uploadPath"
+
+# STEP 4: Remote deploy commands
+Write-Host "🔁 Syncing and reloading nginx..." -ForegroundColor Yellow
+ssh root@$serverIP @"
+sudo rsync -a --delete /root/upload/studio_dist/ /var/www/studio/frontend/dist/
+sudo chown -R www-data:www-data /var/www/studio
+sudo find /var/www/studio -type d -exec chmod 755 {} \;
+sudo find /var/www/studio -type f -exec chmod 644 {} \;
+sudo nginx -t && sudo systemctl reload nginx
+"@
+
+Write-Host "✅ Deployment Complete! Open: https://studio.southernpowertvmusic.com" -ForegroundColor Green

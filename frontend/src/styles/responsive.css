@@ -1,0 +1,403 @@
+/* ============================================================
+   POWERSTREAM - GLOBAL RESPONSIVE STYLES
+   Mobile-first approach with breakpoints for all devices
+   ============================================================ */
+
+/* ============================================================
+   GLOBAL MOBILE FIXES - Bottom Dock & Overflow
+   ============================================================ */
+
+/* Ensure all pages have space for bottom dock */
+.ps-page,
+.ps-app,
+.studio-page,
+.home-page,
+.feed-page,
+.powerline-page,
+.tv-page {
+  padding-bottom: 100px;
+  overflow-x: hidden;
+}
+
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ============================================================
+   BOTTOM DOCK - Fixed Navigation Bar
+   ============================================================ */
+
+/* Bottom dock should always be visible */
+.bottom-dock,
+nav[style*="position: fixed"][style*="bottom: 0"] {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  max-height: 80px;
+}
+
+/* ============================================================
+   MOBILE (max-width: 768px)
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Navigation */
+  .ps-nav-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .ps-nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ps-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ps-nav-link-text {
+    display: none;
+  }
+
+  .ps-nav-search {
+    display: none;
+  }
+
+  /* Main content area */
+  .ps-main {
+    padding: 16px 12px;
+    padding-bottom: 100px;
+  }
+
+  /* Page titles */
+  .ps-page h1 {
+    font-size: 1.8rem;
+  }
+
+  /* PowerFeed Shell */
+  .pf-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pf-sidebar,
+  .pf-right {
+    display: none;
+  }
+
+  .pf-main-feed {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* PowerLine Shell */
+  .pl-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pl-shell > aside:last-child {
+    display: none;
+  }
+
+  /* Grid layouts */
+  .ps-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  /* Cards */
+  .ps-card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  /* Buttons - make them full width on mobile */
+  .ps-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   SMALL MOBILE (max-width: 480px)
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .ps-main {
+    padding: 12px 8px;
+    padding-bottom: 90px;
+  }
+
+  .ps-page h1 {
+    font-size: 1.5rem;
+  }
+
+  .ps-page .ps-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .ps-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  /* Hide non-essential elements */
+  .ps-nav-logo-text {
+    display: none;
+  }
+
+  /* Story avatars smaller */
+  .pf-story-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .pf-story-pill {
+    width: 56px;
+  }
+}
+
+/* ============================================================
+   EXTRA SMALL MOBILE (max-width: 375px) - iPhone SE, etc.
+   ============================================================ */
+
+@media (max-width: 375px) {
+  .ps-main {
+    padding: 8px 6px;
+    padding-bottom: 85px;
+  }
+
+  .ps-page h1 {
+    font-size: 1.3rem;
+  }
+
+  .ps-card {
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .ps-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  /* Even smaller story avatars */
+  .pf-story-avatar {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+  }
+
+  .pf-story-pill {
+    width: 50px;
+  }
+
+  .pf-story-name {
+    font-size: 0.6rem;
+  }
+
+  /* Composer optimizations */
+  .pf-composer-btn {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================================
+   TABLET (min-width: 769px) and (max-width: 1024px)
+   ============================================================ */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .ps-nav-links {
+    gap: 2px;
+  }
+
+  .pf-shell {
+    grid-template-columns: 200px 1fr 200px;
+  }
+
+  .pf-right {
+    display: none;
+  }
+
+  .pl-shell {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+/* ============================================================
+   DESKTOP (min-width: 1025px)
+   ============================================================ */
+
+@media (min-width: 1025px) {
+  .ps-main {
+    max-width: 1400px;
+  }
+
+  .pf-shell {
+    grid-template-columns: 240px 1fr 280px;
+  }
+}
+
+/* ============================================================
+   LARGE DESKTOP (min-width: 1400px)
+   ============================================================ */
+
+@media (min-width: 1400px) {
+  .ps-main {
+    max-width: 1600px;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+
+@media print {
+  .ps-global-nav,
+  .ps-nav,
+  .bottom-dock,
+  button,
+  .pf-composer-section {
+    display: none !important;
+  }
+  
+  .ps-page {
+    padding-bottom: 0 !important;
+  }
+}
+
+/* ============================================================
+   SAFE AREA INSETS (iPhone X+ notch support)
+   ============================================================ */
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-dock,
+  nav[style*="position: fixed"][style*="bottom: 0"] {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .ps-page,
+  .ps-main {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  }
+  
+  @media (max-width: 480px) {
+    .ps-page,
+    .ps-main {
+      padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
+/* ============================================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .ps-btn,
+  .ps-nav-link,
+  .pf-nav-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .ps-btn:hover,
+  .ps-card:hover,
+  .pf-nav-item:hover {
+    transform: none;
+  }
+  
+  /* Active states instead */
+  .ps-btn:active,
+  .ps-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+}
+
+/* ============================================================
+   HORIZONTAL SCROLL CONTAINERS
+   ============================================================ */
+
+.horizontal-scroll,
+.pf-stories-row,
+.tv-title-row {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+}
+
+.horizontal-scroll::-webkit-scrollbar,
+.pf-stories-row::-webkit-scrollbar,
+.tv-title-row::-webkit-scrollbar {
+  display: none;
+}
+
+.horizontal-scroll > *,
+.pf-stories-row > *,
+.tv-title-row > * {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Mobile only - show */
+@media (max-width: 768px) {
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Prevent text overflow */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Multi-line truncate */
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

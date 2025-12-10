@@ -1,0 +1,42 @@
+.container {
+  padding: 20px;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 28px;
+  color: #FFD700;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  margin: 20px 0 10px;
+  color: #FFD700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #111;
+  padding: 10px;
+  border: 1px solid #FFD700;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.card video {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.card h4 {
+  margin-top: 8px;
+  font-size: 14px;
+}

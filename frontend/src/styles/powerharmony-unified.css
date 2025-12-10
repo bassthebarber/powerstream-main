@@ -1,0 +1,486 @@
+/* PowerHarmony Rooms - Unified Studio Room Design */
+/* Enterprise Edition with Cinematic Animations */
+
+@import url('./animations.css');
+
+/* ========== Common Room Layout ========== */
+.ph-room {
+  min-height: 100vh;
+  background: 
+    radial-gradient(ellipse at 20% 0%, rgba(230, 184, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(230, 184, 0, 0.03) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a0c 0%, #000 50%, #050508 100%);
+  color: #fff;
+  padding: 24px;
+  animation: fadeIn 0.4s var(--ease-out-expo, ease) forwards;
+}
+
+.ph-room-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 32px 24px;
+  animation: fadeInDown 0.5s var(--ease-out-expo, ease) forwards;
+}
+
+.ph-room-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #ffb84d 0%, #ffda5c 50%, #ffb84d 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  animation: gradientShift 4s ease infinite;
+}
+
+.ph-room-subtitle {
+  color: #888;
+  font-size: 1.15rem;
+  letter-spacing: 0.3px;
+}
+
+.ph-room-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.15) 0%, rgba(255, 184, 77, 0.08) 100%);
+  border: 1px solid rgba(255, 184, 77, 0.4);
+  border-radius: 999px;
+  color: #ffb84d;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(230, 184, 0, 0.15);
+}
+
+/* ========== Room Content Layout ========== */
+.ph-room-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ph-room-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.ph-room-grid--3 {
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+.ph-room-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ========== Room Cards ========== */
+.ph-card {
+  background: linear-gradient(135deg, rgba(26, 26, 31, 0.95) 0%, rgba(15, 15, 18, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s var(--ease-out-expo, ease);
+  animation: fadeInUp 0.5s var(--ease-out-expo, ease) forwards;
+  opacity: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ph-card:nth-child(1) { animation-delay: 0ms; }
+.ph-card:nth-child(2) { animation-delay: 100ms; }
+.ph-card:nth-child(3) { animation-delay: 200ms; }
+
+.ph-card:hover {
+  border-color: rgba(255, 184, 77, 0.35);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 184, 77, 0.1);
+  transform: translateY(-4px);
+}
+
+.ph-card--highlight {
+  border-color: rgba(255, 184, 77, 0.5);
+  box-shadow: 0 0 40px rgba(255, 184, 77, 0.15), 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.ph-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ph-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffb84d;
+}
+
+/* ========== Recording Controls ========== */
+.ph-record-main {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.ph-record-status {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.ph-record-status--recording {
+  color: #ff4444;
+  animation: ph-pulse 1s infinite;
+}
+
+.ph-record-status--ready {
+  color: #00c864;
+}
+
+@keyframes ph-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.ph-record-time {
+  font-size: 4rem;
+  font-weight: 900;
+  font-family: monospace;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+  margin-bottom: 32px;
+}
+
+.ph-record-btn {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ph-record-btn--start {
+  background: linear-gradient(135deg, #ffb84d, #ffda5c);
+  color: #000;
+  box-shadow: 0 0 30px rgba(255, 184, 77, 0.4);
+}
+
+.ph-record-btn--start:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(255, 184, 77, 0.6);
+}
+
+.ph-record-btn--stop {
+  background: linear-gradient(135deg, #ff4444, #ff6666);
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
+}
+
+/* ========== Mic Level Meter ========== */
+.ph-meter-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  height: 150px;
+  margin-bottom: 16px;
+}
+
+.ph-meter-bar {
+  width: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.ph-meter-bar-fill {
+  transition: height 0.1s ease;
+  border-radius: 4px;
+}
+
+.ph-meter-bar-fill--low {
+  background: #00c864;
+}
+
+.ph-meter-bar-fill--mid {
+  background: #ffb84d;
+}
+
+.ph-meter-bar-fill--high {
+  background: #ff4444;
+}
+
+.ph-meter-value {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffb84d;
+}
+
+/* ========== Sliders / Faders ========== */
+.ph-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ph-slider-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ph-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ph-slider-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.ph-slider-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffb84d;
+}
+
+.ph-slider {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.ph-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #ffb84d;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 184, 77, 0.5);
+}
+
+/* ========== Effect Chips ========== */
+.ph-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ph-effect-chip {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ph-effect-chip:hover {
+  background: rgba(255, 184, 77, 0.1);
+  border-color: rgba(255, 184, 77, 0.3);
+}
+
+.ph-effect-chip--active {
+  background: rgba(255, 184, 77, 0.2);
+  border-color: rgba(255, 184, 77, 0.5);
+  color: #ffb84d;
+}
+
+/* ========== Action Buttons ========== */
+.ph-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ph-action-btn {
+  padding: 12px 20px;
+  background: rgba(255, 184, 77, 0.15);
+  border: 1px solid rgba(255, 184, 77, 0.3);
+  border-radius: 10px;
+  color: #ffb84d;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.ph-action-btn:hover:not(:disabled) {
+  background: rgba(255, 184, 77, 0.25);
+  border-color: rgba(255, 184, 77, 0.5);
+}
+
+.ph-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ph-action-btn--primary {
+  background: linear-gradient(135deg, #ffb84d, #ffda5c);
+  color: #000;
+  border: none;
+}
+
+.ph-action-btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 184, 77, 0.4);
+}
+
+/* ========== Text Areas ========== */
+.ph-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.ph-textarea:focus {
+  outline: none;
+  border-color: #ffb84d;
+  box-shadow: 0 0 0 3px rgba(255, 184, 77, 0.15);
+}
+
+.ph-textarea::placeholder {
+  color: #666;
+}
+
+/* ========== Output Display ========== */
+.ph-output {
+  min-height: 200px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.ph-output-placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+/* ========== Track List ========== */
+.ph-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ph-track-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.ph-track-item:hover {
+  border-color: rgba(255, 184, 77, 0.3);
+}
+
+.ph-track-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.ph-track-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.ph-track-btn {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ph-track-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ph-track-btn--active {
+  background: rgba(255, 184, 77, 0.2);
+  color: #ffb84d;
+}
+
+/* ========== Room Footer ========== */
+.ph-room-footer {
+  text-align: center;
+  padding: 32px 0;
+  color: #666;
+  font-size: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 32px;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .ph-room-grid--3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .ph-room {
+    padding: 16px;
+  }
+
+  .ph-room-title {
+    font-size: 1.75rem;
+  }
+
+  .ph-room-grid--3,
+  .ph-room-grid--2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ph-record-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
+  }
+
+  .ph-record-time {
+    font-size: 3rem;
+  }
+}
+
+

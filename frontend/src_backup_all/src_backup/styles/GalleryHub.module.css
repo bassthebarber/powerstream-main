@@ -1,0 +1,8 @@
+.wrap{padding:8px}
+.title{color:var(--gold);margin:0 0 10px}
+.tabs{display:flex;gap:8px}
+.tabs button{background:#111;color:#fff;border:1px solid #333;padding:6px 10px;border-radius:8px;cursor:pointer}
+.tabs button:hover{border-color:#555}
+.active{background:var(--gold)!important;color:#000!important}
+.body{margin-top:14px}
+

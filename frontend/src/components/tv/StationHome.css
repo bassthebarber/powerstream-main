@@ -1,0 +1,137 @@
+/* frontend/src/components/tv/StationHome.css */
+/* Station Home Page Styles */
+
+.station-home {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.station-home--loading,
+.station-home--error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.station-home__spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(212, 175, 55, 0.2);
+  border-top-color: #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.station-home--error h2 {
+  margin-bottom: 20px;
+}
+
+.station-home--error button {
+  padding: 12px 24px;
+  background: rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 8px;
+  color: #d4af37;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.station-home--error button:hover {
+  background: rgba(212, 175, 55, 0.3);
+}
+
+/* Content area */
+.station-home__content {
+  padding-bottom: 60px;
+}
+
+/* Search results */
+.station-home__search-results {
+  padding: 20px 60px;
+}
+
+.station-home__search-results h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #aaa;
+  margin: 0 0 20px;
+}
+
+/* Empty states */
+.station-home__empty,
+.station-home__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.station-home__empty span,
+.station-home__empty-state span {
+  font-size: 72px;
+  margin-bottom: 20px;
+  opacity: 0.4;
+}
+
+.station-home__empty p,
+.station-home__empty-state p {
+  color: #888;
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.station-home__empty-state h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #d4af37;
+  margin: 0 0 16px;
+}
+
+.station-home__empty button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: rgba(212, 175, 55, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 6px;
+  color: #d4af37;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.station-home__empty button:hover {
+  background: rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .station-home__search-results {
+    padding: 16px 20px;
+  }
+
+  .station-home__search-results h2 {
+    font-size: 16px;
+  }
+
+  .station-home__empty span,
+  .station-home__empty-state span {
+    font-size: 56px;
+  }
+
+  .station-home__empty-state h3 {
+    font-size: 20px;
+  }
+}
+
+
+

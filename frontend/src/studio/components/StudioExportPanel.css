@@ -1,0 +1,444 @@
+/* frontend/src/studio/components/StudioExportPanel.css */
+/* Studio Export Panel Styles */
+
+.export-panel {
+  padding: 24px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  color: white;
+}
+
+.export-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.export-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.export-subtitle {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Track Status Indicators */
+.track-status {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+.track-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.track-indicator.ready {
+  background: rgba(0, 200, 83, 0.15);
+  color: #00c853;
+  border: 1px solid rgba(0, 200, 83, 0.3);
+}
+
+.track-indicator.empty {
+  background: rgba(100, 100, 100, 0.15);
+  color: #666;
+  border: 1px solid rgba(100, 100, 100, 0.2);
+}
+
+/* Export Sections */
+.export-section {
+  padding: 20px;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.export-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: #FFD700;
+}
+
+/* Preset Selector */
+.preset-selector {
+  margin-bottom: 16px;
+}
+
+.preset-selector label {
+  display: block;
+  margin-bottom: 8px;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.preset-selector select {
+  width: 100%;
+  padding: 12px 16px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-selector select:hover {
+  border-color: rgba(255, 215, 0, 0.4);
+}
+
+.preset-selector select:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+/* Stem Selector */
+.stem-selector {
+  margin-bottom: 16px;
+}
+
+.stem-selector > label {
+  display: block;
+  margin-bottom: 12px;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.stem-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.stem-checkbox {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.stem-checkbox:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.stem-checkbox input {
+  margin-bottom: 8px;
+  accent-color: #FFD700;
+}
+
+.stem-name {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.stem-desc {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Export Buttons */
+.export-btn {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.export-btn.master {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #000;
+}
+
+.export-btn.master:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.export-btn.stems {
+  background: linear-gradient(135deg, #7B2CBF, #9D4EDD);
+  color: #fff;
+}
+
+.export-btn.stems:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(123, 44, 191, 0.4);
+}
+
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.export-info {
+  text-align: center;
+  color: #666;
+  font-size: 0.8rem;
+  margin: 12px 0 0 0;
+}
+
+/* Progress Bar */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.85rem;
+  min-width: 45px;
+  text-align: right;
+}
+
+/* Status Message */
+.status-message {
+  padding: 14px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  margin: 16px 0;
+}
+
+.status-message.success {
+  background: rgba(0, 200, 83, 0.15);
+  color: #00c853;
+  border: 1px solid rgba(0, 200, 83, 0.3);
+}
+
+.status-message.error {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.status-message.info {
+  background: rgba(255, 215, 0, 0.1);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Last Export / Downloads */
+.last-export {
+  padding: 20px;
+  background: rgba(0, 200, 83, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 200, 83, 0.2);
+  margin-top: 16px;
+}
+
+.last-export h4 {
+  margin: 0 0 16px 0;
+  color: #00c853;
+  font-size: 1rem;
+}
+
+.download-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.download-links.stems {
+  flex-direction: column;
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+  transform: translateX(4px);
+}
+
+.download-btn.wav {
+  border-left: 3px solid #00CED1;
+}
+
+.download-btn.mp3 {
+  border-left: 3px solid #FFD700;
+}
+
+.download-btn.stem {
+  border-left: 3px solid #9D4EDD;
+}
+
+/* Export History */
+.export-history {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+
+.export-history h4 {
+  margin: 0 0 16px 0;
+  color: #888;
+  font-size: 1rem;
+}
+
+.history-section {
+  margin-bottom: 16px;
+}
+
+.history-section:last-child {
+  margin-bottom: 0;
+}
+
+.history-section h5 {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.history-item:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.file-name {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.file-size {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.stem-folder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 8px;
+}
+
+.folder-name {
+  font-weight: 500;
+  color: #9D4EDD;
+}
+
+.stem-count {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .export-panel {
+    padding: 16px;
+  }
+
+  .track-status {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .track-indicator {
+    justify-content: center;
+  }
+
+  .stem-options {
+    grid-template-columns: 1fr;
+  }
+
+  .download-links {
+    flex-direction: column;
+  }
+
+  .file-name {
+    max-width: 150px;
+  }
+}
+
+

@@ -1,0 +1,161 @@
+:root {
+  --ps-bg: #0c0c0c;
+  --ps-surface: #141414;
+  --ps-border: #2a2a2a;
+  --ps-text: #e8e8e8;
+  --ps-sub: #a7a7a7;
+  --ps-gold: #d4af37;
+}
+
+.ps-station {
+  color: var(--ps-text);
+}
+
+.ps-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0 6px;
+  border-bottom: 1px solid var(--ps-border);
+}
+
+.ps-hero-logo {
+  height: 64px;
+  width: auto;
+  border-radius: 12px;
+  background: #000;
+  padding: 6px;
+  border: 1px solid var(--ps-border);
+}
+
+.ps-hero-title {
+  font-size: 28px;
+  margin: 0;
+}
+
+.ps-hero-sub {
+  margin: 0 0 4px 0;
+  color: var(--ps-sub);
+}
+
+.ps-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0 6px;
+}
+
+.ps-btn {
+  background: var(--ps-gold);
+  color: #111;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.ps-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--ps-border);
+  color: var(--ps-text);
+}
+
+.ps-section {
+  padding: 16px 0;
+  border-top: 1px solid var(--ps-border);
+}
+
+.ps-section-title {
+  margin: 0 0 12px 0;
+  letter-spacing: .2px;
+}
+
+.ps-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.ps-card {
+  border: 1px solid var(--ps-border);
+  background: var(--ps-surface);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ps-card-thumb {
+  background: #222 linear-gradient(180deg, #222, #000);
+  height: 100px;
+}
+
+.ps-card-body {
+  padding: 10px;
+}
+
+.ps-card-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.ps-card-sub {
+  color: var(--ps-sub);
+  font-size: 12px;
+}
+
+.ps-audio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ps-audio-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--ps-surface);
+  border: 1px solid var(--ps-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ps-audio-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ps-audio-title {
+  font-weight: 600;
+}
+
+.ps-dot {
+  color: var(--ps-sub);
+}
+
+.ps-audio-len {
+  color: var(--ps-sub);
+}
+
+.ps-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ps-border);
+  border-radius: 12px;
+}
+
+.ps-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ps-surface);
+}
+
+.ps-table th,
+.ps-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ps-border);
+  text-align: left;
+}
+
+.ps-table th {
+  color: var(--ps-gold);
+}
+

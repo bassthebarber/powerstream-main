@@ -1,0 +1,20 @@
+# zip-powerstream-frontend.ps1
+# This script zips your PowerStream main frontend into a single archive on your Desktop
+# so you can upload it to the droplet.
+
+# === CONFIG ===
+$SourcePath  = "C:\Users\bassb\OneDrive\Documents\PowerStreamMain\frontend"
+$OutputZip   = "$env:USERPROFILE\Desktop\powerstream-frontend.zip"
+
+Write-Host "Zipping $SourcePath to $OutputZip ..."
+
+if (Test-Path $OutputZip) {
+    Write-Host "Removing existing zip..."
+    Remove-Item $OutputZip -Force
+}
+
+Compress-Archive -Path $SourcePath\* -DestinationPath $OutputZip -Force
+
+Write-Host "Done."
+Write-Host "Upload with:"
+Write-Host "scp `"$OutputZip`" root@104.248.73.68:/var/www/studio/"

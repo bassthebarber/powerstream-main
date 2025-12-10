@@ -1,0 +1,11 @@
+﻿{
+  "Power Component": {
+    "prefix": "powerc",
+    "body": [
+      "export default function ${1:Name}(){",
+      "  return <div className='p-4 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-200'>$0</div>;",
+      "}"
+    ],
+    "description": "PowerStream styled component"
+  }
+}
