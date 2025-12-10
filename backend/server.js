@@ -306,6 +306,92 @@ import studioTvExportRoutes from "./recordingStudio/routes/tvExportRoutes.js";
 app.use("/api/studio/tv", studioTvExportRoutes);
 console.log("✅ Mounted /api/studio/tv -> recordingStudio/routes/tvExportRoutes.js");
 
+// Recording Studio - Lyrics Generation
+import studioLyricsRoutes from "./recordingStudio/routes/studioLyricsRoutes.js";
+app.use("/api/studio/lyrics", studioLyricsRoutes);
+console.log("✅ Mounted /api/studio/lyrics -> recordingStudio/routes/studioLyricsRoutes.js");
+
+// Recording Studio - Beat Lab
+import studioBeatLabRoutes from "./recordingStudio/routes/beatLabRoutes.js";
+app.use("/api/beatlab", studioBeatLabRoutes);
+console.log("✅ Mounted /api/beatlab -> recordingStudio/routes/beatLabRoutes.js");
+
+// Recording Studio - Admin Producers
+import studioAdminProducerRoutes from "./recordingStudio/routes/adminProducerRoutes.js";
+app.use("/api/studio/admin/producers", studioAdminProducerRoutes);
+console.log("✅ Mounted /api/studio/admin/producers -> recordingStudio/routes/adminProducerRoutes.js");
+
+// Recording Studio - Contracts
+import studioContractRoutes from "./recordingStudio/routes/studioContractRoutes.js";
+app.use("/api/studio/contracts", studioContractRoutes);
+console.log("✅ Mounted /api/studio/contracts -> recordingStudio/routes/studioContractRoutes.js");
+
+// Recording Studio - Export (studio-level)
+import studioExportRoutes from "./recordingStudio/routes/exportRoutes.js";
+app.use("/api/studio/export", studioExportRoutes);
+console.log("✅ Mounted /api/studio/export -> recordingStudio/routes/exportRoutes.js");
+
+// ========================================
+// ROOT-LEVEL RECORDING STUDIO ALIASES
+// These provide backward compatibility for clients using root paths
+// ========================================
+
+// Root: /api/intake -> Same as /api/studio/intake
+app.use("/api/intake", studioIntakeRoutes);
+console.log("✅ Mounted /api/intake (alias) -> recordingStudio/routes/intakeRoutes.js");
+
+// Root: /api/payroll -> Same as /api/studio/payroll
+app.use("/api/payroll", studioPayrollRoutes);
+console.log("✅ Mounted /api/payroll (alias) -> recordingStudio/routes/payrollRoutes.js");
+
+// Root: /api/employees -> Same as /api/studio/employees
+app.use("/api/employees", studioEmployeeRoutes);
+console.log("✅ Mounted /api/employees (alias) -> recordingStudio/routes/employeeRoutes.js");
+
+// Root: /api/beats -> Same as /api/studio/beats
+app.use("/api/beats", studioBeatStoreRoutes);
+console.log("✅ Mounted /api/beats (alias) -> recordingStudio/routes/beatStoreRoutes.js");
+
+// Root: /api/collabs -> Same as /api/studio/collabs
+app.use("/api/collabs", studioCollabRoutes);
+console.log("✅ Mounted /api/collabs (alias) -> recordingStudio/routes/collabRoutes.js");
+
+// Root: /api/samples -> Same as /api/studio/samples
+app.use("/api/samples", studioSampleRoutes);
+console.log("✅ Mounted /api/samples (alias) -> recordingStudio/routes/sampleRoutes.js");
+
+// Root: /api/mixing -> Same as /api/studio/mixing
+app.use("/api/mixing", studioMixingRoutes);
+console.log("✅ Mounted /api/mixing (alias) -> recordingStudio/routes/mixingRoutes.js");
+
+// Root: /api/royalties -> Same as /api/studio/royalties
+app.use("/api/royalties", studioRoyaltyRoutes);
+console.log("✅ Mounted /api/royalties (alias) -> recordingStudio/routes/royaltyRoutes.js");
+
+// Root: /api/winners -> Same as /api/studio/winners
+app.use("/api/winners", studioWinnerRoutes);
+console.log("✅ Mounted /api/winners (alias) -> recordingStudio/routes/winnerRoutes.js");
+
+// Root: /api/recordings -> Same as /api/studio/recordings
+app.use("/api/recordings", studioRecordingsRoutes);
+console.log("✅ Mounted /api/recordings (alias) -> recordingStudio/routes/recordingsRoutes.js");
+
+// Root: /api/devices -> Same as /api/studio/devices
+app.use("/api/devices", studioDeviceRoutes);
+console.log("✅ Mounted /api/devices (alias) -> recordingStudio/routes/deviceRoutes.js");
+
+// Root: /api/auth -> Same as /api/studio/auth (studio auth)
+app.use("/api/auth", studioAuthRoutes);
+console.log("✅ Mounted /api/auth (alias) -> recordingStudio/routes/authRoutes.js");
+
+// Root: /api/library -> Same as /api/studio/library
+app.use("/api/library", studioLibraryRecRoutes);
+console.log("✅ Mounted /api/library (alias) -> recordingStudio/routes/libraryRoutes.js");
+
+// Root: /api/mix -> Same as /api/studio/mix
+app.use("/api/mix", studioMixRoutes);
+console.log("✅ Mounted /api/mix (alias) -> recordingStudio/routes/studioMixRoutes.js");
+
 // ========================================
 // END RECORDING STUDIO ROUTES
 // ========================================
