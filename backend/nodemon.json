@@ -1,7 +1,0 @@
-{
-  "watch": ["server.js", "routes", "controllers", "models"],
-  "ignore": ["*.log", "uploads/**", ".env", "package.json", "package-lock.json", ".git/**"],
-  "ext": "js,json,mjs",
-  "delay": "300",
-  "legacyWatch": true
-}

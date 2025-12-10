@@ -1,6 +1,0 @@
-﻿[
-  { "name":"SPN News", "group":"Southern Power Network", "logo":"/logos/southernpowernetworklogo.png", "stream":"https://example.com/live/spnnews.m3u8" },
-  { "name":"Texas Got Talent Live", "group":"Texas Got Talent", "logo":"/logos/texasgottalentlogo.png", "stream":"https://example.com/live/texasgot.m3u8" },
-  { "name":"No Limit East Houston TV", "group":"No Limit East Houston", "logo":"/logos/nolimiteasthoustonlogo.png", "stream":"https://example.com/live/nleh.m3u8" },
-  { "name":"Civic Connect Channel", "group":"Civic Connect", "logo":"/logos/civicconnectlogo.png", "stream":"https://example.com/live/civic.mp4" }
-]
