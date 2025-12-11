@@ -130,4 +130,3 @@ export const RoyaltyService = {
 export default RoyaltyService;
 
 
-

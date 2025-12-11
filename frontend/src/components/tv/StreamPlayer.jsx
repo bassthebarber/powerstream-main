@@ -38,4 +38,3 @@ const StreamPlayer = ({ src, title, isLive = false }) => {
 export default StreamPlayer;
 
 
-

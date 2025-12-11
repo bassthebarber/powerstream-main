@@ -20,4 +20,3 @@ foreach ($p in $ports) {
 Write-Host "[OK] All ports cleared." -ForegroundColor Green
 
 
-

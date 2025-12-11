@@ -1,14 +1,12 @@
 // frontend/src/api/studioApi.js
-// Studio API Client - All studio endpoints use /api/studio/* on the main backend
+// Studio API Client - Recording Studio server (port 5100)
 import { getToken } from "../utils/auth.js";
 
-// Use main API URL - studio endpoints are at /api/studio/*
-const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/+$/, "") || "http://localhost:5001";
-const STUDIO_API = `${API_BASE}/api/studio`;
+const STUDIO_API = import.meta.env.VITE_STUDIO_API_URL || "http://localhost:5100/api";
 
 console.log("[StudioApi] Connecting to:", STUDIO_API);
 
-// Helper to handle JSON/fetch errors
+// Small helper to handle JSON/fetch errors
 async function handle(res) {
   if (!res.ok) {
     const text = await res.text().catch(() => "");
@@ -24,12 +22,8 @@ function getAuthHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-// ============================================
-// ASSETS & LIBRARY
-// ============================================
-
 export async function listAssets() {
-  return handle(fetch(`${STUDIO_API}/assets`, { 
+  return handle(fetch(`${STUDIO_API}/studio/assets`, { 
     credentials: "include",
     headers: getAuthHeaders()
   }));
@@ -37,7 +31,7 @@ export async function listAssets() {
 
 export async function deleteAsset(id) {
   return handle(
-    fetch(`${STUDIO_API}/assets/${encodeURIComponent(id)}`, {
+    fetch(`${STUDIO_API}/studio/assets/${encodeURIComponent(id)}`, {
       method: "DELETE",
       credentials: "include",
       headers: getAuthHeaders()
@@ -45,25 +39,12 @@ export async function deleteAsset(id) {
   );
 }
 
-export async function getLibraryItems(type, limit = 50) {
-  const params = new URLSearchParams({ limit: String(limit) });
-  if (type) params.append("type", type);
-  return handle(fetch(`${STUDIO_API}/library/all?${params}`, {
-    credentials: "include",
-    headers: getAuthHeaders(),
-  }));
-}
-
-// ============================================
-// UPLOADS
-// ============================================
-
 export async function uploadToStudio(file, meta = {}) {
   const fd = new FormData();
   fd.append("file", file);
   Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
   return handle(
-    fetch(`${STUDIO_API}/upload`, {
+    fetch(`${STUDIO_API}/studio/upload`, {
       method: "POST",
       body: fd,
       credentials: "include",
@@ -72,13 +53,9 @@ export async function uploadToStudio(file, meta = {}) {
   );
 }
 
-// ============================================
-// MIX & MASTER
-// ============================================
-
 export async function aiMix(trackId, options = {}) {
   return handle(
-    fetch(`${STUDIO_API}/mix/apply`, {
+    fetch(`${STUDIO_API}/studio/mix`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -92,7 +69,7 @@ export async function aiMix(trackId, options = {}) {
 
 export async function aiMaster(trackId, options = {}) {
   return handle(
-    fetch(`${STUDIO_API}/master/apply`, {
+    fetch(`${STUDIO_API}/studio/master`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -104,13 +81,9 @@ export async function aiMaster(trackId, options = {}) {
   );
 }
 
-// ============================================
-// EXPORT
-// ============================================
-
 export async function requestExport(trackId, format = "wav") {
   return handle(
-    fetch(`${STUDIO_API}/export`, {
+    fetch(`${STUDIO_API}/studio/export`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
@@ -122,41 +95,9 @@ export async function requestExport(trackId, format = "wav") {
   );
 }
 
-// ============================================
-// BEATS
-// ============================================
-
-export async function getBeats(options = {}) {
-  const params = new URLSearchParams();
-  if (options.genre) params.append("genre", options.genre);
-  if (options.mood) params.append("mood", options.mood);
-  if (options.limit) params.append("limit", String(options.limit));
-  
-  return handle(fetch(`${STUDIO_API}/beats?${params}`, {
-    credentials: "include",
-    headers: getAuthHeaders(),
-  }));
-}
-
-export async function generateBeat(options = {}) {
-  return handle(fetch(`${STUDIO_API}/ai/generate-beat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
-    credentials: "include",
-    body: JSON.stringify(options),
-  }));
-}
-
-// ============================================
-// HEALTH CHECK
-// ============================================
-
 export async function checkStudioHealth() {
   try {
-    const res = await fetch(`${STUDIO_API}/health`);
+    const res = await fetch(`${STUDIO_API}/studio/health`);
     const data = await res.json();
     console.log("[StudioApi] Health check:", data);
     return { ok: true, ...data };
@@ -165,17 +106,3 @@ export async function checkStudioHealth() {
     return { ok: false, error: err.message };
   }
 }
-
-// Export default object for convenience
-export default {
-  listAssets,
-  deleteAsset,
-  getLibraryItems,
-  uploadToStudio,
-  aiMix,
-  aiMaster,
-  requestExport,
-  getBeats,
-  generateBeat,
-  checkStudioHealth,
-};

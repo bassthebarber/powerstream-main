@@ -243,4 +243,3 @@ export async function remove(req, res, next) {
 export default { list, create, getById, update, remove };
 
 
-

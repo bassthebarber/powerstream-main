@@ -38,4 +38,3 @@ router.post("/alerts/:id/acknowledge", requireRole("admin"), acknowledgeAlert);
 export default router;
 
 
-

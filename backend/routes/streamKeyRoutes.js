@@ -297,4 +297,3 @@ router.get("/verify/:key", async (req, res) => {
 
 export default router;
 
-

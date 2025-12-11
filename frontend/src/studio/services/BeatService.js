@@ -81,4 +81,3 @@ export const BeatService = {
 export default BeatService;
 
 
-

@@ -265,4 +265,3 @@ socket.emit("chat:typing_stop", { chatId: conversationId });
 - Socket.IO namespace unchanged (`/chat`)
 
 
-

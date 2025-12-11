@@ -94,4 +94,3 @@ const UserPanel = ({ thread = null, isOnline = false }) => {
 export default UserPanel;
 
 
-

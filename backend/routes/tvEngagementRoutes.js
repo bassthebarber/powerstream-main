@@ -429,4 +429,3 @@ function detectDeviceType(userAgent) {
 export default router;
 
 
-

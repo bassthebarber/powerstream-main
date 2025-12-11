@@ -29,4 +29,3 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendCmd -Wind
 Write-Host "[OK] FRONTEND AUTO-HEAL COMPLETE" -ForegroundColor Green
 
 
-

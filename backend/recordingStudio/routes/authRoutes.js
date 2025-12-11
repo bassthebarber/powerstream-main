@@ -1,67 +1,42 @@
-import express from "express";
-import StudioUser from "../models/StudioUser.js";
+import express from 'express';
+import ArtistUser from '../models/ArtistUserModel.js';
+import jwt from 'jsonwebtoken';
+import env from '../../src/config/env.js';
 
 const router = express.Router();
+// Use centralized JWT_SECRET from env.js - no hardcoded fallbacks
+const JWT_SECRET = env.JWT_SECRET;
 
 // Register
-router.post("/register", async (req, res, next) => {
+router.post('/register', async (req, res) => {
   try {
-    const { email, password, name, role } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ ok: false, message: "Email and password required" });
-    }
+    const { name, email, password } = req.body;
+    const existingUser = await ArtistUser.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    const existing = await StudioUser.findOne({ email });
-    if (existing) {
-      return res.status(409).json({ ok: false, message: "User already exists" });
-    }
+    const user = new ArtistUser({ name, email, password });
+    await user.save();
 
-    const user = await StudioUser.create({ email, password, name, role });
-    res.status(201).json({
-      ok: true,
-      data: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    res.status(201).json({ token, user: { name: user.name, email: user.email } });
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: 'Registration failed' });
   }
 });
 
 // Login
-router.post("/login", async (req, res, next) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await StudioUser.findOne({ email });
-    if (!user || user.password !== password) {
-      return res.status(401).json({ ok: false, message: "Invalid credentials" });
+    const user = await ArtistUser.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // No JWT for now, just return user info
-    res.json({
-      ok: true,
-      data: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { name: user.name, email: user.email } });
   } catch (err) {
-    next(err);
-  }
-});
-
-// Get all users (admin view)
-router.get("/users", async (_req, res, next) => {
-  try {
-    const users = await StudioUser.find().sort({ createdAt: -1 });
-    res.json({ ok: true, data: users });
-  } catch (err) {
-    next(err);
+    res.status(500).json({ error: 'Login failed' });
   }
 });
 

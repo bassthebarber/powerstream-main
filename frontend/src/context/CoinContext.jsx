@@ -182,4 +182,3 @@ export function useCoins() {
 export default CoinContext;
 
 
-

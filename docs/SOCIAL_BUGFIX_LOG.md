@@ -190,4 +190,3 @@ This document logs all bugs fixed during the POWERSTREAM SOCIAL QA + BUGFIX pass
 - [x] No 404/500 errors on main flows
 
 
-

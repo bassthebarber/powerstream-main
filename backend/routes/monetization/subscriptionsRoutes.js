@@ -29,4 +29,3 @@ router.get("/my", getMySubscriptions);
 export default router;
 
 
-

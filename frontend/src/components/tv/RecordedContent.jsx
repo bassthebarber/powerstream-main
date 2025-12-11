@@ -87,4 +87,3 @@ const RecordedContent = ({ videos }) => {
 export default RecordedContent;
 
 
-

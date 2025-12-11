@@ -36,7 +36,7 @@ export default function GlobalNav() {
     { path: "/powerline", label: "💬 Line", icon: "💬" },
     { path: "/tvguide", label: "📺 TV Guide", icon: "📺" },
     { path: "/powerstream-tv", label: "🎥 PS TV", icon: "🎥" },
-    { path: "/studio/hub", label: "🎛️ Studio", icon: "🎛️" },
+    { path: "/studio", label: "🎛️ Studio", icon: "🎛️" },
     { path: "/school-network", label: "🏫 Schools", icon: "🏫" },
     { path: "/church-network", label: "⛪ Churches", icon: "⛪" },
     { path: "/network/no-limit-forever", label: "🔥 No Limit Forever", icon: "🔥" },

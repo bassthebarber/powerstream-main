@@ -449,4 +449,3 @@ function EventCard({ event, formatDate, showReplay }) {
 }
 
 
-
