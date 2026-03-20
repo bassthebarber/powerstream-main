@@ -1,5 +1,8 @@
 node_modules
 dist
-.vite
 .env
-.env.*
+*.log
+*.tar.gz
+*.txt
+backups/
+frontend/_corrupt_backups_/
